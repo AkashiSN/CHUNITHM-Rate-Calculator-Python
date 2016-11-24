@@ -20,7 +20,7 @@ def Get_MusicIdList(UserId):
 		Json = re.json()
 		MusicIdList += Json['levelList']
 		MusicIdList += Json['levelPlusList']
-		for Id , dif in Json['difLevelMap'].items():
+		for Id,dif in Json['difLevelMap'].items():
 			if dif == 2:
 				ExList.append(int(Id))
 	MusicIdList = list(set(MusicIdList))
@@ -30,6 +30,7 @@ def Get_MusicIdList(UserId):
 UserId = Get_UserId('akashisn','3adazatUja28erAp')
 MusicIdList,ExList = Get_MusicIdList(UserId)
 
-
+print "Content-Type: text/plain;charset=utf-8"
+print
 print(MusicIdList)
 print(ExList)
