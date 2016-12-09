@@ -1,7 +1,5 @@
-# coding: utf-8
-#!/usr/bin/env python3
-import sqlite3,json,requests,math,sys
-from pprint import pprint
+# -*- coding: utf-8 -*-
+import sqlite3,json,requests,math,os,hashlib
 
 #ログインしてUserIDを取得
 def Get_userId(SegaId,password):
@@ -29,7 +27,7 @@ def Get_MusicIdList(userId):
 	return ExList,MusicIdList
 
 #楽曲の詳細情報を取得
-def BestScore_get(userId,musicId):
+def Get_BestScore(userId,musicId):
 	url = 'https://chunithm-net.com/ChuniNet/GetUserMusicDetailApi'
 	parm = {'userId':userId,'musicId':musicId}
 	re = requests.post(url,data=json.dumps(parm))
@@ -37,7 +35,7 @@ def BestScore_get(userId,musicId):
 	return Json
 
 #各難易度の一覧取得(19903:マスター,19902:エキスパート)
-def LivelList_get(userId,level):
+def Get_DiffList(userId,level):
 	url = 'https://chunithm-net.com/ChuniNet/GetUserMusicApi'
 	parm = {"level":level,"userId":userId}
 	re = requests.post(url,data=json.dumps(parm))
@@ -45,12 +43,28 @@ def LivelList_get(userId,level):
 	return Json
 
 #ユーザーデータの詳細取得
-def UserData_get(userId):
+def Get_UserData(userId):
 	url = 'https://chunithm-net.com/ChuniNet/GetUserInfoApi'
 	parm = {'userId':userId,'friendCode':0,'fileLevel':1}
 	re = requests.post(url,data=json.dumps(parm))
 	Json = re.json()
 	return Json
+
+#直近50曲の取得
+def Get_PlayLog(userId):
+	url = 'https://chunithm-net.com/ChuniNet/GetUserPlaylogApi'
+	parm = {"userId":userId}
+	re = requests.post(url,data=json.dumps(parm))
+	Json = re.json()
+	return Json
+
+#自分のフレンドコード取得
+def Get_FriendCode(userId):
+	url = 'https://chunithm-net.com/ChuniNet/GetUserFriendlistApi'
+	parm = {'userId':userId,"state":4}
+	re = requests.post(url,data=json.dumps(parm))
+	Json = re.json()
+	return Json['friendCode']
 
 #スコアからレート
 def Score2Rate(Score,BaseRate):
@@ -65,7 +79,7 @@ def Score2Rate(Score,BaseRate):
 		Rate = BaseRate +  0.0 + (Score -  975000) *  2.00 / 50000
 	elif Score >= 950000:
 		Rate = BaseRate -  1.5 + (Score -  950000) *  3.00 / 50000
-	elif Socre >= 925000:
+	elif Score >= 925000:
 		Rate = BaseRate -  3.0 + (Score -  925000) *  3.00 / 50000
 	elif Score >= 900000:
 		Rate = BaseRate -  5.0 + (Score -  900000) *  4.00 / 50000
@@ -111,60 +125,203 @@ def Rate2Score(BaseRate, Rate):
 
 #譜面定数取得
 class LoadBaseRate:
-	def __init__ (self):
+	def __init__(self):
 		self.con = sqlite3.connect("./chunithm.db")
 		self.cur = self.con.cursor()
-	def BaseRate_get(self,musicId,level):
+	def Get_BaseRate(self,musicId,level):
 		sql = 'SELECT * FROM Music WHERE "MusicID" = ? AND "Level" = ?'
 		self.cur.execute(sql,(musicId,level))
 		r = self.cur.fetchall()
-		return r
+		return r[0]
+	def Get_MusicId(self,FileName):
+		sql = 'SELECT * FROM Music WHERE "Image" = ?'
+		self.cur.execute(sql,(FileName,))
+		r = self.cur.fetchall()
+		return r[0][0]
+
+#各ユーザのデーターベース
+class UserDataBase:
+	
+	def __init__(self,Hash):
+		Path = './user/{}.db'.format(Hash)
+		if os.path.exists(Path):
+			self.con = sqlite3.connect(Path)
+			self.cur = self.con.cursor()
+		else:
+			self.con = sqlite3.connect(Path)
+			self.cur = self.con.cursor()
+			self.CreateTable_User()
+			self.CreateTable_Best()
+			self.CreateTable_Recent()
+			self.CreateTable_Rate()
+
+	def CreateTable_Best(self):
+		self.cur.execute('''
+			CREATE TABLE `Best` (
+				`MusicId`	INTEGER,
+				`Level`	INTEGER,
+				`MusicName`	TEXT,
+				`Image`	TEXT,
+				`BaseRate`	INTEGER,
+				`Score`	INTEGER,
+				`Rate`	INTEGER
+			);
+		''')
+	def CreateTable_Rate(self):
+		self.cur.execute('''
+			CREATE TABLE `Rate` (
+				`DispRate`	INTEGER,
+				`HighestRating`	INTEGER,
+				`MaxRate`	INTEGER,
+				`BestRate`	INTEGER,
+				`RecentRate`	INTEGER
+			);
+		''')
+	def CreateTable_Recent(self):
+		self.cur.execute('''
+			CREATE TABLE `Recent` (
+				`MusicId`	INTEGER,
+				`Level`	INTEGER,
+				`MusicName`	TEXT,
+				`Image`	TEXT,
+				`BaseRate`	INTEGER,
+				`Score`	INTEGER,
+				`Rate`	INTEGER,
+				`PlayDate` TEXT
+			);
+		''')
+	def CreateTable_User(self):
+		self.cur.execute('''
+			CREATE TABLE `User` (
+				`UserName`	TEXT,
+				`Level`	INTEGER,
+				`TotalPoint`	INTEGER,
+				`TrophyType`	INTEGER,
+				`WebLimitDate`	TEXT,
+				`CharacterFileName`	TEXT,
+				`FriendCount`	INTEGER,
+				`Point`	INTEGER,
+				`PlayCount`	INTEGER,
+				`CharacterLevel`	INTEGER,
+				`TrophyName`	TEXT,
+				`ReincarnationNum`	INTEGER
+			);
+		''')
+	def SetBest(self,Best):
+		self.cur.execute('DELETE FROM Best')
+		sql = 'INSERT INTO Best (MusicId,Level,MusicName,Image,BaseRate,Score,Rate) VALUES (?,?,?,?,?,?,?)'
+		for Music in Best:			
+			self.cur.execute(sql,(Music['MusicID'],Music['Level'],Music['MusicName'],Music['Image'],Music['BaseRate'],Music['Score'],Music['BestRate']))
+			self.con.commit()
 
 if __name__ == '__main__':
-	userId = Get_userId('','')
-	MusicIdList = Get_MusicIdList(userId)
+	userId = Get_userId('akashisn','phamEfrahEf5Huw')	
 	Base = LoadBaseRate()
-	Musics = []
-	for Level in range(2,4):
-		MusicBestScore = LivelList_get(userId,"1990"+str(Level))
-		for MusicId in MusicIdList[Level-2]:
-			try:
-				for Music in MusicBestScore['userMusicList']:
-					if Music['musicId'] == MusicId:
-						MusicDetail = Base.BaseRate_get(MusicId,Level)[0]
-						if MusicDetail is None:
-							raise Exception()
-						MusicName = MusicDetail[2]
-						MusicImage = MusicDetail[3]
-						BaseRate = MusicDetail[4]
-						Score = Music['scoreMax']
-						BestRate = Score2Rate(Score,BaseRate)
-						dic = {'MusicID':MusicId,'Level':Level,'MusicName':MusicName,'MusicImage':MusicImage,'BaseRate':BaseRate,'BestRate':BestRate,'Score':Score}
-						Musics.append(dic)
-			except:
-				pass
-	#ソート
-	Musics = sorted(Musics,key=lambda x:x["BestRate"],reverse=True)
+	FriendCode = int(Get_FriendCode(userId))
+	#Hash = hashlib.sha256(bytes(FriendCode)).hexdigest()
+	Hash = 'bdbc5af0d01b1b28716da405a166381571d0c003628875c15e099a773477611f'
+	Rating = {}
+	DataBase = UserDataBase(Hash)
 
+	#Best
+	MusicIdList = Get_MusicIdList(userId)
+	Musics = []
 	i = 0
-	User = {'BestRate':0}
-	for Music in Musics:
+	for Level in range(2,4):
+		MusicBestScore = Get_DiffList(userId,"1990"+str(Level))
+		for MusicId in MusicIdList[Level-2]:
+			for Music in MusicBestScore['userMusicList']:
+				if Music['musicId'] == MusicId:
+					MusicDetail = Base.Get_BaseRate(MusicId,Level)
+					if MusicDetail[4] is None:
+						break
+					else:
+						Dic = {
+							'MusicID':MusicId,
+							'Level':Level,
+							'MusicName':MusicDetail[2],
+							'Image':MusicDetail[3],
+							'BaseRate':MusicDetail[4],
+							'BestRate':Score2Rate(Music['scoreMax'],MusicDetail[4]),
+							'Score':Music['scoreMax']
+						}
+						Musics.append(Dic)
+	#ソート
+	Best = sorted(Musics,key=lambda x:x["BestRate"],reverse=True)
+	Rate = {'BestRate':0}
+	for Music in Best:
 		if i < 30:
-			User['BestRate'] += Music['BestRate']
+			Rate['BestRate'] += Music['BestRate']
 			if i == 0:
-				User['MaxBestRate'] =  Music['BestRate']
+				Rate['MaxBestRate'] =  Music['BestRate']
 			elif i == 29:
-				User['MinBestRate'] =  Music['BestRate']
+				Rate['MinBestRate'] =  Music['BestRate']
 		else:
 			if Music['Score'] >= 1007500:
 				Music['MaxScore'] = None
 			else:
-				MaxScore = Rate2Score(Music['BaseRate'],User['MinBestRate'])
+				MaxScore = Rate2Score(Music['BaseRate'],Rate['MinBestRate'])
 				if MaxScore <= 1007500 and MaxScore > 0:
 					Music['MaxScore'] = MaxScore
 				else:
 					Music['MaxScore'] = None
 		i+=1
 
-	User['UserInfo'] = UserData_get(userId)
-	pprint(User)
+	#データーベースに保存
+	DataBase.SetBest(Best[::-1])
+
+	# #Recent
+	# Playlog = Get_PlayLog(userId)
+	# LevelMap = {'master':3,"expert":2,"advance":1,"basic":0}
+	# Musics = []
+	# for Play in Playlog['userPlaylogList']:
+	# 	MusicId = Base.Get_MusicId(Play['musicFileName'])
+	# 	MusicDetail = Base.Get_BaseRate(MusicId,LevelMap[Play['levelName']])
+	# 	if MusicDetail[4] is None:
+	# 		break
+	# 	else:
+	# 		Dic = {
+	# 			'MusicID':MusicId,
+	# 			'Level':LevelMap[Play['levelName']],
+	# 			'MusicName':MusicDetail[2],
+	# 			'Image':MusicDetail[3],
+	# 			'BaseRate':MusicDetail[4],
+	# 			'BestRate':Score2Rate(Play['score'],MusicDetail[4]),
+	# 			'Score':Play['score'],
+	# 			'PlayDate':Play['userPlayDate']
+	# 		}
+	# 		Musics.append(Dic)
+
+	#User
+	tmp = Get_UserData(userId)
+	UserInfo = tmp['userInfo']
+
+	User = {
+		'TotalPoint':UserInfo['totalPoint'],
+		'TrophyType':UserInfo['trophyType'],
+		'WebLimitDate':UserInfo['webLimitDate'],
+		'CharacterFileName':UserInfo['characterFileName'],
+		'FriendCount':UserInfo['friendCount'],
+		'Point':UserInfo['point'],
+		'PlayCount':UserInfo['playCount'],
+		'CharacterLevel':UserInfo['characterLevel'],
+		'TrophyName':UserInfo['trophyName'],
+		'ReincarnationNum':UserInfo['reincarnationNum'],
+		'UserName':UserInfo['userName'],
+		'Level':UserInfo['level'],
+		'FriendCode':FriendCode,
+		'Hash':Hash
+	}
+
+	DispRate = (UserInfo['playerRating'] / 100.0)
+	BestRate = (Rate['BestRate'] / 30)
+
+	Rating = {
+		'HighestRating':(UserInfo['highestRating'] / 100.0),
+		'DispRate':DispRate,
+		'MaxRate':((Rate['BestRate'] + Rate['MaxBestRate'] * 10) / 40),
+		'BestRate':BestRate,
+		'RecentRate':(DispRate * 40 - BestRate * 30)
+	}
+	
+	User['Rating'] = Rating
