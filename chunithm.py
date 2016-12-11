@@ -215,7 +215,7 @@ class UserDataBase:
 			self.con.commit()
 
 if __name__ == '__main__':
-	userId = Get_userId('akashisn','phamEfrahEf5Huw')	
+	userId = Get_userId('akashisn','vAw7ujeheta6efrA')	
 	Base = LoadBaseRate()
 	FriendCode = int(Get_FriendCode(userId))
 	#Hash = hashlib.sha256(bytes(FriendCode)).hexdigest()
