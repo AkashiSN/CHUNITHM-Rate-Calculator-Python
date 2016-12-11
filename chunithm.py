@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+#!/usr/bin/env python3
 import sqlite3,json,requests,math,os,hashlib
 
 #ログインしてUserIDを取得
@@ -218,8 +219,7 @@ if __name__ == '__main__':
 	userId = Get_userId('akashisn','vAw7ujeheta6efrA')	
 	Base = LoadBaseRate()
 	FriendCode = int(Get_FriendCode(userId))
-	#Hash = hashlib.sha256(bytes(FriendCode)).hexdigest()
-	Hash = 'bdbc5af0d01b1b28716da405a166381571d0c003628875c15e099a773477611f'
+	Hash = hashlib.sha256(str(FriendCode).encode('utf8')).hexdigest()
 	Rating = {}
 	DataBase = UserDataBase(Hash)
 
@@ -270,27 +270,29 @@ if __name__ == '__main__':
 	#データーベースに保存
 	DataBase.SetBest(Best[::-1])
 
-	# #Recent
-	# Playlog = Get_PlayLog(userId)
-	# LevelMap = {'master':3,"expert":2,"advance":1,"basic":0}
-	# Musics = []
-	# for Play in Playlog['userPlaylogList']:
-	# 	MusicId = Base.Get_MusicId(Play['musicFileName'])
-	# 	MusicDetail = Base.Get_BaseRate(MusicId,LevelMap[Play['levelName']])
-	# 	if MusicDetail[4] is None:
-	# 		break
-	# 	else:
-	# 		Dic = {
-	# 			'MusicID':MusicId,
-	# 			'Level':LevelMap[Play['levelName']],
-	# 			'MusicName':MusicDetail[2],
-	# 			'Image':MusicDetail[3],
-	# 			'BaseRate':MusicDetail[4],
-	# 			'BestRate':Score2Rate(Play['score'],MusicDetail[4]),
-	# 			'Score':Play['score'],
-	# 			'PlayDate':Play['userPlayDate']
-	# 		}
-	# 		Musics.append(Dic)
+	#Recent
+	Playlog = Get_PlayLog(userId)
+	LevelMap = {'master':3,"expert":2,"advance":1,"basic":0}
+	Musics = []
+	for Play in Playlog['userPlaylogList']:
+		MusicId = Base.Get_MusicId(Play['musicFileName'])
+		MusicDetail = Base.Get_BaseRate(MusicId,LevelMap[Play['levelName']])
+		if MusicDetail[4] is None:
+			break
+		else:
+			Dic = {
+				'MusicID':MusicId,
+				'Level':LevelMap[Play['levelName']],
+				'MusicName':MusicDetail[2],
+				'Image':MusicDetail[3],
+				'BaseRate':MusicDetail[4],
+				'BestRate':Score2Rate(Play['score'],MusicDetail[4]),
+				'Score':Play['score'],
+				'PlayDate':Play['userPlayDate']
+			}
+			Musics.append(Dic)
+	#for Music in Musics:
+		
 
 	#User
 	tmp = Get_UserData(userId)
