@@ -212,9 +212,21 @@ class UserDataBase:
 		self.cur.execute('DELETE FROM Best')
 		sql = 'INSERT INTO Best (MusicId,Level,MusicName,Image,BaseRate,Score,Rate) VALUES (?,?,?,?,?,?,?)'
 		for Music in Best:			
-			self.cur.execute(sql,(Music['MusicID'],Music['Level'],Music['MusicName'],Music['Image'],Music['BaseRate'],Music['Score'],Music['BestRate']))
+			self.cur.execute(sql,(Music['MusicID'],Music['Level'],Music['MusicName'],Music['Image'],Music['BaseRate'],Music['Score'],Music['Rate']))
 			self.con.commit()
-
+	def LoadRecent(self):
+		self.cur.execute("SELECT * FROM Recent")
+		r = self.cur.fetchall()
+		if r:
+			return r
+		else:
+			return None
+	def SetRecent(self,Recent):
+		self.cur.execute('DELETE FROM Recent')
+		sql = 'INSERT INTO Recent (MusicId,Level,MusicName,Image,BaseRate,Score,Rate,PlayDate) VALUES (?,?,?,?,?,?,?,?)'
+		for Music in Recent:
+			self.cur.execute(sql,(Music['MusicID'],Music['Level'],Music['MusicName'],Music['Image'],Music['BaseRate'],Music['Score'],Music['Rate'],Music['PlayDate']))
+			self.con.commit()
 if __name__ == '__main__':
 	userId = Get_userId('akashisn','vAw7ujeheta6efrA')	
 	Base = LoadBaseRate()
@@ -242,20 +254,20 @@ if __name__ == '__main__':
 							'MusicName':MusicDetail[2],
 							'Image':MusicDetail[3],
 							'BaseRate':MusicDetail[4],
-							'BestRate':Score2Rate(Music['scoreMax'],MusicDetail[4]),
+							'Rate':Score2Rate(Music['scoreMax'],MusicDetail[4]),
 							'Score':Music['scoreMax']
 						}
 						Musics.append(Dic)
 	#ソート
-	Best = sorted(Musics,key=lambda x:x["BestRate"],reverse=True)
+	Best = sorted(Musics,key=lambda x:x["Rate"],reverse=True)
 	Rate = {'BestRate':0}
 	for Music in Best:
 		if i < 30:
-			Rate['BestRate'] += Music['BestRate']
+			Rate['BestRate'] += Music['Rate']
 			if i == 0:
-				Rate['MaxBestRate'] =  Music['BestRate']
+				Rate['MaxBestRate'] =  Music['Rate']
 			elif i == 29:
-				Rate['MinBestRate'] =  Music['BestRate']
+				Rate['MinBestRate'] =  Music['Rate']
 		else:
 			if Music['Score'] >= 1007500:
 				Music['MaxScore'] = None
@@ -268,32 +280,38 @@ if __name__ == '__main__':
 		i+=1
 
 	#データーベースに保存
-	DataBase.SetBest(Best[::-1])
+	DataBase.SetBest(Best)
 
 	#Recent
 	Playlog = Get_PlayLog(userId)
+	Recent = DataBase.LoadRecent()
 	LevelMap = {'master':3,"expert":2,"advance":1,"basic":0}
-	Musics = []
-	for Play in Playlog['userPlaylogList']:
-		MusicId = Base.Get_MusicId(Play['musicFileName'])
-		MusicDetail = Base.Get_BaseRate(MusicId,LevelMap[Play['levelName']])
-		if MusicDetail[4] is None:
-			break
-		else:
-			Dic = {
-				'MusicID':MusicId,
-				'Level':LevelMap[Play['levelName']],
-				'MusicName':MusicDetail[2],
-				'Image':MusicDetail[3],
-				'BaseRate':MusicDetail[4],
-				'BestRate':Score2Rate(Play['score'],MusicDetail[4]),
-				'Score':Play['score'],
-				'PlayDate':Play['userPlayDate']
-			}
-			Musics.append(Dic)
-	#for Music in Musics:
-		
+	if Recent is None:
+		Musics = []
+		for Play in Playlog['userPlaylogList']:
+			MusicId = Base.Get_MusicId(Play['musicFileName'])
+			MusicDetail = Base.Get_BaseRate(MusicId,LevelMap[Play['levelName']])
+			if MusicDetail[4] is None:
+				break
+			else:
+				Dic = {
+					'MusicID':MusicId,
+					'Level':LevelMap[Play['levelName']],
+					'MusicName':MusicDetail[2],
+					'Image':MusicDetail[3],
+					'BaseRate':MusicDetail[4],
+					'Rate':Score2Rate(Play['score'],MusicDetail[4]),
+					'Score':Play['score'],
+					'PlayDate':Play['userPlayDate']
+				}
+				Musics.append(Dic)
+		Recent = sorted(Musics,key=lambda x:x['Rate'],reverse=True)
 
+		#データベースに保存
+		DataBase.SetRecent(Recent)
+	else:
+		New = False
+	
 	#User
 	tmp = Get_UserData(userId)
 	UserInfo = tmp['userInfo']
