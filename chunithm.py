@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-#!/usr/bin/env python3
+#! python3
 import sqlite3,json,requests,math,os,hashlib
+from pprint import pprint
 
 #ログインしてUserIDを取得
 def Get_userId(SegaId,password):
@@ -227,6 +228,7 @@ class UserDataBase:
 		for Music in Recent:
 			self.cur.execute(sql,(Music['MusicID'],Music['Level'],Music['MusicName'],Music['Image'],Music['BaseRate'],Music['Score'],Music['Rate'],Music['PlayDate']))
 			self.con.commit()
+
 if __name__ == '__main__':
 	userId = Get_userId('akashisn','vAw7ujeheta6efrA')	
 	Base = LoadBaseRate()
@@ -292,7 +294,7 @@ if __name__ == '__main__':
 			MusicId = Base.Get_MusicId(Play['musicFileName'])
 			MusicDetail = Base.Get_BaseRate(MusicId,LevelMap[Play['levelName']])
 			if MusicDetail[4] is None:
-				break
+				continue
 			else:
 				Dic = {
 					'MusicID':MusicId,
@@ -306,11 +308,10 @@ if __name__ == '__main__':
 				}
 				Musics.append(Dic)
 		Recent = sorted(Musics,key=lambda x:x['Rate'],reverse=True)
-
 		#データベースに保存
 		DataBase.SetRecent(Recent)
 	else:
-		New = False
+		pprint(Recent)
 	
 	#User
 	tmp = Get_UserData(userId)
