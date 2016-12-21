@@ -4,7 +4,7 @@ import sqlite3,json,requests
 
 #Json読み込み
 def Load_Json():
-	f = open("/root/CHUNITHM/chunithm.json")
+	f = open("chunithm.json", 'r',encoding='utf8')
 	data = json.load(f)
 	return data
 

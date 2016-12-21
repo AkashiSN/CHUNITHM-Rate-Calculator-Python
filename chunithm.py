@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 #! python3
 import sqlite3,json,requests,math,os,hashlib
-from pprint import pprint
+from datetime import datetime
 
-#ログインしてUserIDを取得
+#ログインしてUserIdを取得
 def Get_userId(SegaId,password):
 	url = 'https://chunithm-net.com/Login/SegaIdLoginApi'
 	parm = {'segaId':SegaId, 'password':password}
 	re = requests.post(url,data=json.dumps(parm))
 	return str(re.json()['sessionIdList'][0])
 
-#Level11以上のMusicIDのリストを取得
+#Level11以上のMusicIdのリストを取得
 def Get_MusicIdList(userId):
 	url = 'https://chunithm-net.com/ChuniNet/GetUserMusicLevelApi'
 	MusicIdList = []
@@ -127,14 +127,20 @@ def Rate2Score(BaseRate, Rate):
 
 #譜面定数取得
 class LoadBaseRate:
+	'''譜面定数をデータベースから取得する'''
+	#前処理
 	def __init__(self):
-		self.con = sqlite3.connect("./chunithm.db")
+		self.con = sqlite3.connect("common/chunithm.db")
 		self.cur = self.con.cursor()
+
+	#譜面定数を取得する
 	def Get_BaseRate(self,musicId,level):
-		sql = 'SELECT * FROM Music WHERE "MusicID" = ? AND "Level" = ?'
+		sql = 'SELECT * FROM Music WHERE "MusicId" = ? AND "Level" = ?'
 		self.cur.execute(sql,(musicId,level))
 		r = self.cur.fetchall()
 		return r[0]
+
+	#ファイル名からMusicIdを取得
 	def Get_MusicId(self,FileName):
 		sql = 'SELECT * FROM Music WHERE "Image" = ?'
 		self.cur.execute(sql,(FileName,))
@@ -143,94 +149,221 @@ class LoadBaseRate:
 
 #各ユーザのデーターベース
 class UserDataBase:
-	
+	'''各ユーザーのデータベースに計算結果を保存する'''
+	#前処理	
 	def __init__(self,Hash):
-		Path = './user/{}.db'.format(Hash)
+		Path = 'user/{}.db'.format(Hash)
+		#新規ユーザーかどうか
 		if os.path.exists(Path):
 			self.con = sqlite3.connect(Path)
 			self.cur = self.con.cursor()
 		else:
 			self.con = sqlite3.connect(Path)
 			self.cur = self.con.cursor()
-			self.CreateTable_User()
-			self.CreateTable_Best()
-			self.CreateTable_Recent()
-			self.CreateTable_Rate()
-
-	def CreateTable_Best(self):
-		self.cur.execute('''
-			CREATE TABLE `Best` (
-				`MusicId`	INTEGER,
-				`Level`	INTEGER,
-				`MusicName`	TEXT,
-				`Image`	TEXT,
-				`BaseRate`	INTEGER,
-				`Score`	INTEGER,
-				`Rate`	INTEGER
-			);
-		''')
-	def CreateTable_Rate(self):
-		self.cur.execute('''
-			CREATE TABLE `Rate` (
-				`DispRate`	INTEGER,
-				`HighestRating`	INTEGER,
-				`MaxRate`	INTEGER,
-				`BestRate`	INTEGER,
-				`RecentRate`	INTEGER
-			);
-		''')
-	def CreateTable_Recent(self):
-		self.cur.execute('''
-			CREATE TABLE `Recent` (
-				`MusicId`	INTEGER,
-				`Level`	INTEGER,
-				`MusicName`	TEXT,
-				`Image`	TEXT,
-				`BaseRate`	INTEGER,
-				`Score`	INTEGER,
-				`Rate`	INTEGER,
-				`PlayDate` TEXT
-			);
-		''')
-	def CreateTable_User(self):
-		self.cur.execute('''
-			CREATE TABLE `User` (
-				`UserName`	TEXT,
-				`Level`	INTEGER,
-				`TotalPoint`	INTEGER,
-				`TrophyType`	INTEGER,
-				`WebLimitDate`	TEXT,
-				`CharacterFileName`	TEXT,
-				`FriendCount`	INTEGER,
-				`Point`	INTEGER,
-				`PlayCount`	INTEGER,
-				`CharacterLevel`	INTEGER,
-				`TrophyName`	TEXT,
-				`ReincarnationNum`	INTEGER
-			);
-		''')
+			#新規ユーザーなのでテーブルを作成
+			self.cur.execute('''
+				CREATE TABLE `Best` (
+					`MusicId`	INTEGER,
+					`Level`	INTEGER,
+					`MusicName`	TEXT,
+					`Image`	TEXT,
+					`BaseRate`	INTEGER,
+					`Score`	INTEGER,
+					`Rate`	INTEGER
+				);
+			''')
+			self.cur.execute('''
+				CREATE TABLE `Rate` (
+					`DispRate`	INTEGER,
+					`HighestRating`	INTEGER,
+					`MaxRate`	INTEGER,
+					`BestRate`	INTEGER,
+					`RecentRate`	INTEGER,
+					`Credits`	INTEGER,
+					`ExecuteDate`	TEXT
+				);
+			''')
+			self.cur.execute('''
+				CREATE TABLE `Recent` (
+					`MusicId`	INTEGER,
+					`Level`	INTEGER,
+					`MusicName`	TEXT,
+					`Image`	TEXT,
+					`BaseRate`	INTEGER,
+					`Score`	INTEGER,
+					`Rate`	INTEGER,
+					`PlayDate` TEXT
+				);
+			''')
+			self.cur.execute('''
+				CREATE TABLE `User` (
+					'Id'	INTEGER,
+					`UserName`	TEXT,
+					`Level`	INTEGER,
+					`TotalPoint`	INTEGER,
+					`TrophyType`	INTEGER,
+					`WebLimitDate`	TEXT,
+					`CharacterFileName`	TEXT,
+					`FriendCount`	INTEGER,
+					`Point`	INTEGER,
+					`PlayCount`	INTEGER,
+					`CharacterLevel`	INTEGER,
+					`TrophyName`	TEXT,
+					`ReincarnationNum`	INTEGER,
+					`FriendCode`	INTEGER,
+					`Hash`	TEXT,
+					`FinalPlayDate`	TEXT,
+					`ExecuteDate`	TEXT,
+					PRIMARY KEY(`Id`)
+				);
+			''')
+	
+	#ベスト枠を保存する
 	def SetBest(self,Best):
+		#一度削除してからセットする
 		self.cur.execute('DELETE FROM Best')
 		sql = 'INSERT INTO Best (MusicId,Level,MusicName,Image,BaseRate,Score,Rate) VALUES (?,?,?,?,?,?,?)'
 		for Music in Best:			
-			self.cur.execute(sql,(Music['MusicID'],Music['Level'],Music['MusicName'],Music['Image'],Music['BaseRate'],Music['Score'],Music['Rate']))
+			self.cur.execute(sql,(Music['MusicId'],Music['Level'],Music['MusicName'],Music['Image'],Music['BaseRate'],Music['Score'],Music['Rate']))
 			self.con.commit()
-	def LoadRecent(self):
-		self.cur.execute("SELECT * FROM Recent")
-		r = self.cur.fetchall()
-		if r:
-			return r
-		else:
-			return None
+
+	#リセント候補枠を保存する
 	def SetRecent(self,Recent):
+		#一度削除してからを保存する
 		self.cur.execute('DELETE FROM Recent')
 		sql = 'INSERT INTO Recent (MusicId,Level,MusicName,Image,BaseRate,Score,Rate,PlayDate) VALUES (?,?,?,?,?,?,?,?)'
 		for Music in Recent:
-			self.cur.execute(sql,(Music['MusicID'],Music['Level'],Music['MusicName'],Music['Image'],Music['BaseRate'],Music['Score'],Music['Rate'],Music['PlayDate']))
+			self.cur.execute(sql,(Music['MusicId'],Music['Level'],Music['MusicName'],Music['Image'],Music['BaseRate'],Music['Score'],Music['Rate'],Music['PlayDate']))
+			self.con.commit()
+
+	#ユーザー情報を保存する
+	def SetUser(self,User):
+		sql = 'INSERT INTO User (UserName,Level,TotalPoint,TrophyType,WebLimitDate,characterFileName,FriendCount,`Point`,PlayCount,CharacterLevel,TrophyName,ReincarnationNum,FriendCode,Hash,FinalPlayDate,ExecuteDate) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
+		self.cur.execute(sql,(User['UserName'],User['Level'],User['TotalPoint'],User['TrophyType'],User['WebLimitDate'],User['CharacterFileName'],User['FriendCount'],User['Point'],User['PlayCount'],User['CharacterLevel'],User['TrophyName'],User['ReincarnationNum'],User['FriendCode'],User['Hash'],User['FinalPlayDate'],User['ExecuteDate']))
+		self.con.commit()
+
+	#レートの推移を保存する
+	def SetRate(self,Rate):
+		sql = 'INSERT INTO Rate (DispRate,HighestRating,MaxRate,BestRate,RecentRate,Credits,ExecuteDate) VALUES (?,?,?,?,?,?,?)'
+		self.cur.execute(sql,(Rate['DispRate'],Rate['HighestRating'],Rate['MaxRate'],Rate['BestRate'],Rate['RecentRate'],Rate['Credits'],Rate['ExecuteDate']))
+		self.con.commit()
+
+	#リセント候補枠を読み込む
+	def LoadRecent(self):
+		self.cur.execute("SELECT * FROM Recent")
+		rows = self.cur.fetchall()
+		if rows:
+			Recent = []
+			for row in rows:
+				Dic = {
+					'MusicId':row[0],
+					'Level':row[1],
+					'MusicName':row[2],
+					'Image':row[3],
+					'BaseRate':row[4],					
+					'Score':row[5],
+					'Rate':row[6],
+					'PlayDate':row[7]
+				}
+				Recent.append(Dic)
+			return Recent
+		else:
+			return None
+
+	#ユーザーデータを読み込む
+	def LoadUser(self):
+		self.cur.execute('SELECT * FROM User')
+		rows = self.cur.fetchall()
+		if rows:
+			User = []
+			for row in rows:
+				Dic = {
+					'Id':row[0],
+					'UserName':row[1],
+					'Level':row[2],
+					'TotalPoint':row[3],
+					'TrophyType':row[4],
+					'WebLimitDate':row[5],
+					'CharacterFileName':row[6],
+					'FriendCount':row[7],
+					'Point':row[8],
+					'PlayCount':row[9],
+					'CharacterLevel':row[10],
+					'TrophyName':row[11],
+					'ReincarnationNum':row[12],
+					'FriendCode':row[13],
+					'Hash':row[14],
+					'FinalPlayDate':row[15],
+					'ExecuteDate':row[16]
+				}
+				User.append(Dic)
+			return User
+		else:
+			return	None
+
+	#レートの推移を読み込む
+	def LoadRate(self):
+		self.cur.execute('SELECT * FROM Rate')
+		rows = self.cur.fetchall()
+		if rows:
+			Rate = []
+			for row in rows:
+				Dic = {
+					'DispRate':row[0],
+					'HighestRating':row[1],
+					'MaxRate':row[2],
+					'BestRate':row[3],
+					'RecentRate':row[4],
+					'Credits':row[5],
+					'ExecuteDate':row[6]
+				}
+				Rate.append(Dic)
+			return Rate
+		else:
+			return None
+
+#管理用のデータベース
+class AdminDataBase():
+	'''管理用のデータベース'''
+	def __init__(self):
+		if os.path.exists('admin/admin.db'):
+			self.con = sqlite3.connect('admin/admin.db')
+			self.cur = self.con.cursor()
+		else:
+			self.con = sqlite3.connect('admin/admin.db')
+			self.cur = self.con.cursor()
+			self.cur.execute('''
+				CREATE TABLE `User` (
+					`UserName`	TEXT,
+					`FriendCode`	TEXT,
+					`Hash`	TEXT,
+					`Credits`	INTEGER,
+					`DispRate`	INTEGER,
+					`HighestRating`	INTEGER,
+					`MaxRate`	INTEGER,
+					`BestRate`	INTEGER,
+					`RecentRate`	INTEGER
+				);
+			''')
+
+	#データを保存する
+	def SetData(self,Data):
+		sql = 'SELECT * FROM User WHERE Hash = ?'
+		self.cur.execute(sql,(Data['Hash'],))
+		r = self.cur.fetchall()
+		if r:
+			sql = 'INSERT INTO User (UserName,FriendCode,Hash,Credits,DispRate,HighestRating,MaxRate,BestRate,RecentRate) VALUES (?,?,?,?,?,?,?,?,?)'
+			self.cur.execute(sql,(Data['UserName'],Data['FriendCode'],Data['Hash'],Data['Credits'],Data['DispRate'],Data['HighestRating'],Data['MaxRate'],Data['BestRate'],Data['RecentRate']))
+			self.con.commit()
+		else:
+			sql = 'DELETE FROM User WHERE Hash = ?'
+			self.cur.execute(sql,(Data['Hash'],))
+			sql = 'INSERT INTO User (UserName,FriendCode,Hash,Credits,DispRate,HighestRating,MaxRate,BestRate,RecentRate) VALUES (?,?,?,?,?,?,?,?,?)'
+			self.cur.execute(sql,(Data['UserName'],Data['FriendCode'],Data['Hash'],Data['Credits'],Data['DispRate'],Data['HighestRating'],Data['MaxRate'],Data['BestRate'],Data['RecentRate']))
 			self.con.commit()
 
 if __name__ == '__main__':
-	userId = Get_userId('akashisn','vAw7ujeheta6efrA')	
+	userId = Get_userId('','')	
 	Base = LoadBaseRate()
 	FriendCode = int(Get_FriendCode(userId))
 	Hash = hashlib.sha256(str(FriendCode).encode('utf8')).hexdigest()
@@ -251,7 +384,7 @@ if __name__ == '__main__':
 						break
 					else:
 						Dic = {
-							'MusicID':MusicId,
+							'MusicId':MusicId,
 							'Level':Level,
 							'MusicName':MusicDetail[2],
 							'Image':MusicDetail[3],
@@ -288,39 +421,78 @@ if __name__ == '__main__':
 	Playlog = Get_PlayLog(userId)
 	Recent = DataBase.LoadRecent()
 	LevelMap = {'master':3,"expert":2,"advance":1,"basic":0}
+	FinalPlayDate = Playlog['userPlaylogList'][0]['userPlayDate'][0:-2]
+	Musics = []
+	for Play in Playlog['userPlaylogList'][0:30]:
+		MusicId = Base.Get_MusicId(Play['musicFileName'])
+		MusicDetail = Base.Get_BaseRate(MusicId,LevelMap[Play['levelName']])
+		if MusicDetail[4] is None:
+			continue
+		else:
+			Dic = {
+				'MusicId':MusicId,
+				'Level':LevelMap[Play['levelName']],
+				'MusicName':MusicDetail[2],
+				'Image':MusicDetail[3],
+				'BaseRate':MusicDetail[4],
+				'Rate':Score2Rate(Play['score'],MusicDetail[4]),
+				'Score':Play['score'],
+				'PlayDate':Play['userPlayDate'][0:-2]
+			}
+			Musics.append(Dic)
 	if Recent is None:
-		Musics = []
-		for Play in Playlog['userPlaylogList']:
-			MusicId = Base.Get_MusicId(Play['musicFileName'])
-			MusicDetail = Base.Get_BaseRate(MusicId,LevelMap[Play['levelName']])
-			if MusicDetail[4] is None:
-				continue
-			else:
-				Dic = {
-					'MusicID':MusicId,
-					'Level':LevelMap[Play['levelName']],
-					'MusicName':MusicDetail[2],
-					'Image':MusicDetail[3],
-					'BaseRate':MusicDetail[4],
-					'Rate':Score2Rate(Play['score'],MusicDetail[4]),
-					'Score':Play['score'],
-					'PlayDate':Play['userPlayDate']
-				}
-				Musics.append(Dic)
+		#レート順にソート
 		Recent = sorted(Musics,key=lambda x:x['Rate'],reverse=True)
-		#データベースに保存
-		DataBase.SetRecent(Recent)
 	else:
-		pprint(Recent)
-	
-	#User
-	tmp = Get_UserData(userId)
-	UserInfo = tmp['userInfo']
+		#レート順にソート
+		Recent = sorted(Recent,key=lambda x:x['Rate'],reverse=True)
+		UserData = DataBase.LoadUser()
+		OldDate = datetime.strptime(UserData[-1]['FinalPlayDate'], '%Y-%m-%d %H:%M:%S')
+		for Play in Musics:
+			NowDate = datetime.strptime(Play['PlayDate'], '%Y-%m-%d %H:%M:%S')
+			#最後に実行されたときの曲と現在の曲の新旧
+			if NowDate > OldDate:
+				#Recent枠の最小と比較
+				if Play['Rate'] > Recent[9]['Rate']:
+					#Recent枠の最小と入れ替え
+					Recent[-1]['MusicId'] = Play['MusicId']
+					Recent[-1]['Level'] = Play['Level']
+					Recent[-1]['MusicName'] = Play['MusicName']
+					Recent[-1]['Image'] = Play['Image']
+					Recent[-1]['BaseRate'] = Play['BaseRate']
+					Recent[-1]['Score'] = Play['Score']
+					Recent[-1]['Rate'] = Play['Rate']
+					Recent[-1]['PlayDate'] = Play['PlayDate']
+				elif Play['Score'] >= 1007500:
+					pass
+				elif Play['Score'] >= Recent[-1]['Score']:
+					pass
+				else:
+					#プレイ日時順にソート
+					Recent = sorted(Recent,key=lambda x:datetime.strptime(x['PlayDate'], '%Y-%m-%d %H:%M:%S'),reverse=True)
+					#Recent候補枠の一番古い曲と入れ替え
+					Recent[-1]['MusicId'] = Play['MusicId']
+					Recent[-1]['Level'] = Play['Level']
+					Recent[-1]['MusicName'] = Play['MusicName']
+					Recent[-1]['Image'] = Play['Image']
+					Recent[-1]['BaseRate'] = Play['BaseRate']
+					Recent[-1]['Score'] = Play['Score']
+					Recent[-1]['Rate'] = Play['Rate']
+					Recent[-1]['PlayDate'] = Play['PlayDate']
+					#レート順にソート
+					Recent = sorted(Recent,key=lambda x:x['Rate'],reverse=True)
+			else:
+				pass
+	#データベースに保存
+	DataBase.SetRecent(Recent)
 
+	#ユーザーデータ
+	UserInfo = Get_UserData(userId)['userInfo']
+	NowDate = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 	User = {
 		'TotalPoint':UserInfo['totalPoint'],
 		'TrophyType':UserInfo['trophyType'],
-		'WebLimitDate':UserInfo['webLimitDate'],
+		'WebLimitDate':UserInfo['webLimitDate'][0:-2],
 		'CharacterFileName':UserInfo['characterFileName'],
 		'FriendCount':UserInfo['friendCount'],
 		'Point':UserInfo['point'],
@@ -331,18 +503,38 @@ if __name__ == '__main__':
 		'UserName':UserInfo['userName'],
 		'Level':UserInfo['level'],
 		'FriendCode':FriendCode,
-		'Hash':Hash
+		'Hash':Hash,
+		'FinalPlayDate':FinalPlayDate,
+		'ExecuteDate': NowDate
 	}
+	#データベースに保存
+	DataBase.SetUser(User)
 
+	#レート計算
 	DispRate = (UserInfo['playerRating'] / 100.0)
 	BestRate = (Rate['BestRate'] / 30)
-
-	Rating = {
-		'HighestRating':(UserInfo['highestRating'] / 100.0),
+	Rating = {		
 		'DispRate':DispRate,
+		'HighestRating':(UserInfo['highestRating'] / 100.0),
 		'MaxRate':((Rate['BestRate'] + Rate['MaxBestRate'] * 10) / 40),
 		'BestRate':BestRate,
-		'RecentRate':(DispRate * 40 - BestRate * 30)
+		'RecentRate':(DispRate * 40 - BestRate * 30) / 10,
+		'Credits':UserInfo['playCount'],
+		'ExecuteDate': NowDate
 	}
-	
-	User['Rating'] = Rating
+	#データベースに保存
+	DataBase.SetRate(Rating)
+
+	Admin = AdminDataBase()
+	Data = {
+		'UserName':UserInfo['userName'],
+		'FriendCode':FriendCode,
+		'Hash':Hash,
+		'Credits':UserInfo['playCount'],
+		'DispRate':DispRate,
+		'HighestRating':(UserInfo['highestRating'] / 100.0),
+		'MaxRate':((Rate['BestRate'] + Rate['MaxBestRate'] * 10) / 40),
+		'BestRate':BestRate,
+		'RecentRate':(DispRate * 40 - BestRate * 30) / 10
+	}
+	Admin.SetData(Data)
