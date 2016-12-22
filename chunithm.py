@@ -182,4 +182,4 @@ def CalcRate(SegaId,password):
 		'RecentRate':(DispRate * 40 - BestRate * 30) / 10
 	}
 	Admin.SetData(Data)
-	
+	return "OK"

@@ -5,8 +5,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def hello():
-	user = chunithm.CalcRate('akashisn','vAw7ujeheta6efrA')
-	return "Hello World!"
+	return chunithm.CalcRate('akashisn','vAw7ujeheta6efrA')
 
 if __name__ == '__main__':
 	import os
