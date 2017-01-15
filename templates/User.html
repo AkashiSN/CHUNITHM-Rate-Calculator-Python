@@ -1,0 +1,40 @@
+{% block User %}
+<div id="wrap">
+    <div style="margin-top:10px;margin-bottom:0px;padding-bottom:0px;">
+      <div class="frame01 w460">
+        <div style="padding-bottom:0px;" class="frame01_inside w450">
+          <h2 style="margin-top:10px;" id="page_title">ユーザー</h2>
+          <hr class="line_dot_black w420">
+          <div id="userInfo_result">
+            <div class="w420 box_player clearfix">
+              <div id="UserCharacter" class="player_chara" style='background-image:url("https://chunithm-net.com/mobile/common/images/charaframe_{{ User.CharacterFrameFile }}.png");margin-top: 10px;'>
+                <img id="characterFileName" src="https://chunithm-net.com/mobile/{{ User.CharacterFileName }}">
+              </div>
+              <div class="box07 player_data">
+                <div id="UserHonor" class="player_honor" style='background-image:url("https://chunithm-net.com/mobile/common/images/honor_bg_{{ User.Honor }}.png")'>
+                  <div class="player_honer_text_view">
+                    <div id="HonerText" class="player_honer_text">{{ User.TrophyName }}</div>
+                  </div>
+                </div>
+                {% if User.ReincarnationNum > 0 %}
+                <div id="UserReborn" class="player_reborn">{{ User.ReincarnationNum }}
+                {% else %}
+                <div id="UserReborn" class="player_reborn_0">
+                {% endif %}
+              </div>
+              <div class="player_name">
+                <div class="player_lv">
+                  <span class="font_small mr_5">Lv.</span><span id="UserLv">{{ User.Level }}</span></div><span id="UserName">{{ User.UserName }}</span>
+                </div>
+                <div class="player_rating" id="player_rating">BEST枠 : <span id="UserRating">{{ Rate.BestRate }}</span> / <span>MAX</span> <span id="UserRating">{{ Rate.MaxRate }}</span><br><div style="margin-top:5px;">RECENT枠 :<span id="UserRating">{{ Rate.RecentRate }}</span> / <span>表示レート</span><span id="UserRating">{{ Rate.DispRate }}</span></div>
+              </div>
+            </div>
+            <div id="tweet" class="text_b" style="margin-top: 10px;"></div>
+            <div class="more w400" ><a href="/#notice">注意</a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja" dir="ltr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="format-detection" content="telephone=no">
+    <meta name=viewport content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Pragma" CONTENT="no-cache">
+    <meta http-equiv="Cache-Control" CONTENT="no-cache">
+    <meta http-equiv="Expires" CONTENT="-1">
+    <meta name="robots" content="INDEX, FOLLOW" />
+    <meta property="og:title" content="CHUNITHM Rate Calculator" />
+    <meta property="og:type" content="tools" />
+    <meta property="og:description" content="CHUNITHM[©SEGA]のレート解析ツール" />
+    <meta property="og:url" content="https://chuinical.net" />
+    <meta property="og:image" content="/static/images/img.jpg" />
+    <meta property="og:site_name" content="CHUNITHM Rate Calculator" />
+    <meta name="norton-safeweb-site-verification" content="1mlk6tizhmo9jp7on61shldfkiwwrpoq45ljnyoh9sx1knxoft1c0wyc77yq9920yo838hbmtmzn572hvnyyo3iqbuqem5jx4d85cedna7awf99yrrwf6tyv2-7ypwl1" />
+    <link rel="stylesheet" href="/static/css/bootstrap.css" />
+    <link rel="stylesheet" href="/static/css/prism.css" />
+    <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/static/js/prism.js"></script>
+    <script type="text/javascript" src="/static/js/jquery-3.1.1.min.js"></script>
+		<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script type="text/javascript">
+    	//Google-Analytics
+    	(function (i, s, o, g, r, a, m) {
+			  i['GoogleAnalyticsObject'] = r;
+			  i[r] = i[r] || function () {
+			    (i[r].q = i[r].q || [])
+			    .push(arguments)
+			  }, i[r].l = 1 * new Date();
+			  a = s.createElement(o)
+			    , m = s.getElementsByTagName(o)[0];
+			  a.async = 1;
+			  a.src = g;
+			  m.parentNode.insertBefore(a, m)
+			})(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+			ga('create', 'UA-86861992-1', 'auto');
+			ga('send', 'pageview');
+
+			//Google-AdSense
+			(adsbygoogle = window.adsbygoogle || []).push({
+		    google_ad_client: "ca-pub-9431951784509175",
+		    enable_page_level_ads: true
+		  });
+    </script>
+    <title>CHUNITHM Rate Calculator</title>
+</head>
+
+<body style="background-color: rgb(253, 255, 225);">
+    <div class="container" style="background-color: rgba(4, 0, 255, 0.08);">
+        <header style="margin-left: 5px;margin-right: 5px;background-color: rgb(255, 255, 255);">
+            <div class="title">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <h1 style="margin-left: 10px;margin-right: 10px;">CHUNITHM Rate Calculator</h1>
+                        <p class="lead" style="margin-left: 10px;margin-right: 10px;">CHUNITHM[©SEGA]のレート解析ツール</p>
+                    </div>
+                    <div style="margin-top: 15px">
+                    <p>スポンサーリンク</p>
+						<!-- Chunical.3 -->
+						<ins class="adsbygoogle"
+						     style="display:inline-block;width:320px;height:100px"
+						     data-ad-client="ca-pub-9431951784509175"
+						     data-ad-slot="1204593240"></ins>
+						<script>
+						  (adsbygoogle = window.adsbygoogle || []).push({});
+						</script>
+					</div>
+                </div>
+            </div>
+        </header>
+        <div class="row content" style="margin-left: 5px;margin-right: 5px;background-color: rgb(255, 255, 255);">
+            <div style="margin-left: 10px;margin-right: 10px;">
+                <h3>更新履歴</h3>
+                <hr />
+                <p>自動では更新しないので更新のたびにインストールし直してください。</p>
+                <p>更新はtwitterでつぶやくようにします。
+                </p>
+                <pre><code class="language-plane">2016-03-27 ver1.0.0 公開
+2016-04-08 ver1.0.1 新曲追加
+2016-04-12 ver1.1.0 コードを更新しました
+2016-04-23 ver1.1.1 新曲追加
+2016-05-14 ver1.1.2 新曲追加
+2016-05-29 ver1.1.3 新曲追加
+2016-06-03 ver1.2.0 修正(レートが高く表示されるのを修正)
+2016-06-04 ver1.3.0 コードを更新しました(エラー画面の実装)
+2016-06-08 ver1.4.0 アドレスの変更
+2016-06-09 ver1.4.1 アドレスの変更
+2016-06-19 ver1.4.2 新曲追加
+2016-07-09 ver1.4.3 新曲追加
+2016-07-09 ver1.4.4 使い方の説明追加(iPhone-Safari)
+2016-07-29 ver2.0.0 大幅仕様更新（リセント枠の実装）
+2016-08-10 ver2.9.9 URLで結果を共有できるようになりました(キャッシュを消してください)
+2016-08-19 ver3.0.1 Best枠に入るために必要なスコアの実装
+2016-08-20 ver3.0.2 エラー処理の実装
+2016-08-26 ver3.0.5 Air対応(ハート・ビート,ルドレンレコード,PRIVATE SERVICE,四次元跳躍機関,なるとなぎのパーフェクトロックンロール教室,Blue Noise,Gustav Battle,DataErr0r,DRAGONLADY,ジングルベル,幻想のサテライト(紫),Aragami,The wheel to the right(紫),AIR,Vallista,Genesis,Philosopher(紫),Schrecklicher Aufstand(紫)の更新)
+2016-09-03 ver3.0.6 RECENT枠の拡大
+2016-09-10 ver3.1.0 ソート機能の実装
+2016-09-15 ver3.5.0 グラフ機能の実装（データーベースを削除しましたのでもう一度登録してください。）
+2016-09-16 ver3.5.1 新曲追加
+2016-09-21 ver3.5.2 新曲追加
+2016-10-17 ver3.5.3 新曲追加
+2016-10-20 ver3.6.0 実行時間の最適化
+2016-10-20 ver3.6.1 グラフの横軸の調整
+2016-10-21 ver3.6.2 JavaScriptを使わないことで高速化
+2016-10-23 ver3.6.5 ある曲でRECENT枠を埋めたときの最大レートを求める機能を追加
+2016-11-01 ver4.0.0 専用のドメインを取得（コードをもう一度登録し直してください）
+2016-11-23 ver4.0.5 広告掲載いたしました。(Google-AdSense)
+2016-12-11 ver4.0.6 新曲追加
+</code></pre>
+                <h3 id="ad">広告掲載について</h3>
+                <hr />
+                <strong>毎月サーバー維持費に2,650円かかっており、自費でまかなってるのが現状です。サービスを維持するために広告掲載に御理解をお願い致します。</strong>
+                <p>現在、このページに3つ、ユーザーページに2つの広告を掲載しております</p>
+                <h3>#CHUNITHMRateCalculator</h3>
+                <hr>
+                <a class="twitter-timeline"  href="https://twitter.com/hashtag/CHUNITHMRateCalculator" data-widget-id="790225362219171840">#CHUNITHMRateCalculator のツイート</a>
+
+                <h3>このツールについて</h3>
+                <hr />
+                <p>CHUNITHM[©SEGA]のレート解析ツールです。</p>
+                <p>何故作ったか・・・</p>
+                <blockquote class="twitter-tweet" data-lang="ja">
+                    <p dir="ltr" lang="ja"><a href="https://twitter.com/Akashi_SN">@Akashi_SN</a> チュウニズムのスコア計算プログラム作って(プラスにも対応してるので)</p> — ずーむ (@zoom4638) <a href="https://twitter.com/zoom4638/status/711201123181264896">2016年3月19日</a></blockquote>
+                <p>このリプがきっかけで作った</p>
+                <p>ソースコードはGitHubで公開中！<a href="https://github.com/AkashiSN/CHUNITHM-Rate-Calculator">CHUNITHM-Rate-Calculator-github.com</a></p>
+                <p>現在PHPで実装しているものをPythonで書き直しています。既知のバグ（レート値不整合）はそちらで修正します。</p>
+                <b>現在の機能</b>
+                <ul>
+                    <li>楽曲別レートを計算します</li>
+                    <li>最大レートを算出します(最大レートはBEST枠で一番レートが高い楽曲を10回連続で同じスコアを出したものとして計算した値です。)</li>
+                    <li>ベスト枠とリセント枠の表示</li>
+                    <li>ベスト枠に入るために必要なスコアの表示</li>
+                    <li>スコア順や難易度順、レート順でのソート</li>
+                    <li>レートの推移をグラフで表示</li>
+                </ul>
+                <b>実装予定</b>
+                <ul>
+                    <li>おすすめ機能</li>
+                    <li>UIの変更</li>
+                    <li>
+                        <s style="margin-top: 10px;">現在のBEST枠のままで任意の曲のSSSでRECENT枠を埋めたときの到達可能レートの計算</s>
+                    </li>
+                    <li>
+                        <s style="margin-top: 10px;">グラフの横軸を調整できるようにする</s>
+                    </li>
+                </ul>
+                <p>レートの仕組みについては<a href="http://d.hatena.ne.jp/risette14/" target="_brunk">リゼット(14新)推奨日記</a>(<a href="https://twitter.com/capue">@capue</a>)や<a href="http://www.atomic--age.net/information/chunithm/system#TOC--14" target="_brunk">CHUNITHMゲームシステム、概要等まとめ - AtomicAge.net 音ゲー情報まとめサイト</a>に詳しく書いてあります。</p>
+                <p>計算方法や譜面定数は<a href="https://twitter.com/capue">@capue</a>さんほかによるものを参考にしました。ありがとうございました。</p>
+                <hr>                
+                <p>スポンサーリンク</p>
+                <!-- No.2 -->
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-9431951784509175"
+                     data-ad-slot="3518931248"
+                     data-ad-format="auto"></ins>
+                <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+                <h3>このツールの仕様</h3>
+                <hr />
+                <iframe src="https://drive.google.com/file/d/0BwbABZe_SyRKRUpPa3F3OVMwamM/preview" width="100%" height="500"></iframe>
+                <h3 id="notice">対象譜面</h3>
+                <hr />
+                <b><u>レベル11以上の楽曲が対象です</u></b>
+                <p>次の場合では正しく計算されません</p>
+                <ul>
+                    <li>ベスト枠に関して、レベル11以上の楽曲を30種類以上やっていない</li>
+                    <li>リセント枠に関して、同様にレベル11以上の楽曲を10曲やっていない</li>
+                </ul>
+                <b>※このツールで表示しているリセント枠はCHUNITHM-NETの仕様上直近５０曲しか取得できないという制約があるため、<br>実際のリセント枠とは異なることに注意してください。</b>
+                <p>リセント枠については<a href="http://max-eipi.hatenablog.com/entry/2016/08/22/031357">【CHUNITHM Plus 確定版】Recent枠遷移の推測 + α - CHUNITHMレーティング考察日和</a>(<a href="https://twitter.com/max_eipi">@max_eipi</a>)にて詳しく考察されています。</p>
+                <b>※表示されているリセント枠平均レート値は表示レート値から次式で逆算したものです</b>
+                <br>
+                <img src="/static/images/CodeCogsEqn.gif"></img>
+                <p>この式も端数の処理の関係で正確ではありません</p>
+                <h3>注意</h3>
+                <hr />
+                <h4><u>非公式です。あくまで自己責任で使用してください。このツールを使用したことで起こったトラブルに制作者は責任を持ちません</u></h4>
+                <h3>使い方</h3>
+                <hr />
+                <h4>インストール</h4>
+                <ul>
+                    <li>このコードをわかりやすい名前でブックマークに登録
+                        <pre id="code"><code class="language-javascript">javascript:(function(){
+    if (!location.href.match(/^https:\/\/chunithm-net.com/)) {
+        alert("CHUNITHM NETを開いた状態でしてください");
+        throw Error();
+    }
+    window.name = 'CHUNITHM ■ CHUNITHM-NET';
+    var html = '&lt;form method="post" action="https://chunical.net/chunithm.php" id="postjump" target=_brunk style="display: none;"&gt;&lt;input type="hidden" name="userid" value="' + document.cookie + '" &gt;&lt;/form&gt;';
+    $("body").append(html);
+    $('#postjump').submit();
+    $('#postjump').remove();
+})(document);</code></pre><b>※Android系ではChrome以外では動作しないようです</b>
+                    </li>
+                </ul>
+                <h4>実行</h4>
+                <ul>
+                    <li>CHUNITHM NETにログイン</li>
+                    <li>利用権があることを確認</li>
+                    <li>CHUNITHM NET の画面を出したまま、先ほどのブックマークを開く</li>
+                    <li>iPhoneの場合はお気に入りから呼び出して使えます。</li>
+                    <li>Androidの場合はURLのところにブックマークに登録した名前を打ち込みjavascript:(function()となっているものを選びます</li>
+                    <img style="max-width:400px;width:75%;" src="/static/images/android-usage-4.png" />
+                </ul>
+                <h4 id="usage">詳しく</h4>
+                <hr />
+                <p>PCとAndroidのGoogle Chrome,iPhone(Safari)での使い方</p>
+                <a href="javascript:void(0)" onclick="displayUsage(0)">PC(Google Chrome)</a>
+                <br>
+                <a href="javascript:void(0)" onclick="displayUsage(1)">Android(Google Chrome)</a>
+                <b>※Android系ではChrome以外では動作しないようです</b>
+                <br>
+                <a href="javascript:void(0)" onclick="displayUsage(2)">iPhone(Safari)</a>
+                <br>
+                <br>
+                <div id="pc-usage" style="display:none">
+                    <h2>PC(Google Chrome)</h2>
+                    <hr>
+                    <ol>
+                        <li>
+                            このページをブックマークに登録
+                            <img src="/static/images/pc-usage-0.jpg" style="max-width:400px;width:75%">
+                        </li>
+                        <li>
+                            このコードをコピーする
+                            <pre><code class="language-javascript">javascript:(function(){
+    if (!location.href.match(/^https:\/\/chunithm-net.com/)) {
+        alert(&quot;CHUNITHM NETを開いた状態でしてください&quot;);
+        throw Error();
+    }
+    window.name = &#039;CHUNITHM ■ CHUNITHM-NET&#039;;
+    var html = &#039;&lt;form method=&quot;post&quot; action=&quot;https://chunical.net/chunithm.php&quot; id=&quot;postjump&quot; target=_brunk style=&quot;display: none;&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;userid&quot; value=&quot;&#039; + document.cookie + &#039;&quot; &gt;&lt;/form&gt;&#039;;
+    $(&quot;body&quot;).append(html);
+    $(&#039;#postjump&#039;).submit();
+    $(&#039;#postjump&#039;).remove();
+})(document);</code></pre></li>
+                        <li>
+                            右上の3つの横線から先ほど登録したブックマークを右クリックし、編集を選択します
+                            <p class="resizeimage">
+                                <img src="/static/images/pc-usage-1.jpg" style="max-width:400px;width:75%">
+                            </p>
+                        </li>
+                        <li>
+                            URLの欄を先ほどコピーしたコードを貼り付け、保存します
+                            <p class="resizeimage">
+                                <img src="/static/images/pc-usage-2.jpg" style="max-width:400px;width:75%">
+                            </p>
+                        </li>
+                        <li>
+                            登録したブックマークレットをチュウニズムネットにログインした状態で実行
+                            <p class="resizeimage">
+                                <img src="/static/images/pc-usage-3.jpg" style="max-width:400px;width:75%">
+                            </p>
+                        </li>
+                        <li>
+                            楽曲情報の取得中・・・
+                            <p class="resizeimage">
+                                <img src="/static/images/pc-usage-4.jpg" style="max-width:400px;width:75%">
+                            </p>
+                        </li>
+                        <li>
+                            完了！
+                            <p class="resizeimage">
+                                <img src="/static/images/pc-usage-5.jpg" style="max-width:400px;width:75%">
+                            </p>
+                        </li>
+                    </ol>
+                </div>
+                <div id="android-usage" style="display:none">
+                    <h2>Android(Google Chrome)</h2>
+                    <hr>
+                    <ol>
+                        <li>
+                            あらかじめこのコードをコピーしておきます
+                            <pre><code class="language-javascript">javascript:(function(){
+    if (!location.href.match(/^https:\/\/chunithm-net.com/)) {
+        alert(&quot;CHUNITHM NETを開いた状態でしてください&quot;);
+        throw Error();
+    }
+    window.name = &#039;CHUNITHM ■ CHUNITHM-NET&#039;;
+    var html = &#039;&lt;form method=&quot;post&quot; action=&quot;https://chunical.net/chunithm.php&quot; id=&quot;postjump&quot; target=_brunk style=&quot;display: none;&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;userid&quot; value=&quot;&#039; + document.cookie + &#039;&quot; &gt;&lt;/form&gt;&#039;;
+    $(&quot;body&quot;).append(html);
+    $(&#039;#postjump&#039;).submit();
+    $(&#039;#postjump&#039;).remove();
+})(document);</code></pre>
+                            <p class="resizeimage">
+                                <img src="/static/images/android-usage-0.png" style="max-width:400px;width:75%">
+                            </p>
+                        </li>
+                        <li>
+                            右上の3つの点を押し、星を押してブックマークに登録する
+                            <p class="resizeimage">
+                                <img src="/static/images/android-usage-1.png" style="max-width:400px;width:75%">
+                            </p>
+                        </li>
+                        <li>
+                            もう一度星を押して、ブックマークを編集する
+                            <br>URLのところに先ほどコピーしたコードを貼り付ける
+                            <br>左上の矢印を押して編集を完了する
+                            <p class="resizeimage">
+                                <img src="/static/images/android-usage-2.png" style="max-width:400px;width:75%">
+                            </p>
+                        </li>
+                        <li>
+                            チュウニズムネットにログイン
+                            <p class="resizeimage">
+                                <img src="/static/images/android-usage-3.png" style="max-width:400px;width:75%">
+                            </p>
+                        </li>
+                        <li>
+                            チュウニズムネットにログインした状態でURLの欄に先ほどのブックマークレットの名前を打ち込み、
+                            <br>javascript:(function()となっているものを選ぶ
+                            <p class="resizeimage">
+                                <img src="/static/images/android-usage-4.png" style="max-width:400px;width:75%">
+                            </p>
+                        </li>
+                        <li>
+                            完了！
+                            <p class="resizeimage">
+                                <img src="/static/images/android-usage-5.png" style="max-width:400px;width:75%">
+                            </p>
+                        </li>
+                    </ol>
+                </div>
+                <div id="iphone-usage" style="display:none">
+                    <h2>iPhone(Safari)</h2>
+                    <hr>
+                    <ol>
+                        <li>
+                            あらかじめこのコードをコピーしておきます
+                            <pre><code class="language-javascript">javascript:(function(){
+    if (!location.href.match(/^https:\/\/chunithm-net.com/)) {
+        alert(&quot;CHUNITHM NETを開いた状態でしてください&quot;);
+        throw Error();
+    }
+    window.name = &#039;CHUNITHM ■ CHUNITHM-NET&#039;;
+    var html = &#039;&lt;form method=&quot;post&quot; action=&quot;https://chunical.net/chunithm.php&quot; id=&quot;postjump&quot; target=_brunk style=&quot;display: none;&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;userid&quot; value=&quot;&#039; + document.cookie + &#039;&quot; &gt;&lt;/form&gt;&#039;;
+    $(&quot;body&quot;).append(html);
+    $(&#039;#postjump&#039;).submit();
+    $(&#039;#postjump&#039;).remove();
+})(document);</code></pre>
+                            <p class="resizeimage">
+                                <img src="/static/images/iphone-usage-0.png" style="max-width:400px;width:75%">
+                            </p>
+                        </li>
+                        <li>
+                            赤丸のところを押しブックマークに登録
+                            <p class="resizeimage">
+                                <img src="/static/images/iphone-usage-1.png" style="max-width:400px;width:75%">
+                            </p>
+                            <p class="resizeimage">
+                                <img src="/static/images/iphone-usage-2.png" style="max-width:400px;width:75%">
+                            </p>
+                            <p class="resizeimage">
+                                <img src="/static/images/iphone-usage-3.png" style="max-width:400px;width:75%">
+                            </p>
+                        </li>
+                        <li>
+                            赤丸のところを押しブックマークを表示させる
+                            <br>
+                            <p class="resizeimage">
+                                <img src="/static/images/iphone-usage-4.png" style="max-width:400px;width:75%">
+                            </p>
+                            <p class="resizeimage">
+                                <img src="/static/images/iphone-usage-5.png" style="max-width:400px;width:75%">
+                            </p>
+                        </li>
+                        <li>
+                            ブックマークを編集する
+                            <p class="resizeimage">
+                                <img src="/static/images/iphone-usage-6.png" style="max-width:400px;width:75%">
+                            </p>
+                        </li>
+                        <li>先ほどコピーしたコードを貼り付ける
+                            <p class="resizeimage">
+                                <img src="/static/images/iphone-usage-7.png" style="max-width:400px;width:75%">
+                            </p>
+                        </li>
+                        <li>
+                            チュウニズムネットにログインする
+                            <p class="resizeimage">
+                                <img src="/static/images/iphone-usage-8.png" style="max-width:400px;width:75%">
+                            </p>
+                        </li>
+                        <li>
+                            ブックマークを表示させ、先ほど登録したブックマークを押す
+                            <p class="resizeimage">
+                                <img src="/static/images/iphone-usage-9.png" style="max-width:400px;width:75%">
+                            </p>
+                        </li>
+                        <li>
+                            別タブに移動する
+                            <p class="resizeimage">
+                                <img src="/static/images/iphone-usage-10.png" style="max-width:400px;width:75%">
+                            </p>
+                        </li>
+                        <li>
+                            取得中・・・
+                            <p class="resizeimage">
+                                <img src="/static/images/iphone-usage-11.png" style="max-width:400px;width:75%">
+                            </p>
+                        </li>
+                        <li>
+                            完了！
+                            <p class="resizeimage">
+                                <img src="/static/images/iphone-usage-12.png" style="max-width:400px;width:75%">
+                            </p>
+                        </li>
+                    </ol>
+                    <script>
+                    function displayUsage(n) {
+                        if (n == 0) {
+                            jQuery("#pc-usage").fadeIn();
+                            jQuery("#android-usage").fadeOut();
+                            jQuery("#iphone-usage").fadeOut();
+                        }
+                        if (n == 1) {
+                            jQuery("#pc-usage").fadeOut();
+                            jQuery("#android-usage").fadeIn();
+                            jQuery("#iphone-usage").fadeOut();
+                        }
+                        if (n == 2) {
+                            jQuery("#pc-usage").fadeOut();
+                            jQuery("#android-usage").fadeOut();
+                            jQuery("#iphone-usage").fadeIn();
+                        }
+                    }
+                    </script>
+                </div>
+
+                <h3>スクリーンショット</h3>
+                <hr />
+                <p class="resizeimage">
+                    <img style="max-width:400px;width:75%" src="/static/images/android-usage-5.png" />
+                    <img style="max-width:400px;width:75%" src="/static/images/android-usage-6.png" />
+                    <img style="max-width:400px;width:75%" src="/static/images/android-usage-7.png" />
+                    <img style="max-width:400px;width:75%" src="/static/images/android-usage-8.png" />
+                </p>
+                <h3>FAQ</h3>
+                <hr />
+                <ul>
+                    <li>
+                        <h4>Q.1</h4>
+                        <hr />
+                        <blockquote class="twitter-tweet" data-conversation="none" data-lang="ja">
+                            <p dir="ltr" lang="ja"><a href="https://twitter.com/Akashi_SN">@Akashi_SN</a> こうなっちゃいます！ <a href="https://t.co/vMpXRXzQF6">pic.twitter.com/vMpXRXzQF6</a></p>
+                            — END_Got Lv.19 (@Ke_p0627) <a href="https://twitter.com/Ke_p0627/status/734854099426934784">2016年5月23日</a></blockquote>
+                        <h4>A.1</h4>
+                        <hr />
+                        <a href="/chunithm/usage.html">ブックマークに登録してください</a></li>
+                    <li>
+                        <h4>Q.2</h4>
+                        <hr />
+                        <blockquote class="twitter-tweet" data-conversation="none" data-lang="ja">
+                            <p dir="ltr" lang="ja"><a href="https://twitter.com/Akashi_SN">@Akashi_SN</a> ありがとうございます。登録は出来たのですが開いたままでお気に入りから呼び出しても何も変わらないのですが…</p>
+                            — みや氏 (@Pix8826) <a href="https://twitter.com/Pix8826/status/726778557628739585">2016年5月1日</a></blockquote>
+                        &nbsp;
+                        <h4>A.2</h4>
+                        <hr />
+                        <blockquote class="twitter-tweet" data-conversation="none" data-lang="ja">
+                            <p dir="ltr" lang="ja"><a href="https://twitter.com/Pix8826">@Pix8826</a> ブラウザを閉じてからもう一度ログインしてお気に入りから呼び出してみてください</p>
+                            — Akashi_SN::友利奈緒＠lol (@Akashi_SN) <a href="https://twitter.com/Akashi_SN/status/726780121412063233">2016年5月1日</a></blockquote>
+                    </li>
+                </ul>
+                <hr />
+                <p>何かありましたら<a href="https://twitter.com/Akashi_SN">@Akashi_SN</a>の方にお願いします</p>
+                <hr>
+                <p>スポンサーリンク</p>
+				<!-- Chunical.4 -->
+				<ins class="adsbygoogle"
+					style="display:block"
+					data-ad-client="ca-pub-9431951784509175"
+					data-ad-slot="3540780847"
+					data-ad-format="auto"></ins>
+				<script>
+					(adsbygoogle = window.adsbygoogle || []).push({});
+				</script>
+            </div>
+        </div>
+    </div>
+</body>

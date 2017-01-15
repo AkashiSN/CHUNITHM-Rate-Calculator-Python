@@ -114,6 +114,7 @@
         167,
         168,
         169,
+        170,
         171,
         173,
         176,
@@ -147,6 +148,7 @@
         215,
         216,
         217,
+        218,
         219,
         220,
         222,
@@ -200,15 +202,18 @@
         292,
         293,
         296,
+        297,
         298,
         299,
         300,
+        302,
         304,
         305,
         306,
         307,
         308,
         309,
+        312,
         313,
         314,
         315,
@@ -224,6 +229,7 @@
         325,
         326,
         327,
+        328,
         329,
         330,
         331,
@@ -257,7 +263,9 @@
         "259": true,
         "229": true,
         "281": true,
-        "219": true
+        "219": true,
+        "137": true,
+        "19": true
     },
     "3": {
         "MusicID": 3,
@@ -337,7 +345,8 @@
         "MusicName": "DRAGONLADY",
         "Images": "img\/0b98b8b4e7cfd997.jpg",
         "BaseRate": {
-            "mas": 13.2
+            "mas": 13.2,
+            "ex": 11
         }
     },
     "21": {
@@ -556,7 +565,7 @@
         "MusicName": "乗り切れ受験ウォーズ",
         "Images": "img\/145b9b6f4c27d78e.jpg",
         "BaseRate": {
-            "mas": 11.7
+            "mas": 11.5
         }
     },
     "69": {
@@ -621,7 +630,7 @@
         "MusicName": "luna blu",
         "Images": "img\/93abb77776c70b47.jpg",
         "BaseRate": {
-            "ex": 11.8,
+            "ex": 11.9,
             "mas": 13.4
         }
     },
@@ -670,7 +679,7 @@
         "MusicName": "L'épisode",
         "Images": "img\/19d57f9a7652308a.jpg",
         "BaseRate": {
-            "ex": 11.6,
+            "ex": 11.7,
             "mas": 13.2
         }
     },
@@ -719,7 +728,7 @@
         "MusicName": "チルノのパーフェクトさんすう教室",
         "Images": "img\/9d2ebc847487e01b.jpg",
         "BaseRate": {
-            "mas": 11.8
+            "mas": 11.9
         }
     },
     "98": {
@@ -970,7 +979,8 @@
         "MusicName": "Angel dust",
         "Images": "img\/13a5a9ca35a9b71b.jpg",
         "BaseRate": {
-            "mas": 13.6
+            "mas": 13.6,
+            "ex": 11.4
         }
     },
     "138": {
@@ -1286,7 +1296,7 @@
         "MusicName": "Jack-the-Ripper◆",
         "Images": "img\/ae6d3a8806e09613.jpg",
         "BaseRate": {
-            "ex": 11.2,
+            "ex": 11.7,
             "mas": 13.1
         }
     },
@@ -1417,7 +1427,7 @@
         "MusicName": "青春はNon-Stop！",
         "Images": "img\/f4a2d88c38669f72.jpg",
         "BaseRate": {
-            "mas": 11.9
+            "mas": 11.8
         }
     },
     "215": {
@@ -1596,7 +1606,7 @@
         "MusicName": "絶世スターゲイト",
         "Images": "img\/58847f9694837c0b.jpg",
         "BaseRate": {
-            "mas": 11.9
+            "mas": 11.7
         }
     },
     "248": {
@@ -2116,6 +2126,54 @@
         "Images": "img\/16cb8567115a2f2c.jpg",
         "BaseRate": {
             "mas": 11.7
+        }
+    },
+    "218": {
+        "MusicID": 218,
+        "MusicName": "サウンドプレイヤー",
+        "Images": "img\/20359304f5e0574a.jpg",
+        "BaseRate": {
+            "mas": 12.4
+        }
+    },
+    "170": {
+        "MusicID": 170,
+        "MusicName": "DETARAME ROCK&ROLL THEORY",
+        "Images": "img\/de40692ecc47778b.jpg",
+        "BaseRate": {
+            "mas": 11.2
+        }
+    },
+    "302": {
+        "MusicID": 302,
+        "MusicName": "Strahv",
+        "Images": "img\/13446730e8b99f0e.jpg",
+        "BaseRate": {
+            "mas": 13.3
+        }
+    },
+    "328": {
+        "MusicID": 328,
+        "MusicName": "★LittlE HearTs★",
+        "Images": "img\/c7cf3ce1e858e3f0.jpg",
+        "BaseRate": {
+            "mas": 13.7
+        }
+    },
+    "312": {
+        "MusicID": 312,
+        "MusicName": "ぶいえす!!らいばる!!",
+        "Images": "img\/81805f2ef1e58db8.jpg",
+        "BaseRate": {
+            "mas": 13.3
+        }
+    },
+    "297": {
+        "MusicID": 297,
+        "MusicName": "風仁雷仁",
+        "Images": "img\/8463cebfa120b884.jpg",
+        "BaseRate": {
+            "mas": 12.3
         }
     }
 }

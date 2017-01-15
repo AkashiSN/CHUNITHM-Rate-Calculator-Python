@@ -1,0 +1,10 @@
+{% include "header.html" %}
+{% if Sort %}
+  {% include "Sort.html" %}
+{% elif frame == 'Graph' %}
+  {% include "Graph.html" %}
+{% else %}
+  {% include "Music.html" %}
+{% endif %}
+</body>
+</html>

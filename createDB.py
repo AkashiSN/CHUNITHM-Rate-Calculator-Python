@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*-
-#! python3
 import sqlite3
 from common import Function as Func
 
 if __name__ == '__main__':
-	userId = Func.Get_userId('','')
+	userId = Func.Get_userId('akashisn','vAw7ujeheta6efrA')
 	ExList,MusicIdList = Func.Get_MusicIdList(userId)
 	Base = Func.Load_Json()
 	SQL = 'INSERT INTO Music (MusicId, Level, MusicName, Image, BaseRate, Air) VALUES (?,?,?,?,?,?);'	
