@@ -2,6 +2,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 from common import Function as Func
 import chunithm
+import os
 
 app = Flask(__name__)
 app.debug = True
@@ -87,7 +88,6 @@ def Graph(Hash):
   )
 
 if __name__ == '__main__':
-	import os
 	HOST = os.environ.get('SERVER_HOST', 'localhost')
 	try:
 		PORT = int(os.environ.get('SERVER_PORT', '7777'))

@@ -166,17 +166,17 @@ def Score2Rank(Score):
 #譜面定数から難易度
 def BaseRate2Diff(BaseRate):
   if BaseRate >= 13.7:
-    return '13+';
+    return '13+'
   if BaseRate >= 13:
-    return '13';
+    return '13'
   if BaseRate >= 12.7:
-    return '12+';
+    return '12+'
   if BaseRate >= 12:
-    return '12';
+    return '12'
   if BaseRate >= 11.7:
-    return '11+';
+    return '11+'
   if BaseRate >= 11:
-    return '11';
+    return '11'
 
 #フラグを立てる
 def CountRank(Musics):

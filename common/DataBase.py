@@ -9,7 +9,7 @@ class LoadBaseRate:
   '''譜面定数をデータベースから取得する'''
   #前処理
   def __init__(self):
-    self.con = sqlite3.connect("common/chunithm.db")
+    self.con = sqlite3.connect(os.path.dirname(__file__)+"/chunithm.db")
     self.cur = self.con.cursor()
 
   #譜面定数を取得する
@@ -41,7 +41,7 @@ class UserDataBase:
   '''各ユーザーのデータベースに計算結果を保存する'''
   #前処理
   def __init__(self,Hash):
-    Path = 'user/{}.db'.format(Hash)
+    Path = os.path.dirname(__file__)+'/../user/{}.db'.format(Hash)
     #新規ユーザーかどうか
     if os.path.exists(Path):
       self.con = sqlite3.connect(Path)
@@ -260,11 +260,12 @@ class UserDataBase:
 class AdminDataBase():
   '''管理用のデータベース'''
   def __init__(self):
-    if os.path.exists('admin/admin.db'):
-      self.con = sqlite3.connect('admin/admin.db')
+    Path = os.path.dirname(__file__)+'/../admin/admin.db'
+    if os.path.exists(Path):
+      self.con = sqlite3.connect(Path)
       self.cur = self.con.cursor()
     else:
-      self.con = sqlite3.connect('admin/admin.db')
+      self.con = sqlite3.connect(Path)
       self.cur = self.con.cursor()
       self.cur.execute('''
         CREATE TABLE `User` (

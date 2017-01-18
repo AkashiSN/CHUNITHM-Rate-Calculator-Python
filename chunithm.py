@@ -169,7 +169,7 @@ def CalcRate(userId):
         'Credits':UserInfo['playCount'],
         'ExecuteDate': NowDate
     }
-    #データベースに保存
+#    データベースに保存
     DataBase.SetRate(Rating)
 
     Admin = DB.AdminDataBase()
