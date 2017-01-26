@@ -37,22 +37,22 @@
       , series: [{
           name: '最大レート',
           data: [{% for rate in Rate %}
-                    [{{ rate.Credits }},{{ rate.MaxRate }}]
+                    [{{ rate.Credits }},{{ rate.MaxRate }}],
                 {% endfor %}]
         }, {
         name: '表示レート'
         , data: [{% for rate in Rate %}
-                    [{{ rate.Credits }},{{ rate.DispRate }}]
+                    [{{ rate.Credits }},{{ rate.DispRate }}],
                 {% endfor %}]
         }, {
         name: 'BEST枠'
         , data: [{% for rate in Rate %}
-                    [{{ rate.Credits }},{{ rate.BestRate }}]
+                    [{{ rate.Credits }},{{ rate.BestRate }}],
                 {% endfor %}]
         }, {
         name: 'RECENT枠'
         , data: [{% for rate in Rate %}
-                    [{{ rate.Credits }},{{ rate.RecentRate }}]
+                    [{{ rate.Credits }},{{ rate.RecentRate }}],
                 {% endfor %}]
         }]
     });

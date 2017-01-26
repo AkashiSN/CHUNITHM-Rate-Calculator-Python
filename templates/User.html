@@ -26,7 +26,7 @@
                 <div class="player_lv">
                   <span class="font_small mr_5">Lv.</span><span id="UserLv">{{ User.Level }}</span></div><span id="UserName">{{ User.UserName }}</span>
                 </div>
-                <div class="player_rating" id="player_rating">BEST枠 : <span id="UserRating">{{ Rate.BestRate }}</span> / <span>MAX</span> <span id="UserRating">{{ Rate.MaxRate }}</span><br><div style="margin-top:5px;">RECENT枠 :<span id="UserRating">{{ Rate.RecentRate }}</span> / <span>表示レート</span><span id="UserRating">{{ Rate.DispRate }}</span></div>
+                <div class="player_rating" id="player_rating">BEST枠 : <span id="UserRating">{{ Rate[0].BestRate }}</span> / <span>MAX</span> <span id="UserRating">{{ Rate[0].MaxRate }}</span><br><div style="margin-top:5px;">RECENT枠 :<span id="UserRating">{{ Rate[0].RecentRate }}</span> / <span>表示レート</span><span id="UserRating">{{ Rate[0].DispRate }}</span></div>
               </div>
             </div>
             <div id="tweet" class="text_b" style="margin-top: 10px;"></div>
