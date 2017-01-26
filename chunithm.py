@@ -210,3 +210,11 @@ def DispGraph(Hash):
     Rate = DataBase.LoadRate()
     User = DataBase.LoadUser()
     return User,Rate
+
+#Toolの表示
+def DispTools(Hash):
+    DataBase = DB.UserDataBase(Hash)
+    DataBase = DB.UserDataBase(Hash)
+    Rate = DataBase.LoadRate()
+    User = DataBase.LoadUser()
+    return User,Rate

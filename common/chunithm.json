@@ -185,7 +185,9 @@
         263,
         264,
         267,
+        269,
         270,
+        271,
         273,
         276,
         278,
@@ -193,6 +195,8 @@
         280,
         281,
         282,
+        283,
+        284,
         286,
         287,
         288,
@@ -201,11 +205,13 @@
         291,
         292,
         293,
+        294,
         296,
         297,
         298,
         299,
         300,
+        301,
         302,
         304,
         305,
@@ -213,6 +219,7 @@
         307,
         308,
         309,
+        311,
         312,
         313,
         314,
@@ -265,7 +272,8 @@
         "281": true,
         "219": true,
         "137": true,
-        "19": true
+        "19": true,
+        "328": true
     },
     "3": {
         "MusicID": 3,
@@ -2157,7 +2165,8 @@
         "MusicName": "★LittlE HearTs★",
         "Images": "img\/c7cf3ce1e858e3f0.jpg",
         "BaseRate": {
-            "mas": 13.7
+            "mas": 13.7,
+            "ex": 11.4
         }
     },
     "312": {
@@ -2174,6 +2183,62 @@
         "Images": "img\/8463cebfa120b884.jpg",
         "BaseRate": {
             "mas": 12.3
+        }
+    },
+    "311": {
+        "MusicID": 311,
+        "MusicName": "Be My Friend",
+        "Images": "img\/8f359edeac59a511.jpg",
+        "BaseRate": {
+            "mas": 11.8
+        }
+    },
+    "269": {
+        "MusicID": 269,
+        "MusicName": "僕らの翼",
+        "Images": "img\/23359d965dd6eb4a.jpg",
+        "BaseRate": {
+            "mas": 11.1
+        }
+    },
+    "301": {
+        "MusicID": 301,
+        "MusicName": "白い雪のプリンセスは",
+        "Images": "img\/62941303552504e8.jpg",
+        "BaseRate": {
+            "mas": 12.2
+        }
+    },
+    "284": {
+        "MusicID": 284,
+        "MusicName": "幸せになれる隠しコマンドがあるらしい",
+        "Images": "img\/16b25dc6eb7765aa.jpg",
+        "BaseRate": {
+            "mas": 12.7
+        }
+    },
+    "271": {
+        "MusicID": 271,
+        "MusicName": "鬼KYOKAN",
+        "Images": "img\/99b79d4bd74e476c.jpg",
+        "BaseRate": {
+            "mas": 12.8
+        }
+    },
+    "294": {
+        "MusicID": 294,
+        "MusicName": "人生リセットボタン",
+        "Images": "img\/c63005195d15922e.jpg",
+        "BaseRate": {
+            "mas": 13
+        }
+    },
+    "283": {
+        "MusicID": 283,
+        "MusicName": "神曲",
+        "Images": "img\/c658788de6594b15.jpg",
+        "BaseRate": {
+            "mas": 12
         }
     }
 }

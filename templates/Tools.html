@@ -1,0 +1,30 @@
+{% block Tools %}
+<div id="wrap">
+  <div id="disp">
+    <div style="margin-bottom:0px;padding-bottom:0px;" id="inner">
+      <div class="frame01 w460">
+        <div class="frame01_inside w450">
+          <h2 id="page_title" style="margin-top:10px">ツール</h2>
+          <hr class="line_dot_black w420">
+          <div class="box02 w420 mb_20">
+            <div class="text_c mt_15">シミュレータ</div>
+            <hr>
+            <div class="narrow_block clearfix">
+              <form method="post">
+                <span>譜面定数</span>
+                <input name="baserate" type="text" style="width:20%" value="{{ BaseRate }}"/>
+                <span>の曲をスコア</span>
+                <input name="score" type="text" style="width:25%" value="{{ Score }}"/>
+                <br>
+                <p>でRECENT枠を埋めたとき<button class="buttons" style="font-size:13px;margin-left: 5px" >計算</button></p>
+                <span>到達可能レート</span>
+                <input name="maxrate" type="text" style="width:70px" value="{{ MaxRate }}">
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
