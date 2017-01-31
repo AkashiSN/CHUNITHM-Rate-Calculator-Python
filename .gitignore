@@ -1,2 +1,5 @@
 __pycache__/
 .idea/
+user/
+admin.db
+CHUNITHM-Rate-Calculator.db

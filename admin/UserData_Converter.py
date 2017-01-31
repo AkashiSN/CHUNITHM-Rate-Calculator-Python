@@ -4,7 +4,7 @@ from pprint import pprint
 
 if __name__ == '__main__':
 
-  con = sqlite3.connect('User.db')
+  con = sqlite3.connect('CHUNITHM-Rate-Calculator.db')
   cur = con.cursor()
   cur.execute('SELECT * FROM User;')
   rows = cur.fetchall()

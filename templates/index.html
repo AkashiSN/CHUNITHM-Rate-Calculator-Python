@@ -21,8 +21,8 @@
     <link rel="stylesheet" href="/static/css/prism.css" />
     <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
     <script type="text/javascript" src="/static/js/prism.js"></script>
-    <script type="text/javascript" src="/static/js/jquery-3.1.1.min.js"></script>
-		<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script type="text/javascript" src="/static/js/jquery-3.1.1.min.js"></script>{# 
+		<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> #}
     <script type="text/javascript">
     	//Google-Analytics
     	(function (i, s, o, g, r, a, m) {
@@ -39,12 +39,12 @@
 			})(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
 			ga('create', 'UA-86861992-1', 'auto');
 			ga('send', 'pageview');
-
+/*
 			//Google-AdSense
 			(adsbygoogle = window.adsbygoogle || []).push({
 		    google_ad_client: "ca-pub-9431951784509175",
 		    enable_page_level_ads: true
-		  });
+		  });*/
     </script>
     <title>CHUNITHM Rate Calculator</title>
 </head>
@@ -58,7 +58,7 @@
                         <h1 style="margin-left: 10px;margin-right: 10px;">CHUNITHM Rate Calculator</h1>
                         <p class="lead" style="margin-left: 10px;margin-right: 10px;">CHUNITHM[©SEGA]のレート解析ツール</p>
                     </div>
-                    <div style="margin-top: 15px">
+                    {# <div style="margin-top: 15px">
                     <p>スポンサーリンク</p>
 						<!-- Chunical.3 -->
 						<ins class="adsbygoogle"
@@ -68,7 +68,7 @@
 						<script>
 						  (adsbygoogle = window.adsbygoogle || []).push({});
 						</script>
-					</div>
+					</div> #}
                 </div>
             </div>
         </header>
@@ -110,6 +110,7 @@
 2016-11-01 ver4.0.0 専用のドメインを取得（コードをもう一度登録し直してください）
 2016-11-23 ver4.0.5 広告掲載いたしました。(Google-AdSense)
 2016-12-11 ver4.0.6 新曲追加
+2016-01-31 ver5.0.0 Python版に移行（コードをもう一度登録し直してください）
 </code></pre>
                 <h3 id="ad">広告掲載について</h3>
                 <hr />
@@ -127,7 +128,8 @@
                     <p dir="ltr" lang="ja"><a href="https://twitter.com/Akashi_SN">@Akashi_SN</a> チュウニズムのスコア計算プログラム作って(プラスにも対応してるので)</p> — ずーむ (@zoom4638) <a href="https://twitter.com/zoom4638/status/711201123181264896">2016年3月19日</a></blockquote>
                 <p>このリプがきっかけで作った</p>
                 <p>ソースコードはGitHubで公開中！<a href="https://github.com/AkashiSN/CHUNITHM-Rate-Calculator">CHUNITHM-Rate-Calculator-github.com</a></p>
-                <p>現在PHPで実装しているものをPythonで書き直しています。既知のバグ（レート値不整合）はそちらで修正します。</p>
+                <p><s style="margin-top: 10px;">現在PHPで実装しているものをPythonで書き直しています。既知のバグ（レート値不整合）はそちらで修正します。</s></p>
+                <p>修正しました</p>
                 <b>現在の機能</b>
                 <ul>
                     <li>楽曲別レートを計算します</li>
@@ -136,6 +138,7 @@
                     <li>ベスト枠に入るために必要なスコアの表示</li>
                     <li>スコア順や難易度順、レート順でのソート</li>
                     <li>レートの推移をグラフで表示</li>
+                    <li>リセント候補枠の実装</li>
                 </ul>
                 <b>実装予定</b>
                 <ul>
@@ -151,7 +154,7 @@
                 <p>レートの仕組みについては<a href="http://d.hatena.ne.jp/risette14/" target="_brunk">リゼット(14新)推奨日記</a>(<a href="https://twitter.com/capue">@capue</a>)や<a href="http://www.atomic--age.net/information/chunithm/system#TOC--14" target="_brunk">CHUNITHMゲームシステム、概要等まとめ - AtomicAge.net 音ゲー情報まとめサイト</a>に詳しく書いてあります。</p>
                 <p>計算方法や譜面定数は<a href="https://twitter.com/capue">@capue</a>さんほかによるものを参考にしました。ありがとうございました。</p>
                 <hr>                
-                <p>スポンサーリンク</p>
+                {# <p>スポンサーリンク</p>
                 <!-- No.2 -->
                 <ins class="adsbygoogle"
                      style="display:block"
@@ -160,10 +163,10 @@
                      data-ad-format="auto"></ins>
                 <script>
                 (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
-                <h3>このツールの仕様</h3>
+                </script> #}
+                {# <h3>このツールの仕様</h3>
                 <hr />
-                <iframe src="https://drive.google.com/file/d/0BwbABZe_SyRKRUpPa3F3OVMwamM/preview" width="100%" height="500"></iframe>
+                <iframe src="https://drive.google.com/file/d/0BwbABZe_SyRKRUpPa3F3OVMwamM/preview" width="100%" height="500"></iframe> #}
                 <h3 id="notice">対象譜面</h3>
                 <hr />
                 <b><u>レベル11以上の楽曲が対象です</u></b>
@@ -173,11 +176,8 @@
                     <li>リセント枠に関して、同様にレベル11以上の楽曲を10曲やっていない</li>
                 </ul>
                 <b>※このツールで表示しているリセント枠はCHUNITHM-NETの仕様上直近５０曲しか取得できないという制約があるため、<br>実際のリセント枠とは異なることに注意してください。</b>
-                <p>リセント枠については<a href="http://max-eipi.hatenablog.com/entry/2016/08/22/031357">【CHUNITHM Plus 確定版】Recent枠遷移の推測 + α - CHUNITHMレーティング考察日和</a>(<a href="https://twitter.com/max_eipi">@max_eipi</a>)にて詳しく考察されています。</p>
-                <b>※表示されているリセント枠平均レート値は表示レート値から次式で逆算したものです</b>
-                <br>
-                <img src="/static/images/CodeCogsEqn.gif"></img>
-                <p>この式も端数の処理の関係で正確ではありません</p>
+                <p>リセント枠については<a href="http://max-eipi.hatenablog.com/entry/2016/08/22/031357">【CHUNITHM Plus 確定版】Recent枠遷移の推測 + α - CHUNITHMレーティング考察日和</a>(<a href="https://twitter.com/max_eipi">@max_eipi</a>)にて考察されているデータを元に実装しています。</p>
+
                 <h3>注意</h3>
                 <hr />
                 <h4><u>非公式です。あくまで自己責任で使用してください。このツールを使用したことで起こったトラブルに制作者は責任を持ちません</u></h4>
@@ -192,7 +192,7 @@
         throw Error();
     }
     window.name = 'CHUNITHM ■ CHUNITHM-NET';
-    var html = '&lt;form method="post" action="https://chunical.net/chunithm.php" id="postjump" target=_brunk style="display: none;"&gt;&lt;input type="hidden" name="userid" value="' + document.cookie + '" &gt;&lt;/form&gt;';
+    var html = '&lt;form method="post" action="https://chunical.net/chunithm.api" id="postjump" target=_brunk style="display: none;"&gt;&lt;input type="hidden" name="userid" value="' + document.cookie + '" &gt;&lt;/form&gt;';
     $("body").append(html);
     $('#postjump').submit();
     $('#postjump').remove();
@@ -235,7 +235,7 @@
         throw Error();
     }
     window.name = &#039;CHUNITHM ■ CHUNITHM-NET&#039;;
-    var html = &#039;&lt;form method=&quot;post&quot; action=&quot;https://chunical.net/chunithm.php&quot; id=&quot;postjump&quot; target=_brunk style=&quot;display: none;&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;userid&quot; value=&quot;&#039; + document.cookie + &#039;&quot; &gt;&lt;/form&gt;&#039;;
+    var html = &#039;&lt;form method=&quot;post&quot; action=&quot;https://chunical.net/chunithm.api&quot; id=&quot;postjump&quot; target=_brunk style=&quot;display: none;&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;userid&quot; value=&quot;&#039; + document.cookie + &#039;&quot; &gt;&lt;/form&gt;&#039;;
     $(&quot;body&quot;).append(html);
     $(&#039;#postjump&#039;).submit();
     $(&#039;#postjump&#039;).remove();
@@ -284,7 +284,7 @@
         throw Error();
     }
     window.name = &#039;CHUNITHM ■ CHUNITHM-NET&#039;;
-    var html = &#039;&lt;form method=&quot;post&quot; action=&quot;https://chunical.net/chunithm.php&quot; id=&quot;postjump&quot; target=_brunk style=&quot;display: none;&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;userid&quot; value=&quot;&#039; + document.cookie + &#039;&quot; &gt;&lt;/form&gt;&#039;;
+    var html = &#039;&lt;form method=&quot;post&quot; action=&quot;https://chunical.net/chunithm.api&quot; id=&quot;postjump&quot; target=_brunk style=&quot;display: none;&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;userid&quot; value=&quot;&#039; + document.cookie + &#039;&quot; &gt;&lt;/form&gt;&#039;;
     $(&quot;body&quot;).append(html);
     $(&#039;#postjump&#039;).submit();
     $(&#039;#postjump&#039;).remove();
@@ -340,7 +340,7 @@
         throw Error();
     }
     window.name = &#039;CHUNITHM ■ CHUNITHM-NET&#039;;
-    var html = &#039;&lt;form method=&quot;post&quot; action=&quot;https://chunical.net/chunithm.php&quot; id=&quot;postjump&quot; target=_brunk style=&quot;display: none;&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;userid&quot; value=&quot;&#039; + document.cookie + &#039;&quot; &gt;&lt;/form&gt;&#039;;
+    var html = &#039;&lt;form method=&quot;post&quot; action=&quot;https://chunical.net/chunithm.api&quot; id=&quot;postjump&quot; target=_brunk style=&quot;display: none;&quot;&gt;&lt;input type=&quot;hidden&quot; name=&quot;userid&quot; value=&quot;&#039; + document.cookie + &#039;&quot; &gt;&lt;/form&gt;&#039;;
     $(&quot;body&quot;).append(html);
     $(&#039;#postjump&#039;).submit();
     $(&#039;#postjump&#039;).remove();
@@ -471,7 +471,7 @@
                 <hr />
                 <p>何かありましたら<a href="https://twitter.com/Akashi_SN">@Akashi_SN</a>の方にお願いします</p>
                 <hr>
-                <p>スポンサーリンク</p>
+                {# <p>スポンサーリンク</p>
         				<!-- Chunical.4 -->
         				<ins class="adsbygoogle"
         					style="display:block"
@@ -480,7 +480,7 @@
         					data-ad-format="auto"></ins>
         				<script>
         					(adsbygoogle = window.adsbygoogle || []).push({});
-        				</script>
+        				</script> #}
             </div>
         </div>
     </div>
