@@ -31,10 +31,13 @@ class LoadBaseRate:
 
   #ファイル名からMusicIdを取得
   def Get_MusicId(self,FileName):
-    sql = 'SELECT * FROM Music WHERE "Image" = ?'
-    self.cur.execute(sql,(FileName,))
+    sql = 'SELECT * FROM Music WHERE "Image" = "{}";'.format(FileName)
+    self.cur.execute(sql)
     r = self.cur.fetchone()
-    return r
+    if r is None:
+      return None
+    else:
+      return r[0]
 
 #各ユーザのデーターベース
 class UserDataBase:

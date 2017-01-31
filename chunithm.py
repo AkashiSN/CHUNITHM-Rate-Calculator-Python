@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import hashlib,math
+import hashlib,math,sys
 from datetime import datetime
 from common import Function as Func
 from common import DataBase as DB
@@ -72,6 +72,8 @@ def CalcRate(userId):
     for Play in Playlog['userPlaylogList'][0:30]:
         if Play['levelName'] == 'expert' or Play['levelName'] == 'master':
             MusicId = Base.Get_MusicId(Play['musicFileName'])
+            if MusicId is None:
+                continue
             MusicDetail = Base.Get_BaseRate(MusicId,LevelMap[Play['levelName']])
             if MusicDetail is None or MusicDetail['BaseRate'] is None:
                 continue
