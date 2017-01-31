@@ -70,8 +70,8 @@ def CalcRate(userId):
     FinalPlayDate = Playlog['userPlaylogList'][0]['userPlayDate'][0:-2]
     Musics = []
     for Play in Playlog['userPlaylogList'][0:30]:
-        MusicId = Base.Get_MusicId(Play['musicFileName'])
         if Play['levelName'] == 'expert' or Play['levelName'] == 'master':
+            MusicId = Base.Get_MusicId(Play['musicFileName'])
             MusicDetail = Base.Get_BaseRate(MusicId,LevelMap[Play['levelName']])
             if MusicDetail is None or MusicDetail['BaseRate'] is None:
                 continue

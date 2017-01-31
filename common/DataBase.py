@@ -34,7 +34,7 @@ class LoadBaseRate:
     sql = 'SELECT * FROM Music WHERE "Image" = ?'
     self.cur.execute(sql,(FileName,))
     r = self.cur.fetchone()
-    return r[0]
+    return r
 
 #各ユーザのデーターベース
 class UserDataBase:
