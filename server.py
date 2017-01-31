@@ -16,12 +16,20 @@ def index():
 def Chunithm():
     if request.method == 'POST':
         userId = Func.userId_Get(request.form['userid'])
-        Hash = chunithm.CalcRate(userId)
-        return redirect('/chunithm/user/' + Hash)
+        try:
+            Hash = chunithm.CalcRate(userId)
+            return redirect('/chunithm/user/' + Hash)
+        except Exception as e:
+            return render_template(
+                'Main.html',
+                frame='Error',
+                Message='このUserIdは無効です。もう一度CHUNITHM-NETにログインして実行してください。'
+            )
     else:
         return render_template(
             'Main.html',
             frame='Error',
+            url='/',
             Message='許可されてないアクセスです。'
         )
 
@@ -30,6 +38,7 @@ def page_not_found(e):
     return render_template( 
         'Main.html',
         frame='Error',
+        url='/',
         Message='-404-<br>目的のページが見つかりません。'
     )
 
@@ -38,6 +47,7 @@ def page_not_found(e):
     return render_template( 
         'Main.html',
         frame='Error',
+        url='/',
         Message='内部でエラーが発生しました。'
     )
 
@@ -60,6 +70,7 @@ def Best(Hash):
         return render_template( 
             'Main.html',
             frame='Error',
+            url='/',
             Message='ユーザーが登録されていません。'
         )
 
