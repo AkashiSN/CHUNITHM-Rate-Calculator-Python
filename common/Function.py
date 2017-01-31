@@ -7,13 +7,17 @@ def userId_Get(userId):
     for tmp1 in tmp:
         if 'userId' in tmp1:
             return tmp1.split('=')[1]
-
+    return None
+    
 #ログインしてUserIdを取得
 def Get_userId(SegaId,password):
     url = 'https://chunithm-net.com/Login/SegaIdLoginApi'
     parm = {'segaId':SegaId, 'password':password}
     re = requests.post(url,data=json.dumps(parm))
-    return str(re.json()['sessionIdList'][0])
+    if re is None:
+        return None
+    else:
+        return str(re.json()['sessionIdList'][0])
 
 #Level11以上のMusicIdのリストを取得
 def Get_MusicIdList(userId):
@@ -23,7 +27,11 @@ def Get_MusicIdList(userId):
     for Level in range(11,14):
         parm = {'userId':userId,'level':Level}
         re = requests.post(url,data=json.dumps(parm))
+        if re is None:
+            return None
         Json = re.json()
+        if Json is None:
+            return None
         MusicIdList += Json['levelList']
         MusicIdList += Json['levelPlusList']
         for Id,dif in Json['difLevelMap'].items():
@@ -38,6 +46,8 @@ def Get_BestScore(userId,musicId):
     url = 'https://chunithm-net.com/ChuniNet/GetUserMusicDetailApi'
     parm = {'userId':userId,'musicId':musicId}
     re = requests.post(url,data=json.dumps(parm))
+    if re is None:
+        return None
     Json = json.loads(re.text,'utf-8')
     return Json
 
@@ -46,6 +56,8 @@ def Get_DiffList(userId,level):
     url = 'https://chunithm-net.com/ChuniNet/GetUserMusicApi'
     parm = {"level":level,"userId":userId}
     re = requests.post(url,data=json.dumps(parm))
+    if re is None:
+        return None
     Json = re.json()
     return Json
 
@@ -54,6 +66,8 @@ def Get_UserData(userId):
     url = 'https://chunithm-net.com/ChuniNet/GetUserInfoApi'
     parm = {'userId':userId,'friendCode':0,'fileLevel':1}
     re = requests.post(url,data=json.dumps(parm))
+    if re is None:
+        return None
     Json = re.json()
     return Json
 
@@ -62,6 +76,8 @@ def Get_PlayLog(userId):
     url = 'https://chunithm-net.com/ChuniNet/GetUserPlaylogApi'
     parm = {"userId":userId}
     re = requests.post(url,data=json.dumps(parm))
+    if re is None:
+        return None
     Json = re.json()
     return Json
 
@@ -70,7 +86,11 @@ def Get_FriendCode(userId):
     url = 'https://chunithm-net.com/ChuniNet/GetUserFriendlistApi'
     parm = {'userId':userId,"state":4}
     re = requests.post(url,data=json.dumps(parm))
+    if re is None:
+        return None
     Json = re.json()
+    if Json is None:
+        return None
     return Json['friendCode']
 
 #Json読み込み
@@ -104,6 +124,8 @@ def Score2Rate(Score,BaseRate):
         Rate = BaseRate -  9.0 + (Score -  600000) *  0.25 / 50000
     elif Score >= 500000:
         Rate = BaseRate - 13.7 + (Score -  500000) *  2.35 / 50000
+    else:
+        None
     return math.floor(Rate * 100) / 100
 
 #レートからスコア

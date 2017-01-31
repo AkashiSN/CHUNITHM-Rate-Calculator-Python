@@ -10,17 +10,25 @@ def CalcRate(userId):
     '''レートを計算してデータベースに保存する'''
 
     Base = DB.LoadBaseRate()
-    FriendCode = int(Func.Get_FriendCode(userId))
+    FriendCode = Func.Get_FriendCode(userId)
+    if FriendCode is None:
+        return None
+
     Hash = hashlib.sha256(str(FriendCode).encode('utf8')).hexdigest()
+
     Rating = {}
     DataBase = DB.UserDataBase(Hash)
 
     #Best枠について
     MusicIdList = Func.Get_MusicIdList(userId) #MusicIdのリストの取得
+    if MusicIdList is None:
+        return None
     Musics = []
     i = 0
     for Level in range(2,4):
         MusicBestScore = Func.Get_DiffList(userId,"1990"+str(Level)) #エキスパート(19902)とマスター(19903)の曲別最大スコアのリストの取得
+        if MusicBestScore is None:
+            return None
         for MusicId in MusicIdList[Level-2]:
             for Music in MusicBestScore['userMusicList']:
                 if Music['musicId'] == MusicId:
@@ -65,6 +73,8 @@ def CalcRate(userId):
 
     #Recent
     Playlog = Func.Get_PlayLog(userId)
+    if Playlog is None:
+        return None
     Recent = DataBase.LoadRecent()
     LevelMap = {'master':3,"expert":2}
     FinalPlayDate = Playlog['userPlaylogList'][0]['userPlayDate'][0:-2]
@@ -136,7 +146,12 @@ def CalcRate(userId):
     DataBase.SetRecent(Recent)
 
     #ユーザーデータ
-    UserInfo = Func.Get_UserData(userId)['userInfo']
+    UserInfo = Func.Get_UserData(userId)
+    if UserInfo is None:
+        return None
+    else:
+        UserInfo = UserInfo['userInfo']
+
     NowDate = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     User = {
         'TotalPoint':UserInfo['totalPoint'],

@@ -37,4 +37,22 @@
     </div>
   </div>
 </div>
+<script src="https://platform.twitter.com/widgets.js" ></script>
+<script type="text/javascript">
+//tweetボタン
+  twttr.ready(function() {
+    var rate = "BEST枠平均:{{ Rate[-1].BestRate }},最大レート:{{ Rate[-1].MaxRate }},\nRECENT枠平均:{{ Rate[-1].RecentRate }},表示レート:{{ Rate[-1].DispRate }}\n";
+    twttr.widgets.createShareButton(
+      document.URL,
+      location.href,
+      document.getElementById('tweet'),
+      {
+        lang: 'ja',
+        size: 'normal',
+        text:  rate,
+        hashtags : 'CHUNITHMRateCalculator'
+      }
+    )
+  });
+</script>
 {% endblock %}

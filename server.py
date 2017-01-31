@@ -11,19 +11,34 @@ app.config['SECRET_KEY'] = os.urandom(64)
 def index():
     return render_template('index.html')
 
+@app.route('/chunithm.php')
+def old_page():
+    return render_template(
+        'Main.html',
+        frame='Error',
+        url='/',
+        Message='コードが更新されましたので、新しいコードを登録してから実行してください。'
+    )
+
 
 @app.route('/chunithm.api', methods=['POST', 'GET'])
 def Chunithm():
     if request.method == 'POST':
         userId = Func.userId_Get(request.form['userid'])
+        if userId is None:
+            return render_template(
+                'Main.html',
+                frame='Error',
+                Message='送信されたデータにはUserIDが含まれていません。CHUNITHM-NETにログインして実行してください。'
+            )
         Hash = chunithm.CalcRate(userId)
+        if Hash is None:
+            return render_template(
+                'Main.html',
+                frame='Error',
+                Message='このUserIdは無効です。もう一度CHUNITHM-NETにログインして実行してください。'
+            )
         return redirect('/chunithm/user/' + Hash)
-        # except Exception as e:
-        #     return render_template(
-        #         'Main.html',
-        #         frame='Error',
-        #         Message='このUserIdは無効です。もう一度CHUNITHM-NETにログインして実行してください。'
-        #     )
     else:
         return render_template(
             'Main.html',
@@ -134,11 +149,20 @@ def Tools(Hash):
     MaxRate = ''
 
     if request.method == 'POST':
-        BaseRate = float(request.form['baserate'])
-        Score = int(request.form['score'])
-        PreRecent = Func.Score2Rate(Score,BaseRate)
-        MaxRate = math.floor(((Rate[-1]['BestRate'] * 30 + PreRecent * 10) / 40) * 100) / 100
-
+        try:
+            BaseRate = float(request.form['baserate'])
+            Score = int(request.form['score'])
+            PreRecent = Func.Score2Rate(Score,BaseRate)
+            MaxRate = math.floor(((Rate[-1]['BestRate'] * 30 + PreRecent * 10) / 40) * 100) / 100
+        except Exception as e:
+            return render_template(
+                'Main.html',
+                Hash=Hash,
+                frame='Tools',
+                User=User[-1],
+                Rate=Rate
+            )
+        
     return render_template(
         'Main.html',
         Hash=Hash,
