@@ -4,8 +4,8 @@ from common import Function as Func
 import chunithm,os,math
 
 app = Flask(__name__)
-app.debug = True
-
+# cookieを暗号化する秘密鍵
+app.config['SECRET_KEY'] = os.urandom(64)
 
 @app.route('/')
 def index():
@@ -16,15 +16,14 @@ def index():
 def Chunithm():
     if request.method == 'POST':
         userId = Func.userId_Get(request.form['userid'])
-        try:
-            Hash = chunithm.CalcRate(userId)
-            return redirect('/chunithm/user/' + Hash)
-        except Exception as e:
-            return render_template(
-                'Main.html',
-                frame='Error',
-                Message='このUserIdは無効です。もう一度CHUNITHM-NETにログインして実行してください。'
-            )
+        Hash = chunithm.CalcRate(userId)
+        return redirect('/chunithm/user/' + Hash)
+        # except Exception as e:
+        #     return render_template(
+        #         'Main.html',
+        #         frame='Error',
+        #         Message='このUserIdは無効です。もう一度CHUNITHM-NETにログインして実行してください。'
+        #     )
     else:
         return render_template(
             'Main.html',
@@ -151,8 +150,31 @@ def Tools(Hash):
         MaxRate=MaxRate
     )
 
-@app.route('/admin')
+@app.route('/admin.hmtl')
 def Admin():
-    return render_template(
-        'Admin.html'
-    )
+    if session.get('username') is not None:
+        return render_template(
+            'Admin.html'
+        )
+    else:
+        return redirect('/admin/login')
+
+@app.route('/admin/login')
+def Login():
+     # ログイン処理
+    if request.method == 'POST' and _is_account_valid():
+        # セッションにユーザ名を保存してからトップページにリダイレクト
+        session['username'] = request.form['username']
+        return redirect(url_for('index'))
+    # ログインページに戻る
+    return render_template('login.html')
+
+
+# 個人認証を行い，正規のアカウントか確認する
+def _is_account_valid():  
+    username = request.form.get('username')
+    # この例では，ユーザ名にadminが指定されていれば正規のアカウントであるとみなしている
+    # ここで具体的な個人認証処理を行う．認証に成功であればTrueを返すようにする
+    if username == 'admin':
+        return True
+    return False
