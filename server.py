@@ -25,6 +25,22 @@ def Chunithm():
             Message='許可されてないアクセスです。'
         )
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template( 
+        'Main.html',
+        frame='Error',
+        Message='-404-目的のページが見つかりません。'
+    )
+
+@app.errorhandler(500)
+def page_not_found(e):
+    return render_template( 
+        'Main.html',
+        frame='Error',
+        Message='内部でエラーが発生しました。次のコードを開発者に伝えてもらえるとありがたいです。'+e
+    )
+
 @app.route('/chunithm/user/<Hash>')
 @app.route('/chunithm/user/<Hash>/best')
 @app.route('/chunithm/user/<Hash>/best/rate')
