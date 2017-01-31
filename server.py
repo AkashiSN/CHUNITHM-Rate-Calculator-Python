@@ -151,10 +151,8 @@ def Tools(Hash):
         MaxRate=MaxRate
     )
 
-if __name__ == '__main__':
-    HOST = os.environ.get('SERVER_HOST', 'localhost')
-    try:
-        PORT = int(os.environ.get('SERVER_PORT', '7777'))
-    except ValueError:
-        PORT = 5555
-    app.run(HOST, PORT)
+@app.route('/admin')
+def Admin():
+    return render_template(
+        'Admin.html'
+    )
