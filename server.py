@@ -30,7 +30,7 @@ def page_not_found(e):
     return render_template( 
         'Main.html',
         frame='Error',
-        Message='-404-目的のページが見つかりません。'
+        Message='-404-<br>目的のページが見つかりません。'
     )
 
 @app.errorhandler(500)
