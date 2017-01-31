@@ -41,7 +41,13 @@ class UserDataBase:
   '''各ユーザーのデータベースに計算結果を保存する'''
   #前処理
   def __init__(self,Hash):
-    Path = os.path.dirname(__file__)+'/../user/{}.db'.format(Hash)
+    Path = os.path.dirname(__file__)+'/../user/'
+    #ディレクトリが存在するか？
+    if os.path.exists(Path):
+      pass
+    else:
+      os.mkdir(Path)
+    Path += '{}.db'.format(Hash)
     #新規ユーザーかどうか
     if os.path.exists(Path):
       self.con = sqlite3.connect(Path)
