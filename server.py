@@ -38,22 +38,30 @@ def page_not_found(e):
     return render_template( 
         'Main.html',
         frame='Error',
-        Message='内部でエラーが発生しました。次のコードを開発者に伝えてもらえるとありがたいです。'+e
+        Message='内部でエラーが発生しました。'
     )
 
 @app.route('/chunithm/user/<Hash>')
 @app.route('/chunithm/user/<Hash>/best')
 @app.route('/chunithm/user/<Hash>/best/rate')
 def Best(Hash):
-    Best, User, Rate = chunithm.DispBest(Hash)
-    return render_template(
-        'Main.html',
-        Hash=Hash,
-        frame='Best',
-        Musics=Best,
-        User=User[-1],
-        Rate=Rate
-    )
+    try:
+        Best, User, Rate = chunithm.DispBest(Hash)
+
+        return render_template(
+            'Main.html',
+            Hash=Hash,
+            frame='Best',
+            Musics=Best,
+            User=User[-1],
+            Rate=Rate
+        )     
+    except Exception as e:
+        return render_template( 
+            'Main.html',
+            frame='Error',
+            Message='ユーザーが登録されていません。'
+        )
 
 @app.route('/chunithm/user/<Hash>/best/score')
 def Best_Score(Hash):
