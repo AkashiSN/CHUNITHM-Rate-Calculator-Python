@@ -38,7 +38,7 @@ def page_not_found(e):
         'Main.html',
         frame='Error',
         url='/',
-        Message='-404-<br>目的のページが見つかりません。'
+        Message='-404-\n目的のページが見つかりません。'
     )
 
 @app.errorhandler(500)
