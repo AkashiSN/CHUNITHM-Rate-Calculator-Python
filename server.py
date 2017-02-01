@@ -174,31 +174,28 @@ def Tools(Hash):
         MaxRate=MaxRate
     )
 
-@app.route('/admin.hmtl')
+@app.route('/admin')
 def Admin():
-    if session.get('username') is not None:
-        return render_template(
-            'Admin.html'
-        )
-    else:
-        return redirect('/admin/login')
-
-@app.route('/admin/login')
-def Login():
-     # ログイン処理
-    if request.method == 'POST' and _is_account_valid():
-        # セッションにユーザ名を保存してからトップページにリダイレクト
-        session['username'] = request.form['username']
-        return redirect(url_for('index'))
-    # ログインページに戻る
-    return render_template('login.html')
+    return render_template(
+        'Admin.html'
+    )
+    
+# @app.route('/admin/login')
+# def Login():
+#      # ログイン処理
+#     if request.method == 'POST' and _is_account_valid():
+#         # セッションにユーザ名を保存してからトップページにリダイレクト
+#         session['username'] = request.form['username']
+#         return redirect(url_for('index'))
+#     # ログインページに戻る
+#     return render_template('login.html')
 
 
-# 個人認証を行い，正規のアカウントか確認する
-def _is_account_valid():  
-    username = request.form.get('username')
-    # この例では，ユーザ名にadminが指定されていれば正規のアカウントであるとみなしている
-    # ここで具体的な個人認証処理を行う．認証に成功であればTrueを返すようにする
-    if username == 'admin':
-        return True
-    return False
+# # 個人認証を行い，正規のアカウントか確認する
+# def _is_account_valid():  
+#     username = request.form.get('username')
+#     # この例では，ユーザ名にadminが指定されていれば正規のアカウントであるとみなしている
+#     # ここで具体的な個人認証処理を行う．認証に成功であればTrueを返すようにする
+#     if username == 'admin':
+#         return True
+#     return False

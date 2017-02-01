@@ -89,7 +89,7 @@ def Get_FriendCode(userId):
     if re is None:
         return None
     Json = re.json()
-    if Json is None:
+    if Json is None or Json['friendCode'] is None:
         return None
     return Json['friendCode']
 
