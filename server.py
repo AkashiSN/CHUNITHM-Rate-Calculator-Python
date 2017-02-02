@@ -189,46 +189,45 @@ def Tools(Hash):
 users = {'admin': {'pw': '46df5dbdce3ce58b5eac31d0723b8746c981fef6021c9a57cc3df313256b4eed815281b26802c0db2c30c478eabdb72544d1596602731b4f25224ae73516b396'}}
 
 class User(flask_login.UserMixin):
-    pass
+  pass
 
 @login_manager.user_loader
 def user_loader(ID):
-    if ID not in users:
-        return
+  if ID not in users:
+    return
 
-    user = User()
-    user.id = ID
-    return user
+  user = User()
+  user.id = ID
+  return user
 
 @login_manager.request_loader
 def request_loader(request):
-    ID = request.form.get('id')
-    if ID not in users:
-        return
+  ID = request.form.get('id')
+  if ID not in users:
+    return
 
-    user = User()
-    user.id = ID
+  user = User()
+  user.id = ID
 
-    Hash = hashlib.sha3_512(str(request.form['password']).encode('utf8')).hexdigest()
+  Hash = hashlib.sha3_512(str(request.form['password']).encode('utf8')).hexdigest()
 
-    if Hash == users[ID]['pw']:
-      user.is_authenticated = True
+  user.is_authenticated = Hash == users[ID]['pw']:
 
-    return user
+  return user
 
 
 
 @app.route('/admin')
 @flask_login.login_required
 def Admin():
-    return render_template(
-        'Admin.html',
-        authenticated=flask_login.current_user.is_authenticated
-    )
+  return render_template(
+    'Admin.html',
+    authenticated=flask_login.current_user.is_authenticated
+  )
     
 @login_manager.unauthorized_handler
 def unauthorized_handler():
-    return redirect('/admin/login')
+  return redirect('/admin/login')
 
 
 @app.route('/admin/login', methods=['POST','GET'])
