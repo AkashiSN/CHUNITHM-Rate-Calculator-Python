@@ -193,7 +193,7 @@ def CalcRate(userId):
         'MaxRate':(math.floor(((Rate['BestRate'] + Rate['MaxBestRate'] * 10) / 40) * 100) / 100),
         'BestRate':BestRate,
         #'RecentRate':(math.floor(((DispRate * 40 - BestRate * 30) / 10) * 100) / 100),
-        'RecentRate':RecentRates /10 
+        'RecentRate':RecentRates /10 ,
         'Credits':UserInfo['playCount'],
         'ExecuteDate': NowDate
     }
