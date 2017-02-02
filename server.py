@@ -242,10 +242,13 @@ def login():
             flask_login.login_user(user)
             return redirect('/admin')
             
-        return 'Bad login'
+        return render_template(
+          'Admin.html',
+          Error=' ログインに失敗しました。'
+        )
     else:
         return render_template(
-            'Admin.html'
+          'Admin.html'
         )    
 
 @app.route('/admin/logout')
