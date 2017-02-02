@@ -220,7 +220,10 @@ def request_loader(request):
 @app.route('/admin')
 def Admin():
     if flask_login.current_user.is_authenticated:
-        return 'admin is logged in'
+        return render_template(
+            'Admin.html',
+            authenticated=flask_login.current_user.is_authenticated
+        )
     else:
         return render_template(
             'Admin.html'
