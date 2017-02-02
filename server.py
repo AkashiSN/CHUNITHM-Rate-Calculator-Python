@@ -222,7 +222,7 @@ def Admin():
     if flask_login.current_user.is_authenticated:
         return 'admin is logged in'
     else:
-        redirect('/admin/login')
+        return redirect('/admin/login')
 
 @app.route('/admin/login', methods=['POST'])
 def login():
