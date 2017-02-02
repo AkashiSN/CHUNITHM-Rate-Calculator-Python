@@ -2,7 +2,7 @@
 from flask import *
 import flask_login
 from common import Function as Func
-import chunithm,os,math
+import chunithm,os,math,hashlib
 
 app = Flask(__name__)
 # cookieを暗号化する秘密鍵
@@ -208,8 +208,10 @@ def request_loader(request):
 
     user = User()
     user.id = ID
+    
+    Hash = hashlib.sha256(request.form['pw'].encode('utf8')).hexdigest()
 
-    user.is_authenticated = request.form['pw'] == users[email]['pw']
+    user.is_authenticated = Hash == users[ID]['pw']
 
     return user
 
@@ -217,7 +219,7 @@ def request_loader(request):
 def Admin():
     if request.method == 'POST':
         ID = request.form['id']
-        if flask.request.form['pw'] == users[email]['pw']:
+        if flask.request.form['pw'] == users[ID]['pw']:
             user = User()
             user.id = ID
             flask_login.login_user(user)
