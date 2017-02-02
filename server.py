@@ -208,7 +208,7 @@ def request_loader(request):
 
     user = User()
     user.id = ID
-    
+
     Hash = hashlib.sha256(request.form['pw'].encode('utf8')).hexdigest()
 
     user.is_authenticated = Hash == users[ID]['pw']
@@ -219,7 +219,7 @@ def request_loader(request):
 def Admin():
     if request.method == 'POST':
         ID = request.form['id']
-        if flask.request.form['pw'] == users[ID]['pw']:
+        if request.form['pw'] == users[ID]['pw']:
             user = User()
             user.id = ID
             flask_login.login_user(user)
