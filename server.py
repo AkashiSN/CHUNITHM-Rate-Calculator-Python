@@ -222,25 +222,22 @@ def Admin():
     if flask_login.current_user.is_authenticated:
         return 'admin is logged in'
     else:
-        return redirect('/admin/login')
-
-@app.route('/admin/login', methods=['POST','GET'])
-def login():
-    if request.method == 'POST':
-        ID = request.form['id']
-        Hash = hashlib.sha3_512(request.form['password'].encode('utf8')).hexdigest()
-
-        if Hash == users[ID]['pw']:
-            user = User()
-            user.id = ID
-            flask_login.login_user(user)
-            return redirect('/admin')
-        
-        return 'Bad login'
-    else:
         return render_template(
             'Admin.html'
         )
+
+@app.route('/admin/login', methods=['POST'])
+def login():
+    ID = request.form['id']
+    Hash = hashlib.sha3_512(request.form['password'].encode('utf8')).hexdigest()
+    
+    if Hash == users[ID]['pw']:
+        user = User()
+        user.id = ID
+        flask_login.login_user(user)
+        return redirect('/admin')
+        
+    return 'Bad login'
 
 @app.route('/admin/logout')
 def logout():
