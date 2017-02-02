@@ -145,6 +145,13 @@ def CalcRate(userId):
                         Recent = sorted(Recent,key=lambda x:x['Rate'],reverse=True)
                 else:
                     pass
+    RecentRates = 0
+    i = 0
+    for Music in Recent:
+        if i <10
+            RecentRates += Recent['Rate']
+            i += 1
+
     #データベースに保存
     DataBase.SetRecent(Recent)
 
@@ -185,7 +192,8 @@ def CalcRate(userId):
         'HighestRating':(UserInfo['highestRating'] / 100.0),
         'MaxRate':(math.floor(((Rate['BestRate'] + Rate['MaxBestRate'] * 10) / 40) * 100) / 100),
         'BestRate':BestRate,
-        'RecentRate':(math.floor(((DispRate * 40 - BestRate * 30) / 10) * 100) / 100),
+        #'RecentRate':(math.floor(((DispRate * 40 - BestRate * 30) / 10) * 100) / 100),
+        'RecentRate':RecentRates /10 
         'Credits':UserInfo['playCount'],
         'ExecuteDate': NowDate
     }
