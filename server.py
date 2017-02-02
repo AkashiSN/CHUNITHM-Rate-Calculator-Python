@@ -246,11 +246,10 @@ def login():
     else:
         return render_template(
             'Admin.html'
-        )
-    
+        )    
 
 @app.route('/admin/logout')
 def logout():
     flask_login.logout_user()
-    return 'Logged out'
+    return redirect('/admin/login')
 
