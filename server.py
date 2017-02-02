@@ -225,7 +225,7 @@ def Admin():
             user = User()
             user.id = ID
             flask_login.login_user(user)
-            return flask.redirect(url_for('protected'))
+            return redirect(url_for('protected'))
         return 'Bad login'
 
     else:
