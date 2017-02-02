@@ -217,7 +217,7 @@ def request_loader(request):
 
 
 
-@app.route('/admin', methods=['POST', 'GET'])
+@app.route('/admin')
 def Admin():
     if flask_login.user_logged_in:
         return 'logged in'
@@ -225,7 +225,7 @@ def Admin():
         redirect(url_for('/admin/login'))
 
 @app.route('/admin/login', methods=['POST'])
-def Admin():
+def login():
     ID = request.form['id']
     Hash = hashlib.sha3_512(request.form['password'].encode('utf8')).hexdigest()
 
