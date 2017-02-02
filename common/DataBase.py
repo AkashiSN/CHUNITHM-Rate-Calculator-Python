@@ -217,6 +217,7 @@ class UserDataBase:
     if rows:
       User = []
       characterFrame = ['normal', 'copper', 'silver', 'gold', 'gold', 'platina']
+      trophyType = ["normal", "copper", "silver", "gold", "platina"]
       for row in rows:
         Dic = {
           'Id':row[0],
@@ -237,7 +238,7 @@ class UserDataBase:
           'FinalPlayDate':row[15],
           'ExecuteDate':row[16],
           'CharacterFrameFile':characterFrame[int(row[10]/5)],
-          'Honor':characterFrame[row[4]]
+          'Honor':trophyType[row[4]]
         }
         User.append(Dic)
       return User
