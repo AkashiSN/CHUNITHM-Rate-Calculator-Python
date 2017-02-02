@@ -219,7 +219,7 @@ def request_loader(request):
 def Admin():
     if request.method == 'POST':
         ID = request.form['id']
-        if request.form['pw'] == users[ID]['pw']:
+        if request.form['password'] == users[ID]['pw']:
             user = User()
             user.id = ID
             flask_login.login_user(user)
