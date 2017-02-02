@@ -209,7 +209,7 @@ def request_loader(request):
     user = User()
     user.id = ID
 
-    Hash = hashlib.sha256(request.form['password'].encode('utf8')).hexdigest()
+    Hash = hashlib.sha3_512(request.form['password'].encode('utf8')).hexdigest()
 
     user.is_authenticated = Hash == users[ID]['pw']
 
@@ -219,7 +219,7 @@ def request_loader(request):
 def Admin():
     if request.method == 'POST':
         ID = request.form['id']
-        Hash = hashlib.sha256(request.form['password'].encode('utf8')).hexdigest()
+        Hash = hashlib.sha3_512(request.form['password'].encode('utf8')).hexdigest()
 
         if Hash == users[ID]['pw']:
             user = User()
