@@ -148,7 +148,7 @@ def CalcRate(userId):
     RecentRates = 0
     i = 0
     for Music in Recent:
-        if i <10
+        if i < 10:
             RecentRates += Music['Rate']
             i += 1
 
