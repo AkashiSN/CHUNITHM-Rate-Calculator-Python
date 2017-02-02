@@ -186,7 +186,7 @@ def Tools(Hash):
         MaxRate=MaxRate
     )
 
-users = {'admin': {'pw': 'f3ff072775528827927e82173d3c78e1f7c79a11b8ec1056c125597156c37e0d728044c71258e27a827b784b2e4ee734e60d871b7ea046f7b8b8ee371f507edc'}}
+users = {'admin': {'pw': '46df5dbdce3ce58b5eac31d0723b8746c981fef6021c9a57cc3df313256b4eed815281b26802c0db2c30c478eabdb72544d1596602731b4f25224ae73516b396'}}
 
 class User(flask_login.UserMixin):
     pass
