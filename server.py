@@ -213,8 +213,6 @@ def request_loader(request):
 
     if Hash == users[ID]['pw']:
       user.is_authenticated = True
-    else:
-      user.is_authenticated = False
       
     return user
 
