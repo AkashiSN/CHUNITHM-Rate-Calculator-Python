@@ -189,7 +189,7 @@ def Tools(Hash):
 users = {'admin': {'pw': '46df5dbdce3ce58b5eac31d0723b8746c981fef6021c9a57cc3df313256b4eed815281b26802c0db2c30c478eabdb72544d1596602731b4f25224ae73516b396'}}
 
 class User(flask_login.UserMixin):
-  pass
+  is_authenticated = False
 
 @login_manager.user_loader
 def user_loader(ID):
