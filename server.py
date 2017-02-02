@@ -56,6 +56,15 @@ def page_not_found(e):
         Message='-404-\n目的のページが見つかりません。'
     )
 
+@app.errorhandler(405)
+def page_not_found(e):
+    return render_template( 
+        'Main.html',
+        frame='Error',
+        url='/',
+        Message='-405-\n許可されてないアクセスです。'
+    )
+
 @app.errorhandler(500)
 def page_not_found(e):
     return render_template( 
@@ -174,12 +183,15 @@ def Tools(Hash):
         MaxRate=MaxRate
     )
 
-@app.route('/admin')
+@app.route('/admin', methods=['POST', 'GET'])
 def Admin():
-    return render_template(
-        'Admin.html'
-    )
-    
+    if request.method == 'POST':
+        pass
+    else:
+        return render_template(
+            'Admin.html'
+        )
+        
 # @app.route('/admin/login')
 # def Login():
 #      # ログイン処理
