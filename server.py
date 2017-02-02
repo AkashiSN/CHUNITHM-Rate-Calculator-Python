@@ -213,7 +213,7 @@ def request_loader(request):
 
     if Hash == users[ID]['pw']:
       user.is_authenticated = True
-      
+
     return user
 
 
@@ -233,24 +233,26 @@ def unauthorized_handler():
 
 @app.route('/admin/login', methods=['POST','GET'])
 def login():
-    if request.method == 'POST':
-        ID = request.form['id']
-        Hash = hashlib.sha3_512(request.form['password'].encode('utf8')).hexdigest()
+  if current_user.is_authenticated:
+    return redirect('/admin')
+  if request.method == 'POST':
+      ID = request.form['id']
+      Hash = hashlib.sha3_512(request.form['password'].encode('utf8')).hexdigest()
         
-        if Hash == users[ID]['pw']:
-            user = User()
-            user.id = ID
-            flask_login.login_user(user)
-            return redirect('/admin')
-        else:
-          return render_template(
-            'Admin.html',
-            Error=' ログインに失敗しました。'
-          )
-    else:
+      if Hash == users[ID]['pw']:
+        user = User()
+        user.id = ID
+        flask_login.login_user(user)
+        return redirect('/admin')
+      else:
         return render_template(
-          'Admin.html'
-        )    
+          'Admin.html',
+          Error=' ログインに失敗しました。'
+        )
+  else:
+    return render_template(
+     'Admin.html'
+    )    
 
 @app.route('/admin/logout')
 def logout():
