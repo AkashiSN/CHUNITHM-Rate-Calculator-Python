@@ -232,7 +232,7 @@ def unauthorized_handler():
 
 @app.route('/admin/login', methods=['POST','GET'])
 def login():
-  if flask_login.current_user.is_authenticated:
+  if flask_login.current_user.is_authenticated
     return redirect('/admin')
   if request.method == 'POST':
       ID = request.form['id']
