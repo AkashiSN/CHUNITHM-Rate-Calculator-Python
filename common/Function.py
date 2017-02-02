@@ -91,7 +91,7 @@ def Get_FriendCode(userId):
     Json = re.json()
     if Json is None or Json['friendCode'] is None:
         return None
-    return Json['friendCode']
+    return Json.get('friendCode')
 
 #Json読み込み
 def Load_Json():

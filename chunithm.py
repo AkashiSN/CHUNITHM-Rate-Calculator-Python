@@ -105,43 +105,46 @@ def CalcRate(userId):
     else:
         #レート順にソート
         Recent = sorted(Recent,key=lambda x:x['Rate'],reverse=True)
-        UserData = DataBase.LoadUser()
-        OldDate = datetime.strptime(UserData[-1]['FinalPlayDate'], '%Y-%m-%d %H:%M:%S')
-        for Play in Musics:
-            NowDate = datetime.strptime(Play['PlayDate'], '%Y-%m-%d %H:%M:%S')
-            #最後に実行されたときの曲と現在の曲の新旧
-            if NowDate > OldDate:
-                #Recent枠の最小と比較
-                if Play['Rate'] > Recent[9]['Rate']:
-                    #Recent枠の最小と入れ替え
-                    Recent[-1]['MusicId'] = Play['MusicId']
-                    Recent[-1]['Level'] = Play['Level']
-                    Recent[-1]['MusicName'] = Play['MusicName']
-                    Recent[-1]['Image'] = Play['Image']
-                    Recent[-1]['BaseRate'] = Play['BaseRate']
-                    Recent[-1]['Score'] = Play['Score']
-                    Recent[-1]['Rate'] = Play['Rate']
-                    Recent[-1]['PlayDate'] = Play['PlayDate']
-                elif Play['Score'] >= 1007500:
-                    pass
-                elif Play['Score'] >= Recent[-1]['Score']:
-                    pass
+        if len(Recent) > 10:
+            UserData = DataBase.LoadUser()
+            if UserData[-1]['FinalPlayDate'] is None:
+                return None
+            OldDate = datetime.strptime(UserData[-1]['FinalPlayDate'], '%Y-%m-%d %H:%M:%S')
+            for Play in Musics:
+                NowDate = datetime.strptime(Play['PlayDate'], '%Y-%m-%d %H:%M:%S')
+                #最後に実行されたときの曲と現在の曲の新旧
+                if NowDate > OldDate:
+                    #Recent枠の最小と比較
+                    if Play['Rate'] > Recent[9]['Rate']:
+                        #Recent枠の最小と入れ替え
+                        Recent[-1]['MusicId'] = Play['MusicId']
+                        Recent[-1]['Level'] = Play['Level']
+                        Recent[-1]['MusicName'] = Play['MusicName']
+                        Recent[-1]['Image'] = Play['Image']
+                        Recent[-1]['BaseRate'] = Play['BaseRate']
+                        Recent[-1]['Score'] = Play['Score']
+                        Recent[-1]['Rate'] = Play['Rate']
+                        Recent[-1]['PlayDate'] = Play['PlayDate']
+                    elif Play['Score'] >= 1007500:
+                        pass
+                    elif Play['Score'] >= Recent[-1]['Score']:
+                        pass
+                    else:
+                        #プレイ日時順にソート
+                        Recent = sorted(Recent,key=lambda x:datetime.strptime(x['PlayDate'], '%Y-%m-%d %H:%M:%S'),reverse=True)
+                        #Recent候補枠の一番古い曲と入れ替え
+                        Recent[-1]['MusicId'] = Play['MusicId']
+                        Recent[-1]['Level'] = Play['Level']
+                        Recent[-1]['MusicName'] = Play['MusicName']
+                        Recent[-1]['Image'] = Play['Image']
+                        Recent[-1]['BaseRate'] = Play['BaseRate']
+                        Recent[-1]['Score'] = Play['Score']
+                        Recent[-1]['Rate'] = Play['Rate']
+                        Recent[-1]['PlayDate'] = Play['PlayDate']
+                        #レート順にソート
+                        Recent = sorted(Recent,key=lambda x:x['Rate'],reverse=True)
                 else:
-                    #プレイ日時順にソート
-                    Recent = sorted(Recent,key=lambda x:datetime.strptime(x['PlayDate'], '%Y-%m-%d %H:%M:%S'),reverse=True)
-                    #Recent候補枠の一番古い曲と入れ替え
-                    Recent[-1]['MusicId'] = Play['MusicId']
-                    Recent[-1]['Level'] = Play['Level']
-                    Recent[-1]['MusicName'] = Play['MusicName']
-                    Recent[-1]['Image'] = Play['Image']
-                    Recent[-1]['BaseRate'] = Play['BaseRate']
-                    Recent[-1]['Score'] = Play['Score']
-                    Recent[-1]['Rate'] = Play['Rate']
-                    Recent[-1]['PlayDate'] = Play['PlayDate']
-                    #レート順にソート
-                    Recent = sorted(Recent,key=lambda x:x['Rate'],reverse=True)
-            else:
-                pass
+                    pass
     #データベースに保存
     DataBase.SetRecent(Recent)
 
@@ -196,10 +199,10 @@ def CalcRate(userId):
         'Hash':Hash,
         'Credits':UserInfo['playCount'],
         'DispRate':DispRate,
-        'HighestRating':(UserInfo['highestRating'] / 100.0),
-        'MaxRate':(math.floor(((Rate['BestRate'] + Rate['MaxBestRate'] * 10) / 40) * 100) / 100),
+        'HighestRating':Rating['HighestRating'],
+        'MaxRate':Rating['MaxRate'],
         'BestRate':BestRate,
-        'RecentRate':(math.floor(((DispRate * 40 - BestRate * 30) / 10) * 100) / 100),
+        'RecentRate':Rating['RecentRate'],
     }
     Admin.SetData(Data)
     

@@ -11,7 +11,7 @@ app.config['SECRET_KEY'] = os.urandom(64)
 def index():
     return render_template('index.html')
 
-@app.route('/chunithm.php')
+@app.route('/chunithm.php', methods=['POST', 'GET'])
 def old_page():
     return render_template(
         'Main.html',
