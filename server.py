@@ -226,18 +226,21 @@ def Admin():
             'Admin.html'
         )
 
-@app.route('/admin/login', methods=['POST'])
+@app.route('/admin/login', methods=['POST','GET'])
 def login():
-    ID = request.form['id']
-    Hash = hashlib.sha3_512(request.form['password'].encode('utf8')).hexdigest()
-    
-    if Hash == users[ID]['pw']:
-        user = User()
-        user.id = ID
-        flask_login.login_user(user)
-        return redirect('/admin')
+    if request.method == 'POST':
+        ID = request.form['id']
+        Hash = hashlib.sha3_512(request.form['password'].encode('utf8')).hexdigest()
         
-    return 'Bad login'
+        if Hash == users[ID]['pw']:
+            user = User()
+            user.id = ID
+            flask_login.login_user(user)
+            return redirect('/admin')
+            
+        return 'Bad login'
+    else:
+        return redirect('/admin')
 
 @app.route('/admin/logout')
 def logout():
