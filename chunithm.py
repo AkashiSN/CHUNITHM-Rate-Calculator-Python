@@ -149,7 +149,7 @@ def CalcRate(userId):
     i = 0
     for Music in Recent:
         if i <10
-            RecentRates += Recent['Rate']
+            RecentRates += Music['Rate']
             i += 1
 
     #データベースに保存
