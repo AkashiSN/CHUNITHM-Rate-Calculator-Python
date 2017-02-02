@@ -2,7 +2,7 @@
 from flask import *
 import flask_login
 from common import Function as Func
-import chunithm,os,math,hashlib
+import chunithm,os,math,hashlib,sha3
 
 app = Flask(__name__)
 # cookieを暗号化する秘密鍵
