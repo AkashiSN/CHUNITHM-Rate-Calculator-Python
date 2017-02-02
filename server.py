@@ -209,10 +209,13 @@ def request_loader(request):
     user = User()
     user.id = ID
 
-    Hash = hashlib.sha3_512(request.form['password'].encode('utf8')).hexdigest()
+    Hash = hashlib.sha3_512(str(request.form['password']).encode('utf8')).hexdigest()
 
-    user.is_authenticated = Hash == users[ID]['pw']
-
+    if Hash == users[ID]['pw']:
+      user.is_authenticated = True
+    else:
+      user.is_authenticated = False
+      
     return user
 
 
