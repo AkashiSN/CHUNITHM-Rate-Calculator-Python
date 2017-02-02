@@ -219,7 +219,7 @@ def request_loader(request):
 
 @app.route('/admin')
 def Admin():
-    if not flask_login.current_user.id == 'admin':
+    if flask_login.current_user is not None:
         return 'admin is logged in'
     else:
         redirect(url_for('/admin/login'))
