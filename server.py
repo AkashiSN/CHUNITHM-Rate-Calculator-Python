@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 from flask import *
+import flask_login
 from common import Function as Func
 import chunithm,os,math
 
 app = Flask(__name__)
 # cookieを暗号化する秘密鍵
 app.config['SECRET_KEY'] = os.urandom(64)
+login_manager = flask_login.LoginManager()
+login_manager.init_app(app)
 
 @app.route('/')
 def index():
@@ -183,15 +186,63 @@ def Tools(Hash):
         MaxRate=MaxRate
     )
 
+users = {'admin': {'pw': 'f3ff072775528827927e82173d3c78e1f7c79a11b8ec1056c125597156c37e0d728044c71258e27a827b784b2e4ee734e60d871b7ea046f7b8b8ee371f507edc'}}
+
+class User(flask_login.UserMixin):
+    pass
+
+@login_manager.user_loader
+def user_loader(ID):
+    if ID not in users:
+        return
+
+    user = User()
+    user.id = ID
+    return user
+
+@login_manager.request_loader
+def request_loader(request):
+    ID = request.form.get('id')
+    if ID not in users:
+        return
+
+    user = User()
+    user.id = ID
+
+    user.is_authenticated = request.form['pw'] == users[email]['pw']
+
+    return user
+
 @app.route('/admin', methods=['POST', 'GET'])
 def Admin():
     if request.method == 'POST':
-        pass
+        ID = request.form['id']
+        if flask.request.form['pw'] == users[email]['pw']:
+            user = User()
+            user.id = ID
+            flask_login.login_user(user)
+            return flask.redirect(flask.url_for('protected'))
+        return 'Bad login'
+
     else:
         return render_template(
             'Admin.html'
         )
-        
+
+@app.route('/admin/protected')
+@flask_login.login_required
+def protected():
+    return 'Logged in as: ' + flask_login.current_user.id
+
+@app.route('/admin/logout')
+def logout():
+    flask_login.logout_user()
+    return 'Logged out'
+
+@login_manager.unauthorized_handler
+def unauthorized_handler():
+    return 'Unauthorized'
+
 # @app.route('/admin/login')
 # def Login():
 #      # ログイン処理
