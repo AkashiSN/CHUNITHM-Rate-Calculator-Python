@@ -211,7 +211,7 @@ def request_loader(request):
 
   Hash = hashlib.sha3_512(str(request.form['password']).encode('utf8')).hexdigest()
 
-  user.is_authenticated = Hash == users[ID]['pw']:
+  user.is_authenticated = Hash == users[ID]['pw']
 
   return user
 
@@ -232,7 +232,7 @@ def unauthorized_handler():
 
 @app.route('/admin/login', methods=['POST','GET'])
 def login():
-  if flask_login.current_user.is_authenticated
+  if flask_login.current_user.is_authenticated:
     return redirect('/admin')
   if request.method == 'POST':
       ID = request.form['id']
