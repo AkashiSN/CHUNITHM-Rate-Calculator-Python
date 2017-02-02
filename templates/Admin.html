@@ -15,8 +15,10 @@
     <div class="container">
       <h1>管理ページ</h1>
       {% if authenticated %}
+      
       {% else %}
       <form method="POST" target="/admin/login" style="width:320px; margin:auto">
+        <h1>ログイン</h1>      
         <input type="text" class="form-control" id="id" name="id" placeholder="ID" value="" style="margin-top:10px">
         <input type="password" class="form-control" id="password" name="password" placeholder="Password" style="margin-top:10px">
         <button class="btn btn-lg btn-primary btn-block" type="submit" style="margin-top:10px">Sign in</button>

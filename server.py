@@ -218,16 +218,17 @@ def request_loader(request):
 
 
 @app.route('/admin')
+@flask_login.login_required
 def Admin():
-    if flask_login.current_user.is_authenticated:
-        return render_template(
-            'Admin.html',
-            authenticated=flask_login.current_user.is_authenticated
-        )
-    else:
-        return render_template(
-            'Admin.html'
-        )
+    return render_template(
+        'Admin.html',
+        authenticated=flask_login.current_user.is_authenticated
+    )
+    
+@login_manager.unauthorized_handler
+def unauthorized_handler():
+    return redirect('/admin/login')
+
 
 @app.route('/admin/login', methods=['POST','GET'])
 def login():
@@ -243,13 +244,13 @@ def login():
             
         return 'Bad login'
     else:
-        return redirect('/admin')
+        return render_template(
+            'Admin.html'
+        )
+    
 
 @app.route('/admin/logout')
 def logout():
     flask_login.logout_user()
     return 'Logged out'
 
-@login_manager.unauthorized_handler
-def unauthorized_handler():
-    return 'Unauthorized'
