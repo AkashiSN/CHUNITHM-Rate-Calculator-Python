@@ -241,11 +241,11 @@ def login():
             user.id = ID
             flask_login.login_user(user)
             return redirect('/admin')
-            
-        return render_template(
-          'Admin.html',
-          Error=' ログインに失敗しました。'
-        )
+        else:
+          return render_template(
+            'Admin.html',
+            Error=' ログインに失敗しました。'
+          )
     else:
         return render_template(
           'Admin.html'
