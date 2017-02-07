@@ -204,7 +204,7 @@ def admin():
 app.config['USERNAME'] = 'admin'
 app.config['PASSWORD'] = 'd5278e5502686c56f86b6e5c8eacc0820690da1177822df26d286bac257173e1296af399794f7bcb0237feca9c68b9e5d705ae675287f619143049874ca74505'
 
-@app.route('/admin/login', methods=['GET', 'POST'])
+@app.route('/admin/login', methods=['GET','POST'])
 def login():
     error = None
     if request.method == 'POST':
