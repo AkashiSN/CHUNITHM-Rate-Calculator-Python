@@ -48,7 +48,7 @@ def CalcRate(userId):
                         Musics.append(Dic)
     #ソート
     Best = sorted(Musics,key=lambda x:x["Rate"],reverse=True)
-    Rate = {'BestRate':0}
+    Rate = {'BestRate':0,'MaxBestRate':0}
     for Music in Best:
         if i < 30:
             Music['MaxScore'] = None
@@ -107,7 +107,10 @@ def CalcRate(userId):
         Recent = sorted(Recent,key=lambda x:x['Rate'],reverse=True)
         if len(Recent) > 10:
             UserData = DataBase.LoadUser()
-            if UserData[-1]['FinalPlayDate'] is None:
+            try:
+                if UserData[-1]['FinalPlayDate'] is None:
+                    return None
+            except Exception as e:
                 return None
             OldDate = datetime.strptime(UserData[-1]['FinalPlayDate'], '%Y-%m-%d %H:%M:%S')
             for Play in Musics:
