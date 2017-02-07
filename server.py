@@ -260,6 +260,3 @@ def logout():
     session.pop('admin', None)
     flash('You were logged out')
     return redirect('/admin/login')
-
-if __name__ == '__main__':
-  app.run('127.0.0.1',5555,debug=True)
