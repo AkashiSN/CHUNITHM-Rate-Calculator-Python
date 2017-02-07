@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
 from flask import *
-import flask_login
 from common import Function as Func
+from admin import admin as Admin
 import chunithm,os,math,hashlib,sha3
 
 app = Flask(__name__)
 # cookieを暗号化する秘密鍵
 app.config['SECRET_KEY'] = os.urandom(64)
-login_manager = flask_login.LoginManager()
-login_manager.init_app(app)
 
 @app.route('/')
 def index():
@@ -186,76 +184,82 @@ def Tools(Hash):
         MaxRate=MaxRate
     )
 
-users = {'admin': {'pw': '46df5dbdce3ce58b5eac31d0723b8746c981fef6021c9a57cc3df313256b4eed815281b26802c0db2c30c478eabdb72544d1596602731b4f25224ae73516b396'}}
-
-class User(flask_login.UserMixin):
-  is_authenticated = False
-
-@login_manager.user_loader
-def user_loader(ID):
-  if ID not in users:
-    return
-
-  user = User()
-  user.id = ID
-  return user
-
-@login_manager.request_loader
-def request_loader(request):
-  ID = request.form.get('id')
-  if ID not in users:
-    return
-
-  user = User()
-  user.id = ID
-
-  Hash = hashlib.sha3_512(str(request.form['password']).encode('utf8')).hexdigest()
-
-  user.is_authenticated = Hash == users[ID]['pw']
-
-  return user
-
-
-
 @app.route('/admin')
-@flask_login.login_required
-def Admin():
-  return render_template(
-    'Admin.html',
-    authenticated=flask_login.current_user.is_authenticated
-  )
-    
-@login_manager.unauthorized_handler
-def unauthorized_handler():
-  return redirect('/admin/login')
+def admin():
+  if 'logged_in' in session and session['logged_in'] is True:
+    admin_connect = Admin.AdminDataBase()
+    users = admin_connect.LoadData()
+    User_count = len(users)
+    users = sorted(users,key=lambda x:x["HighestRating"],reverse=True)
 
-
-@app.route('/admin/login', methods=['POST','GET'])
-def login():
-  if flask_login.current_user.is_authenticated:
-    return redirect('/admin')
+    return render_template(
+      'Admin.html',
+      authenticated=True,
+      count=User_count,
+      User=users[0:10],
+    )
   else:
+    return redirect('/admin/login')
+
+app.config['USERNAME'] = 'admin'
+app.config['PASSWORD'] = 'd5278e5502686c56f86b6e5c8eacc0820690da1177822df26d286bac257173e1296af399794f7bcb0237feca9c68b9e5d705ae675287f619143049874ca74505'
+
+@app.route('/admin/login', methods=['GET', 'POST'])
+def login():
+    error = None
     if request.method == 'POST':
-        ID = request.form['id']
-        Hash = hashlib.sha3_512(request.form['password'].encode('utf8')).hexdigest()
-          
-        if Hash == users[ID]['pw']:
-          user = User()
-          user.id = ID
-          flask_login.login_user(user)
-          return redirect('/admin')
+        if request.form['username'] != app.config['USERNAME']:
+            error = 'Invalid username'
+        elif hashlib.sha3_512(str(request.form['password']).encode('utf8')).hexdigest() != app.config['PASSWORD']:
+            error = 'Invalid password'
         else:
-          return render_template(
-            'Admin.html',
-            Error=' ログインに失敗しました。'
-          )
+            session['logged_in'] = True
+            return redirect('/admin')
+    return render_template(
+        'Admin.html', 
+        Error=error
+    )
+
+@app.route('/admin/user')
+def user():
+    if 'logged_in' in session and session['logged_in'] is True:
+        admin_connect = Admin.AdminDataBase()
+        users = admin_connect.LoadData()
+        User_count = len(users)
+        users = sorted(users,key=lambda x:x["HighestRating"],reverse=True)
+        return render_template(
+          'Admin.html',
+          frame='user',
+          authenticated=True,
+          count=User_count,
+          User=users,
+        )
     else:
-      return render_template(
-       'Admin.html'
-      )
+        return redirect('/admin/login')
+
+@app.route('/admin/music')
+def music():
+    if 'logged_in' in session and session['logged_in'] is True:
+        f = open("pass.json", 'r',encoding='utf8')
+        data = json.load(f)
+        userId = Func.Get_userId(data['user'],data['pass'])
+        NoneMusicList,ExistMusicList = chunithm.CheckMusic(userId)
+        return render_template(
+          'Admin.html',
+          frame='music',
+          authenticated=True,
+          NoneMusicList=NoneMusicList,
+          ExistMusicList=ExistMusicList
+        )
+    else:
+        return redirect('/admin/login')
 
 @app.route('/admin/logout')
 def logout():
-    flask_login.logout_user()
+    session.pop('logged_in', None)
+    session.pop('admin', None)
+    flash('You were logged out')
     return redirect('/admin/login')
 
+if __name__ == '__main__':
+  app.run('127.0.0.1',5555,debug=True)

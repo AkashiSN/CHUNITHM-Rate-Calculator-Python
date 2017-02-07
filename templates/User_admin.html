@@ -1,0 +1,38 @@
+<div class="panel panel-default" style="width: 250px;margin-top: 10px">
+  <div class="panel-body">
+    現在のユーザー数 ： {{ count }}
+  </div>
+</div>
+<div class="page-header">
+  <h2 id="tables">ユーザ一覧</h2>
+</div>
+<div class="bs-component">
+  <table class="table table-striped table-hover ">
+    <thead>
+      <tr>
+        <th>UserName</th>
+        <th>FriendCode</th>
+        <th>Credits</th>
+        <th>DispRate</th>
+        <th>HighestRating</th>
+        <th>MaxRate</th>
+        <th>BestRate</th>
+        <th>RecentRate</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for user in User %}
+      <tr>
+        <td>{{ user.UserName }}</td>
+        <td><a href='/chunithm/user/{{ user.Hash }}'>{{ user.FriendCode }}</td>
+        <td>{{ user.Credits }}</td>
+        <td>{{ user.DispRate }}</td>
+        <td>{{ user.HighestRating }}</td>
+        <td>{{ user.MaxRate }}</td>
+        <td>{{ user.BestRate }}</td>
+        <td>{{ user.RecentRate }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>

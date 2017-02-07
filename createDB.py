@@ -3,8 +3,7 @@ import sqlite3
 from common import Function as Func
 
 if __name__ == '__main__':
-	userId = Func.Get_userId('akashisn','vAw7ujeheta6efrA')
-	ExList,MusicIdList = Func.Get_MusicIdList(userId)
+	userId = Func.Get_userId('','')
 	Base = Func.Load_Json()
 	SQL = 'INSERT INTO Music (MusicId, Level, MusicName, Image, BaseRate, Air) VALUES (?,?,?,?,?,?);'	
 	con = sqlite3.connect('common/chunithm.db')

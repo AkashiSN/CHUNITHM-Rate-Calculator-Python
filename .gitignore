@@ -3,3 +3,4 @@ __pycache__/
 user/
 admin.db
 CHUNITHM-Rate-Calculator.db
+pass.json

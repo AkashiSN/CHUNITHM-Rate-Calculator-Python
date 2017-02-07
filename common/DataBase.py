@@ -29,6 +29,28 @@ class LoadBaseRate:
     }
     return BaseRate
 
+  #譜面定数のリストを取得する
+  def Get_BaseRateList(self):
+      self.cur.execute('SELECT * FROM Music WHERE "Level" = 2')
+      rows = self.cur.fetchall()
+      if rows:
+        ExBaseRate =[]
+        for row in rows:
+          ExBaseRate.append(row[0])
+      else:
+        return None
+
+      self.cur.execute('SELECT * FROM Music WHERE "Level" = 3')
+      rows = self.cur.fetchall()
+      if rows:
+        BaseRate =[]
+        for row in rows:
+          BaseRate.append(row[0])
+
+        return ExBaseRate,BaseRate
+      else:
+        return None
+
   #ファイル名からMusicIdを取得
   def Get_MusicId(self,FileName):
     sql = 'SELECT * FROM Music WHERE "Image" = "{}";'.format(FileName)
