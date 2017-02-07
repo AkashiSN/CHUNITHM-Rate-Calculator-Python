@@ -240,7 +240,7 @@ def user():
 @app.route('/admin/music')
 def music():
     if 'logged_in' in session and session['logged_in'] is True:
-        f = open("pass.json", 'r',encoding='utf8')
+        f = open(os.path.dirname(__file__)+"/pass.json", 'r',encoding='utf8')
         data = json.load(f)
         userId = Func.Get_userId(data['user'],data['pass'])
         NoneMusicList,ExistMusicList = chunithm.CheckMusic(userId)
