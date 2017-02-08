@@ -271,6 +271,4 @@ def music():
 @app.route('/admin/logout')
 def logout():
     session.pop('logged_in', None)
-    session.pop('admin', None)
-    flash('You were logged out')
     return redirect('/admin/login')
