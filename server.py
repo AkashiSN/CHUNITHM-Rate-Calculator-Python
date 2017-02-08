@@ -228,29 +228,43 @@ def user():
         User_count = len(users)
         users = sorted(users,key=lambda x:x["HighestRating"],reverse=True)
         return render_template(
-          'Admin.html',
-          frame='user',
-          authenticated=True,
-          count=User_count,
-          User=users,
+            'Admin.html',
+            frame='user',
+            authenticated=True,
+            count=User_count,
+            User=users,
         )
     else:
         return redirect('/admin/login')
 
-@app.route('/admin/music')
+@app.route('/admin/music', methods=['GET','POST'])
 def music():
     if 'logged_in' in session and session['logged_in'] is True:
-        f = open(os.path.dirname(__file__)+"/pass.json", 'r',encoding='utf8')
+        f = open("pass.json", 'r',encoding='utf8')
         data = json.load(f)
         userId = Func.Get_userId(data['user'],data['pass'])
-        NoneMusicList,ExistMusicList = chunithm.CheckMusic(userId)
-        return render_template(
-          'Admin.html',
-          frame='music',
-          authenticated=True,
-          NoneMusicList=NoneMusicList,
-          ExistMusicList=ExistMusicList
-        )
+        if request.method == 'POST':
+            MusicId = request.form['MusicId']
+            Level = request.form['Level']
+            BaseRate = request.form['BaseRate']
+            chunithm.SetMusic(userId,MusicId,Level,BaseRate)
+            NoneMusicList,ExistMusicList = chunithm.CheckMusic(userId)
+            return render_template(
+                'Admin.html',
+                frame='music',
+                authenticated=True,
+                NoneMusicList=NoneMusicList,
+                ExistMusicList=ExistMusicList
+            )
+        else:
+            NoneMusicList,ExistMusicList = chunithm.CheckMusic(userId)
+            return render_template(
+                'Admin.html',
+                frame='music',
+                authenticated=True,
+                NoneMusicList=NoneMusicList,
+                ExistMusicList=ExistMusicList
+            )
     else:
         return redirect('/admin/login')
 

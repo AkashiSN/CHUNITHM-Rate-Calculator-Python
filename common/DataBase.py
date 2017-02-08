@@ -61,6 +61,17 @@ class LoadBaseRate:
     else:
       return r[0]
 
+  def SetMusic(self,Music):
+    sql = 'SELECT * FROM Music WHERE MusicId = ? AND Level = ?'
+    self.cur.execute(sql,(Music['MusicId'],Music['Level']))
+    row = self.cur.fetchone()
+    if row:
+      sql = 'DELETE FROM Music WHERE MusicId = ? AND Level = ?'
+      self.cur.execute(sql,(Music['MusicId'],Music['Level']))
+    sql = 'INSERT INTO Music (MusicId,Level,MusicName,Image,BaseRate) VALUES (?,?,?,?,?)'
+    self.cur.execute(sql,(Music['MusicId'],Music['Level'],Music['MusicName'],Music['Image'],Music['BaseRate']))
+    self.con.commit()
+    
 #各ユーザのデーターベース
 class UserDataBase:
   '''各ユーザーのデータベースに計算結果を保存する'''

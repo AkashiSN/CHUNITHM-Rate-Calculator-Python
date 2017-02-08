@@ -284,3 +284,16 @@ def CheckMusic(userId):
             }
             NoneMusicList.append(Dic)
     return NoneMusicList,ExistMusicList
+
+#譜面定数の更新
+def SetMusic(UserId,MusicId,Level,BaseRate):
+    Music = Func.Get_BestScore(UserId, MusicId)
+    DataBase = DB.LoadBaseRate()
+    Dic = {
+        'MusicId':MusicId,
+        'Level':Level,
+        'MusicName':Music['musicName'],
+        'Image':Music['musicFileName'],
+        'BaseRate':BaseRate
+    }
+    DataBase.SetMusic(Dic)
