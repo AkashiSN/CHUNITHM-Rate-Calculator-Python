@@ -9,6 +9,7 @@
         <th><center>MusicName</center></th>
         <th><center>ArtistName</center></th>
         <th><center>BaseRate</center></th>
+        <th><center>AirPlus</center></th>
       </tr>
     </thead>
     <tbody>
@@ -30,6 +31,7 @@
             <input type="text" class="form-control" name="BaseRate" value="{{ Music.BaseRate }}">
           </form>
         </td>
+        <td><center>{{ Music.AirPlus }}</center></td>
       </tr>
     {% endfor %}
     </tbody>
@@ -64,6 +66,7 @@
             <input type="hidden" name="Level" value="{{ Music.Level }}">
             <input type="text" class="form-control" name="BaseRate" value="{{ Music.BaseRate }}">
           </form>
+        <td><center>{{ Music.AirPlus }}</center></td>
         </td>
       </tr>
     {% endfor %}

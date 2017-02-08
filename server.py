@@ -272,3 +272,6 @@ def music():
 def logout():
     session.pop('logged_in', None)
     return redirect('/admin/login')
+
+# if __name__ == '__main__':
+#   app.run('0.0.0.0',5555,debug=True)

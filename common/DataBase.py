@@ -25,7 +25,7 @@ class LoadBaseRate:
       'MusicName':row[2],
       'Image':row[3],
       'BaseRate':row[4],
-      'Air':row[5]
+      'AirPlus':row[5]
     }
     return BaseRate
 
@@ -68,8 +68,8 @@ class LoadBaseRate:
     if row:
       sql = 'DELETE FROM Music WHERE MusicId = ? AND Level = ?'
       self.cur.execute(sql,(Music['MusicId'],Music['Level']))
-    sql = 'INSERT INTO Music (MusicId,Level,MusicName,Image,BaseRate) VALUES (?,?,?,?,?)'
-    self.cur.execute(sql,(Music['MusicId'],Music['Level'],Music['MusicName'],Music['Image'],Music['BaseRate']))
+    sql = 'INSERT INTO Music (MusicId,Level,MusicName,Image,BaseRate,AirPlus) VALUES (?,?,?,?,?,?)'
+    self.cur.execute(sql,(Music['MusicId'],Music['Level'],Music['MusicName'],Music['Image'],Music['BaseRate'],True))
     self.con.commit()
     
 #各ユーザのデーターベース

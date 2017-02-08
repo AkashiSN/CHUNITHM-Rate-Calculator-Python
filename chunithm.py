@@ -269,7 +269,8 @@ def CheckMusic(userId):
                         'MusicName':Music['MusicName'],
                         'MusicImage':Music['Image'],
                         'Level':level,
-                        'BaseRate':BaseRate
+                        'BaseRate':BaseRate,
+                        'AirPlus':Music['AirPlus']
                     }
                     ExistMusicList.append(Dic)
                     continue            
@@ -280,7 +281,8 @@ def CheckMusic(userId):
                 'MusicImage':Music['musicFileName'],
                 'ArtistName':Music['artistName'],
                 'Level':level,
-                'BaseRate':None
+                'BaseRate':None,
+                'AirPlus':False
             }
             NoneMusicList.append(Dic)
     return NoneMusicList,ExistMusicList
