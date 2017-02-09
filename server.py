@@ -239,10 +239,11 @@ def user():
 
 @app.route('/admin/music', methods=['GET','POST'])
 def music():
+    #f = open(os.path.dirname(__file__)+"/pass.json", 'r',encoding='utf8')
+    f = open("pass.json", 'r',encoding='utf8')
+    data = json.load(f)
+    userId = Func.Get_userId(data['user'],data['pass'])
     if 'logged_in' in session and session['logged_in'] is True:
-        f = open(os.path.dirname(__file__)+"/pass.json", 'r',encoding='utf8')
-        data = json.load(f)
-        userId = Func.Get_userId(data['user'],data['pass'])
         if request.method == 'POST':
             MusicId = request.form['MusicId']
             Level = request.form['Level']
@@ -266,12 +267,19 @@ def music():
                 ExistMusicList=ExistMusicList
             )
     else:
-        return redirect('/admin/login')
+        NoneMusicList,ExistMusicList = chunithm.CheckMusic(userId)
+        return render_template(
+            'Admin.html',
+            frame='music',
+            authenticated=False,
+            NoneMusicList=NoneMusicList,
+            ExistMusicList=ExistMusicList
+        )
 
 @app.route('/admin/logout')
 def logout():
     session.pop('logged_in', None)
     return redirect('/admin/login')
 
-# if __name__ == '__main__':
-#   app.run('0.0.0.0',5555,debug=True)
+if __name__ == '__main__':
+  app.run('0.0.0.0',5555,debug=True)

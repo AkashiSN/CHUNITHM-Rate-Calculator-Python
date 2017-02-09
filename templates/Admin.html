@@ -21,7 +21,7 @@
  <body>
     <div class="container">
       <h1>管理ページ</h1>
-      {% if authenticated %}
+      {% if authenticated%}
         <div class="alert alert-dismissible alert-success">
           <button type="button" class="close" data-dismiss="alert">×</button>
           <strong>ログイン完了</strong>
@@ -52,12 +52,16 @@
           {% include "About_admin.html" %}
       {% endif %}
       {% else %}
-        <form method="POST" target="" style="width:320px; margin:auto">
-          <h1>ログイン</h1>      
-          <input type="text" class="form-control" id="username" name="username" adminplaceholder="ID" value="" style="margin-top:10px">
-          <input type="password" class="form-control" id="password" name="password" placeholder="Password" style="margin-top:10px">
-          <button class="btn btn-lg btn-primary btn-block" type="submit" style="margin-top:10px">Sign in</button>
-        </form>
+        {% if frame == 'music' %}
+          {% include "Music_admin.html" %}
+        {% else %}
+          <form method="POST" target="" style="width:320px; margin:auto">
+            <h1>ログイン</h1>      
+            <input type="text" class="form-control" id="username" name="username" adminplaceholder="ID" value="" style="margin-top:10px">
+            <input type="password" class="form-control" id="password" name="password" placeholder="Password" style="margin-top:10px">
+            <button class="btn btn-lg btn-primary btn-block" type="submit" style="margin-top:10px">Sign in</button>
+          </form>
+        {% endif %}
       {% endif %}
       {% if Error %}
         <div class="alert alert-dismissible alert-danger" style="margin-top: 10px ">

@@ -24,13 +24,17 @@
         <td style="width: 10px"><img src="https://chunithm-net.com/mobile/{{ Music.MusicImage }}"></td>
         <td><center>{{ Music.MusicName }}</center></td>
         <td><center>{{ Music.ArtistName}}</center></td>
-        <td style="width: 30px">
-          <form method="POST">
-            <input type="hidden" name="MusicId" value="{{ Music.MusicId }}">
-            <input type="hidden" name="Level" value="{{ Music.Level }}">
-            <input type="text" class="form-control" name="BaseRate" value="{{ Music.BaseRate }}">
-          </form>
-        </td>
+        {% if authenticated %}
+          <td style="width: 30px">
+            <form method="POST">
+              <input type="hidden" name="MusicId" value="{{ Music.MusicId }}">
+              <input type="hidden" name="Level" value="{{ Music.Level }}">
+              <input type="text" class="form-control" name="BaseRate" value="{{ Music.BaseRate }}">
+            </form>
+          </td>
+        {% else %}
+          <td><center>{{ Music.BaseRate }}</center></td>
+        {% endif %}
         <td><center>{{ Music.AirPlus }}</center></td>
       </tr>
     {% endfor %}
@@ -61,14 +65,18 @@
         {% endif %}
         <td style="width: 10px"><img src="https://chunithm-net.com/mobile/{{ Music.MusicImage }}"></td>
         <td><center>{{ Music.MusicName }}</center></td>
-        <td style="width: 30px">
-          <form method="POST">
-            <input type="hidden" name="MusicId" value="{{ Music.MusicId }}">
-            <input type="hidden" name="Level" value="{{ Music.Level }}">
-            <input type="text" class="form-control" name="BaseRate" value="{{ Music.BaseRate }}">
-          </form>
+        {% if authenticated %}
+          <td style="width: 30px">
+            <form method="POST">
+              <input type="hidden" name="MusicId" value="{{ Music.MusicId }}">
+              <input type="hidden" name="Level" value="{{ Music.Level }}">
+              <input type="text" class="form-control" name="BaseRate" value="{{ Music.BaseRate }}">
+            </form>
+          </td>
+        {% else %}
+          <td><center>{{ Music.BaseRate }}</center></td>
+        {% endif %}
         <td><center>{{ Music.AirPlus }}</center></td>
-        </td>
       </tr>
     {% endfor %}
     </tbody>
