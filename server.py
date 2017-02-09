@@ -272,7 +272,7 @@ def music():
             'Admin.html',
             frame='music',
             authenticated=False,
-            title='楽曲一覧'
+            title='楽曲一覧',
             NoneMusicList=NoneMusicList,
             ExistMusicList=ExistMusicList
         )
