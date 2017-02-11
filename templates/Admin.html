@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <link rel="stylesheet" href="/static/css/bootstrap.css" />
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css" />
     <link rel="stylesheet" href="/static/css/prism.css" />
     <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
     <script type="text/javascript" src="/static/js/prism.js"></script>
@@ -38,14 +38,14 @@
               <li class="active"><a href="/admin/user" data-toggle="tab" aria-expanded="true">User</a></li>
               <li class=""><a href="/admin/music" data-toggle="tab" aria-expanded="false">Music</a></li>
             </ul>
-            {% include "User_admin.html" %}
+            {% include "Admin_User.html" %}
           {% elif frame == 'music' %}
             <ul class="nav nav-tabs">
               <li class=""><a href="/admin" data-toggle="tab" aria-expanded="false">About</a></li>
               <li class=""><a href="/admin/user" data-toggle="tab" aria-expanded="false">User</a></li>
               <li class="active"><a href="/admin/music" data-toggle="tab" aria-expanded="true">Music</a></li>
             </ul>
-            {% include "Music_admin.html" %}
+            {% include "Admin_Music.html" %}
           {% endif %}
         {% else %}
           <ul class="nav nav-tabs">
@@ -53,11 +53,11 @@
             <li class=""><a href="/admin/user" data-toggle="tab" aria-expanded="false">User</a></li>
             <li class=""><a href="/admin/music" data-toggle="tab" aria-expanded="false">Music</a></li>
           </ul>
-          {% include "About_admin.html" %}
+          {% include "Admin_About.html" %}
       {% endif %}
       {% else %}
         {% if frame == 'music' %}
-          {% include "Music_admin.html" %}
+          {% include "Admin_Music.html" %}
         {% else %}
           <form method="POST" target="" style="width:320px; margin:auto">
             <h1>ログイン</h1>      

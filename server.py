@@ -8,46 +8,7 @@ app = Flask(__name__)
 # cookieを暗号化する秘密鍵
 app.config['SECRET_KEY'] = os.urandom(64)
 
-@app.route('/')
-def index():
-    return render_template('index.html')
-
-@app.route('/chunithm.php', methods=['POST', 'GET'])
-def old_page():
-    return render_template(
-        'Main.html',
-        frame='Error',
-        url='/',
-        Message='コードが更新されましたので、新しいコードを登録してから実行してください。'
-    )
-
-
-@app.route('/chunithm.api', methods=['POST', 'GET'])
-def Chunithm():
-    if request.method == 'POST':
-        userId = Func.userId_Get(request.form['userid'])
-        if userId is None:
-            return render_template(
-                'Main.html',
-                frame='Error',
-                Message='送信されたデータにはUserIDが含まれていません。CHUNITHM-NETにログインして実行してください。'
-            )
-        Hash = chunithm.CalcRate(userId)
-        if Hash is None:
-            return render_template(
-                'Main.html',
-                frame='Error',
-                Message='このUserIdは無効です。もう一度CHUNITHM-NETにログインして実行してください。'
-            )
-        return redirect('/chunithm/user/' + Hash)
-    else:
-        return render_template(
-            'Main.html',
-            frame='Error',
-            url='/',
-            Message='許可されてないアクセスです。'
-        )
-
+#エラーハンドラー
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template( 
@@ -75,21 +36,89 @@ def page_not_found(e):
         Message='内部でエラーが発生しました。'
     )
 
-@app.route('/chunithm/user/<Hash>')
-@app.route('/chunithm/user/<Hash>/best')
-@app.route('/chunithm/user/<Hash>/best/rate')
-def Best(Hash):
-    try:
-        Best, User, Rate = chunithm.DispBest(Hash)
+#----以下ルーティング----
 
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/chunithm.php', methods=['POST', 'GET'])
+def old_page():
+    return render_template(
+        'Main.html',
+        frame='Error',
+        url='/',
+        Message='コードが更新されましたので、新しいコードを登録してから実行してください。'
+    )
+
+@app.route('/chunithm.api', methods=['POST', 'GET'])
+def Chunithm():
+    if request.method == 'POST':
+        userId = Func.userId_Get(request.form['userid'])
+        if userId is None:
+            return render_template(
+                'Main.html',
+                frame='Error',
+                Message='送信されたデータにはUserIDが含まれていません。CHUNITHM-NETにログインして実行してください。'
+            )
+        Hash = chunithm.CalcRate(userId)
+        if Hash is None:
+            return render_template(
+                'Main.html',
+                frame='Error',
+                Message='このUserIdは無効です。もう一度CHUNITHM-NETにログインして実行してください。'
+            )
+        return redirect('/chunithm/user/' + Hash)
+    else:
         return render_template(
             'Main.html',
-            Hash=Hash,
-            frame='Best',
-            Musics=Best,
-            User=User[-1],
-            Rate=Rate
-        )     
+            frame='Error',
+            url='/',
+            Message='許可されてないアクセスです。'
+        )
+
+@app.route('/chunithm/user/<Hash>')
+@app.route('/chunithm/user/<Hash>/best')
+@app.route('/chunithm/user/<Hash>/best/<Sort>')
+def Best(Hash,Sort='rate'):
+    try:
+        if Sort == 'rate':
+            Best, User, Rate = chunithm.DispBest(Hash)
+            return render_template(
+                'Main.html',
+                Hash=Hash,
+                frame='Best',
+                Musics=Best,
+                User=User[-1],
+                Rate=Rate
+            )
+        elif Sort == 'score':
+            Best, User, Rate = chunithm.DispBest(Hash)
+            Best = sorted(Best, key=lambda x: x['Score'], reverse=True)
+            Best = Func.CountRank(Best)
+            return render_template(
+                'Main.html',
+                Hash=Hash,
+                frame='Best',
+                Musics=Best,
+                User=User[-1],
+                Rate=Rate,
+                Sort='score',
+            )
+        elif Sort == 'difficult':
+            Best, User, Rate = chunithm.DispBest(Hash)
+            Best = sorted(Best, key=lambda x: x['BaseRate'], reverse=True)
+            Best = Func.CountDiff(Best)
+            return render_template(
+                'Main.html',
+                Hash=Hash,
+                frame='Best',
+                Musics=Best,
+                User=User[-1],
+                Rate=Rate,
+                Sort='difficult'
+            )
+
     except Exception as e:
         return render_template( 
             'Main.html',
@@ -97,36 +126,6 @@ def Best(Hash):
             url='/',
             Message='ユーザーが登録されていません。'
         )
-
-@app.route('/chunithm/user/<Hash>/best/score')
-def Best_Score(Hash):
-    Best, User, Rate = chunithm.DispBest(Hash)
-    Best = sorted(Best, key=lambda x: x['Score'], reverse=True)
-    Best = Func.CountRank(Best)
-    return render_template(
-        'Main.html',
-        Hash=Hash,
-        frame='Best',
-        Musics=Best,
-        User=User[-1],
-        Rate=Rate,
-        Sort='score',
-    )
-
-@app.route('/chunithm/user/<Hash>/best/difficult')
-def Best_Difficult(Hash):
-    Best, User, Rate = chunithm.DispBest(Hash)
-    Best = sorted(Best, key=lambda x: x['BaseRate'], reverse=True)
-    Best = Func.CountDiff(Best)
-    return render_template(
-        'Main.html',
-        Hash=Hash,
-        frame='Best',
-        Musics=Best,
-        User=User[-1],
-        Rate=Rate,
-        Sort='difficult'
-    )
 
 @app.route('/chunithm/user/<Hash>/recent')
 def Recent(Hash):
