@@ -107,10 +107,7 @@ def CalcRate(userId):
         Recent = sorted(Recent,key=lambda x:x['Rate'],reverse=True)
         if len(Recent) > 10:
             UserData = DataBase.LoadUser()
-            try:
-                if UserData[-1]['FinalPlayDate'] is None:
-                    return None
-            except Exception as e:
+            if UserData[-1]['FinalPlayDate'] is None:
                 return None
             OldDate = datetime.strptime(UserData[-1]['FinalPlayDate'], '%Y-%m-%d %H:%M:%S')
             for Play in Musics:
