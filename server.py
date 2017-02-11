@@ -281,9 +281,15 @@ def logout():
     session.pop('logged_in', None)
     return redirect('/admin/login')
 
+@app.route('/debug', methods=['POST'])
+def debug():
+    if request.method == 'POST':
+        userId = Func.userId_Get(request.form['userid'])
+        return userId
+
 @app.route('/test')
 def test():
     return render_template('test.html')
 
-if __name__ == '__main__':
-  app.run('0.0.0.0',5555,debug=True)
+# if __name__ == '__main__':
+#   app.run('0.0.0.0',5555,debug=True)
