@@ -78,6 +78,7 @@ def CalcRate(userId):
     Recent = DataBase.LoadRecent()
     LevelMap = {'master':3,"expert":2}
     FinalPlayDate = Playlog['userPlaylogList'][0]['userPlayDate'][0:-2]
+
     #ユーザーデータ
     UserInfo = Func.Get_UserData(userId)
     if UserInfo is None:
@@ -104,9 +105,10 @@ def CalcRate(userId):
         'FinalPlayDate':FinalPlayDate,
         'ExecuteDate': NowDate
     }
-    
+
     #データベースに保存
     DataBase.SetUser(User)
+    
     Musics = []
     for Play in Playlog['userPlaylogList'][0:30]:
         if Play['levelName'] == 'expert' or Play['levelName'] == 'master':
