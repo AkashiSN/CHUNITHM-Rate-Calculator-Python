@@ -71,6 +71,36 @@ def CalcRate(userId):
     #データーベースに保存
     DataBase.SetBest(Best)
 
+    #ユーザーデータ
+    UserInfo = Func.Get_UserData(userId)
+    if UserInfo is None:
+        return None
+    else:
+        UserInfo = UserInfo['userInfo']
+
+    NowDate = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    User = {
+        'TotalPoint':UserInfo['totalPoint'],
+        'TrophyType':UserInfo['trophyType'],
+        'WebLimitDate':UserInfo['webLimitDate'][0:-2],
+        'CharacterFileName':UserInfo['characterFileName'],
+        'FriendCount':UserInfo['friendCount'],
+        'Point':UserInfo['point'],
+        'PlayCount':UserInfo['playCount'],
+        'CharacterLevel':UserInfo['characterLevel'],
+        'TrophyName':UserInfo['trophyName'],
+        'ReincarnationNum':UserInfo['reincarnationNum'],
+        'UserName':UserInfo['userName'],
+        'Level':UserInfo['level'],
+        'FriendCode':FriendCode,
+        'Hash':Hash,
+        'FinalPlayDate':FinalPlayDate,
+        'ExecuteDate': NowDate
+    }
+    #データベースに保存
+    DataBase.SetUser(User)
+
+
     #Recent
     Playlog = Func.Get_PlayLog(userId)
     if Playlog is None:
@@ -154,35 +184,6 @@ def CalcRate(userId):
 
     #データベースに保存
     DataBase.SetRecent(Recent)
-
-    #ユーザーデータ
-    UserInfo = Func.Get_UserData(userId)
-    if UserInfo is None:
-        return None
-    else:
-        UserInfo = UserInfo['userInfo']
-
-    NowDate = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    User = {
-        'TotalPoint':UserInfo['totalPoint'],
-        'TrophyType':UserInfo['trophyType'],
-        'WebLimitDate':UserInfo['webLimitDate'][0:-2],
-        'CharacterFileName':UserInfo['characterFileName'],
-        'FriendCount':UserInfo['friendCount'],
-        'Point':UserInfo['point'],
-        'PlayCount':UserInfo['playCount'],
-        'CharacterLevel':UserInfo['characterLevel'],
-        'TrophyName':UserInfo['trophyName'],
-        'ReincarnationNum':UserInfo['reincarnationNum'],
-        'UserName':UserInfo['userName'],
-        'Level':UserInfo['level'],
-        'FriendCode':FriendCode,
-        'Hash':Hash,
-        'FinalPlayDate':FinalPlayDate,
-        'ExecuteDate': NowDate
-    }
-    #データベースに保存
-    DataBase.SetUser(User)
 
     #レート計算
     DispRate = (UserInfo['playerRating'] / 100.0)
