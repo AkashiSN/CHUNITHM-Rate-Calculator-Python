@@ -175,7 +175,7 @@
                       <td>{{ Music.MusicName }}</td>
                       <td>{{ Music.ArtistName }}</td>
                       {% if session.logged_in %}
-                        <form>                          
+                        <form method="POST">                          
                           <td><input class="form-control" type="text" name="BaseRate" value="{{ Music.BaseRate}}"></td>
                         </form>  
                       {% else %}
@@ -215,7 +215,7 @@
                         <td>{{ Music.MusicName }}</td>
                         {# <td>{{ Music.ArtistName }}</td> #}
                         {% if session.logged_in %}
-                          <form>                          
+                          <form method="POST">                          
                             <td><input class="form-control" type="text" name="BaseRate" value="{{ Music.BaseRate}}"></td>
                           </form>  
                         {% else %}
