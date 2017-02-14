@@ -150,32 +150,13 @@ def CalcRate(userId):
                 pass
         else:
             pass
-            
+
     RecentRates = 0
     i = 0
     for Music in Recent:
         if i < 10:
             RecentRates += Music['Rate']
             i += 1
-
-    #データベースに保存
-    DataBase.SetRecent(Recent)
-
-    #レート計算
-    DispRate = (UserInfo['playerRating'] / 100.0)
-    BestRate = math.floor((Rate['BestRate'] / 30) * 100) /100
-    Rating = {
-        'DispRate':DispRate,
-        'HighestRating':(UserInfo['highestRating'] / 100.0),
-        'MaxRate':(math.floor(((Rate['BestRate'] + Rate['MaxBestRate'] * 10) / 40) * 100) / 100),
-        'BestRate':BestRate,
-        #'RecentRate':(math.floor(((DispRate * 40 - BestRate * 30) / 10) * 100) / 100),
-        'RecentRate':(math.floor((RecentRates /10)*100)/100) ,
-        'Credits':UserInfo['playCount'],
-        'ExecuteDate': NowDate
-    }
-    #データベースに保存
-    DataBase.SetRate(Rating)
 
     #ユーザーデータ
     UserInfo = Func.Get_UserData(userId)
@@ -203,6 +184,26 @@ def CalcRate(userId):
         'FinalPlayDate':FinalPlayDate,
         'ExecuteDate': NowDate
     }
+
+
+    #データベースに保存
+    DataBase.SetRecent(Recent)
+
+    #レート計算
+    DispRate = (UserInfo['playerRating'] / 100.0)
+    BestRate = math.floor((Rate['BestRate'] / 30) * 100) /100
+    Rating = {
+        'DispRate':DispRate,
+        'HighestRating':(UserInfo['highestRating'] / 100.0),
+        'MaxRate':(math.floor(((Rate['BestRate'] + Rate['MaxBestRate'] * 10) / 40) * 100) / 100),
+        'BestRate':BestRate,
+        #'RecentRate':(math.floor(((DispRate * 40 - BestRate * 30) / 10) * 100) / 100),
+        'RecentRate':(math.floor((RecentRates /10)*100)/100) ,
+        'Credits':UserInfo['playCount'],
+        'ExecuteDate': NowDate
+    }
+    #データベースに保存
+    DataBase.SetRate(Rating)
 
     #データベースに保存
     DataBase.SetUser(User)
