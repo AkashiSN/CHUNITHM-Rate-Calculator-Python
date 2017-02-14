@@ -206,6 +206,7 @@ def login():
 
 
 
+@app.route('/admin/home')
 @app.route('/admin/home/<frame>')
 def admin(frame='overview'):
     if 'logged_in' in session and session['logged_in'] is True:
@@ -241,7 +242,8 @@ def user():
         return redirect('/admin')
 
 @app.route('/admin/music', methods=['POST', 'GET'])
-def music():
+@app.route('/admin/music/<frame>', methods=['POST', 'GET'])
+def music(frame='unregistered'):
     #f = open(os.path.dirname(__file__)+"/pass.json", 'r',encoding='utf8')
     f = open("pass.json", 'r',encoding='utf8')
     data = json.load(f)
@@ -256,6 +258,7 @@ def music():
             return render_template(
                 'Admin.html',
                 page='Music',
+                frame=frame,
                 NoneMusicList=NoneMusicList,
                 ExistMusicList=ExistMusicList
             )
@@ -264,6 +267,7 @@ def music():
             return render_template(
                 'Admin.html',
                 page='Music',
+                frame=frame,
                 NoneMusicList=NoneMusicList,
                 ExistMusicList=ExistMusicList
             )

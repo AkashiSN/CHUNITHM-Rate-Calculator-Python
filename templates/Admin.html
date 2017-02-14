@@ -26,7 +26,7 @@
             <a class="nav-link" href="/admin/user">Users</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/admin/music">Music</a>
+            <a class="nav-link" href="/admin/music/unregistered">Music</a>
           </li>
         {% elif page == 'Users' %}
           <li class="nav-item">
@@ -36,7 +36,7 @@
             <a class="nav-link" href="/admin/user">Users <span class="sr-only">(current)</span></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/admin/music">Music</a>
+            <a class="nav-link" href="/admin/music/unregistered">Music</a>
           </li>
         {% elif page == 'Music' %}
           <li class="nav-item">
@@ -46,7 +46,7 @@
             <a class="nav-link" href="/admin/user">Users</a>
           </li>
           <li class="nav-item active">
-            <a class="nav-link" href="/admin/music">Music <span class="sr-only">(current)</span></a>
+            <a class="nav-link" href="/admin/music/unregistered">Music <span class="sr-only">(current)</span></a>
           </li>
         {% endif %}
         </ul>
@@ -121,42 +121,110 @@
                 </div>
               </form>
             </li>
+          {% elif page == 'Music' %}
+            {% if frame == 'unregistered' %}
+              <li class="nav-item">
+                <a class="nav-link active" href="/admin/music/unregistered">Unregistered <span class="sr-only">(current)</span></a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/admin/music/registered">Registered</a>
+              </li>
+            {% elif frame == 'registered' %}
+              <li class="nav-item">
+                <a class="nav-link" href="/admin/music/unregistered">Unregistered</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" href="/admin/music/registered">Registered <span class="sr-only">(current)</span></a>
+              </li>
+            {% endif %}
           {% endif %}
           </ul>
         </nav>
         
         <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
-        {% if page == 'Music' %}
-          <h2>未登録楽曲一覧</h2>
-          <div class="table-responsive">
-              <table class="table table-striped" id="sorter">
-                <thead>
-                  <tr>
-                    <th>MusicId</th>
-                    <th>MusicName</th>
-                    <th>MusicImage</th>
-                    <th>ArtistName</th>
-                    <th>Level</th>
-                    <th>BaseRate</th>
-                    <th>AirPlus</th>
-                  </tr>
-                </thead>
-                <tbody>
-                {% for Music in NoneMusicList %}
-                  <tr>
-                    <td>{{ Music.MusicId }}</td>
-                    <td>{{ Music.MusicName }}</td>
-                    <td><img src="https://chunithm-net.com/mobile/{{ Music.MusicImage }}" /></td>
-                    <td>{{ Music.ArtistName }}</td>
-                    <td>{{ Music.Level }}</td>
-                    <td>{{ Music.BaseRate}}</td>
-                    <td>{{ Music.AirPlus }}</td>
-                  </tr>
-                {% endfor %}
-                </tbody>
-              </table>
-            </div>
-        {% else %}
+          {% if page == 'Music' %}
+            {% if frame == 'unregistered' %}
+              <h2>未登録楽曲一覧</h2>
+              <div class="table-responsive">
+                <table class="table table-striped" id="sorter">
+                  <thead>
+                    <tr>
+                      <th>MusicId</th>
+                      <th>Level</th>
+                      <th>MusicImage</th>
+                      <th>MusicName</th>
+                      <th>ArtistName</th>
+                      <th>BaseRate</th>
+                      <th>AirPlus</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {% for Music in NoneMusicList %}
+                    <tr>
+                      <td>{{ Music.MusicId }}</td>
+                      {% if Music.Level == 2 %}
+                        <th style="color: #A00A50">Expert</th>
+                      {% elif Music.Level == 3%}
+                        <th style="color: #8200DC">Master</th>
+                      {% endif %}
+                      <td><img src="https://chunithm-net.com/mobile/{{ Music.MusicImage }}" /></td>
+                      <td>{{ Music.MusicName }}</td>
+                      <td>{{ Music.ArtistName }}</td>
+                      {% if session.logged_in %}
+                        <form>                          
+                          <td><input type="text" name="BaseRate" value="{{ Music.BaseRate}}"></td>
+                        </form>  
+                      {% else %}
+                        <td>{{ Music.BaseRate}}</td>
+                      {% endif %}
+                      <td>{{ Music.AirPlus }}</td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            {% elif frame == 'registered' %}
+              <h2>登録楽曲一覧</h2>
+              <div class="table-responsive">
+                <table class="table table-striped" id="sorter">
+                  <thead>
+                    <tr>
+                      <th>MusicId</th>
+                      <th>Level</th>
+                      <th>MusicImage</th>
+                      <th>MusicName</th>
+                      <th>ArtistName</th>
+                      <th>BaseRate</th>
+                      <th>AirPlus</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for Music in ExistMusicList %}
+                      <tr>
+                        <td>{{ Music.MusicId }}</td>
+                        {% if Music.Level == 2 %}
+                          <th style="color: #A00A50">Expert</th>
+                        {% elif Music.Level == 3%}
+                          <th style="color: #8200DC">Master</th>
+                        {% endif %}
+                        <td><img src="https://chunithm-net.com/mobile/{{ Music.MusicImage }}" /></td>
+                        <td>{{ Music.MusicName }}</td>
+                        <td>{{ Music.ArtistName }}</td>
+                        {% if session.logged_in %}
+                          <form>                          
+                            <td><input type="text" name="BaseRate" value="{{ Music.BaseRate}}"></td>
+                          </form>  
+                        {% else %}
+                          <td>{{ Music.BaseRate}}</td>
+                        {% endif %}
+                        <td>{{ Music.AirPlus }}</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            {% endif %}
+          {% else %}
           {% if frame == 'overview' %}
             <h2>トップ10</h2>
           {% elif page == 'Users'%}
