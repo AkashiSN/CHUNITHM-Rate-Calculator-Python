@@ -79,36 +79,6 @@ def CalcRate(userId):
     LevelMap = {'master':3,"expert":2}
     FinalPlayDate = Playlog['userPlaylogList'][0]['userPlayDate'][0:-2]
 
-    #ユーザーデータ
-    UserInfo = Func.Get_UserData(userId)
-    if UserInfo is None:
-        return None
-    else:
-        UserInfo = UserInfo['userInfo']
-
-    NowDate = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    User = {
-        'TotalPoint':UserInfo['totalPoint'],
-        'TrophyType':UserInfo['trophyType'],
-        'WebLimitDate':UserInfo['webLimitDate'][0:-2],
-        'CharacterFileName':UserInfo['characterFileName'],
-        'FriendCount':UserInfo['friendCount'],
-        'Point':UserInfo['point'],
-        'PlayCount':UserInfo['playCount'],
-        'CharacterLevel':UserInfo['characterLevel'],
-        'TrophyName':UserInfo['trophyName'],
-        'ReincarnationNum':UserInfo['reincarnationNum'],
-        'UserName':UserInfo['userName'],
-        'Level':UserInfo['level'],
-        'FriendCode':FriendCode,
-        'Hash':Hash,
-        'FinalPlayDate':FinalPlayDate,
-        'ExecuteDate': NowDate
-    }
-
-    #データベースに保存
-    DataBase.SetUser(User)
-
     Musics = []
     for Play in Playlog['userPlaylogList'][0:30]:
         if Play['levelName'] == 'expert' or Play['levelName'] == 'master':
@@ -138,43 +108,49 @@ def CalcRate(userId):
         Recent = sorted(Recent,key=lambda x:x['Rate'],reverse=True)
         if len(Recent) > 10:
             UserData = DataBase.LoadUser()
-
-            OldDate = datetime.strptime(UserData[-2]['FinalPlayDate'], '%Y-%m-%d %H:%M:%S')
-            for Play in Musics:
-                NowDate = datetime.strptime(Play['PlayDate'], '%Y-%m-%d %H:%M:%S')
-                #最後に実行されたときの曲と現在の曲の新旧
-                if NowDate > OldDate:
-                    #Recent枠の最小と比較
-                    if Play['Rate'] > Recent[9]['Rate']:
-                        #Recent枠の最小と入れ替え
-                        Recent[-1]['MusicId'] = Play['MusicId']
-                        Recent[-1]['Level'] = Play['Level']
-                        Recent[-1]['MusicName'] = Play['MusicName']
-                        Recent[-1]['Image'] = Play['Image']
-                        Recent[-1]['BaseRate'] = Play['BaseRate']
-                        Recent[-1]['Score'] = Play['Score']
-                        Recent[-1]['Rate'] = Play['Rate']
-                        Recent[-1]['PlayDate'] = Play['PlayDate']
-                    elif Play['Score'] >= 1007500:
-                        pass
-                    elif Play['Score'] >= Recent[-1]['Score']:
-                        pass
+            #UserDataがゼロではなかったら
+            if len(UserData):
+                OldDate = datetime.strptime(UserData[-1]['FinalPlayDate'], '%Y-%m-%d %H:%M:%S')
+                for Play in Musics:
+                    NowDate = datetime.strptime(Play['PlayDate'], '%Y-%m-%d %H:%M:%S')
+                    #最後に実行されたときの曲と現在の曲の新旧
+                    if NowDate > OldDate:
+                        #Recent枠の最小と比較
+                        if Play['Rate'] > Recent[9]['Rate']:
+                            #Recent枠の最小と入れ替え
+                            Recent[-1]['MusicId'] = Play['MusicId']
+                            Recent[-1]['Level'] = Play['Level']
+                            Recent[-1]['MusicName'] = Play['MusicName']
+                            Recent[-1]['Image'] = Play['Image']
+                            Recent[-1]['BaseRate'] = Play['BaseRate']
+                            Recent[-1]['Score'] = Play['Score']
+                            Recent[-1]['Rate'] = Play['Rate']
+                            Recent[-1]['PlayDate'] = Play['PlayDate']
+                        elif Play['Score'] >= 1007500:
+                            pass
+                        elif Play['Score'] >= Recent[-1]['Score']:
+                            pass
+                        else:
+                            #プレイ日時順にソート
+                            Recent = sorted(Recent,key=lambda x:datetime.strptime(x['PlayDate'], '%Y-%m-%d %H:%M:%S'),reverse=True)
+                            #Recent候補枠の一番古い曲と入れ替え
+                            Recent[-1]['MusicId'] = Play['MusicId']
+                            Recent[-1]['Level'] = Play['Level']
+                            Recent[-1]['MusicName'] = Play['MusicName']
+                            Recent[-1]['Image'] = Play['Image']
+                            Recent[-1]['BaseRate'] = Play['BaseRate']
+                            Recent[-1]['Score'] = Play['Score']
+                            Recent[-1]['Rate'] = Play['Rate']
+                            Recent[-1]['PlayDate'] = Play['PlayDate']
+                            #レート順にソート
+                            Recent = sorted(Recent,key=lambda x:x['Rate'],reverse=True)
                     else:
-                        #プレイ日時順にソート
-                        Recent = sorted(Recent,key=lambda x:datetime.strptime(x['PlayDate'], '%Y-%m-%d %H:%M:%S'),reverse=True)
-                        #Recent候補枠の一番古い曲と入れ替え
-                        Recent[-1]['MusicId'] = Play['MusicId']
-                        Recent[-1]['Level'] = Play['Level']
-                        Recent[-1]['MusicName'] = Play['MusicName']
-                        Recent[-1]['Image'] = Play['Image']
-                        Recent[-1]['BaseRate'] = Play['BaseRate']
-                        Recent[-1]['Score'] = Play['Score']
-                        Recent[-1]['Rate'] = Play['Rate']
-                        Recent[-1]['PlayDate'] = Play['PlayDate']
-                        #レート順にソート
-                        Recent = sorted(Recent,key=lambda x:x['Rate'],reverse=True)
-                else:
-                    pass
+                        pass
+            else:
+                pass
+        else:
+            pass
+            
     RecentRates = 0
     i = 0
     for Music in Recent:
@@ -200,6 +176,36 @@ def CalcRate(userId):
     }
     #データベースに保存
     DataBase.SetRate(Rating)
+
+    #ユーザーデータ
+    UserInfo = Func.Get_UserData(userId)
+    if UserInfo is None:
+        return None
+    else:
+        UserInfo = UserInfo['userInfo']
+
+    NowDate = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    User = {
+        'TotalPoint':UserInfo['totalPoint'],
+        'TrophyType':UserInfo['trophyType'],
+        'WebLimitDate':UserInfo['webLimitDate'][0:-2],
+        'CharacterFileName':UserInfo['characterFileName'],
+        'FriendCount':UserInfo['friendCount'],
+        'Point':UserInfo['point'],
+        'PlayCount':UserInfo['playCount'],
+        'CharacterLevel':UserInfo['characterLevel'],
+        'TrophyName':UserInfo['trophyName'],
+        'ReincarnationNum':UserInfo['reincarnationNum'],
+        'UserName':UserInfo['userName'],
+        'Level':UserInfo['level'],
+        'FriendCode':FriendCode,
+        'Hash':Hash,
+        'FinalPlayDate':FinalPlayDate,
+        'ExecuteDate': NowDate
+    }
+
+    #データベースに保存
+    DataBase.SetUser(User)
 
     Admin = DB.AdminDataBase()
     Data = {
