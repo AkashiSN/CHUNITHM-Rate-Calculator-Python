@@ -129,33 +129,57 @@ def Best(Hash,Sort='rate'):
 
 @app.route('/chunithm/user/<Hash>/recent')
 def Recent(Hash):
-    Recent, User, Rate = chunithm.DispRecent(Hash)
-    return render_template(
-        'Main.html',
-        Hash=Hash,
-        frame='Recent',
-        Musics=Recent,
-        User=User[-1],
-        Rate=Rate
-    )
+    try:
+        Recent, User, Rate = chunithm.DispRecent(Hash)
+        return render_template(
+            'Main.html',
+            Hash=Hash,
+            frame='Recent',
+            Musics=Recent,
+            User=User[-1],
+            Rate=Rate
+        )
+    except Exception as e:
+        return render_template( 
+            'Main.html',
+            frame='Error',
+            url='/',
+            Message='ユーザーが登録されていません。'
+        )
 
 @app.route('/chunithm/user/<Hash>/graph')
 def Graph(Hash):
-    User, Rate = chunithm.DispGraph(Hash)
-    return render_template(
-        'Main.html',
-        Hash=Hash,
-        frame='Graph',
-        User=User[-1],
-        Rate=Rate
-    )
+    try:
+        User, Rate = chunithm.DispGraph(Hash)
+        return render_template(
+            'Main.html',
+            Hash=Hash,
+            frame='Graph',
+            User=User[-1],
+            Rate=Rate
+        )
+    except Exception as e:
+        return render_template( 
+            'Main.html',
+            frame='Error',
+            url='/',
+            Message='ユーザーが登録されていません。'
+        )
 
 @app.route('/chunithm/user/<Hash>/tools', methods=['POST', 'GET'])
 def Tools(Hash):
-    User, Rate = chunithm.DispTools(Hash) 
-    BaseRate = ''
-    Score = ''
-    MaxRate = ''
+    try:
+        User, Rate = chunithm.DispTools(Hash) 
+        BaseRate = ''
+        Score = ''
+        MaxRate = ''
+    except Exception as e:
+        return render_template( 
+            'Main.html',
+            frame='Error',
+            url='/',
+            Message='ユーザーが登録されていません。'
+        )
 
     if request.method == 'POST':
         try:
