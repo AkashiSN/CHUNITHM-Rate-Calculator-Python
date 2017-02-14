@@ -262,12 +262,12 @@ def CheckMusic(userId):
                 Music = DataBase.Get_BaseRate(MusicId,level)
                 if Music['BaseRate'] is not None:
                     BaseRate = Music['BaseRate']
-                    Info = Func.Get_BestScore(userId,MusicId)
+                    #Info = Func.Get_BestScore(userId,MusicId)
                     Dic = {
                         'MusicId':MusicId,
                         'MusicName':Music['MusicName'],
                         'MusicImage':Music['Image'],
-                        'ArtistName':Info['artistName'],
+                        #'ArtistName':Info['artistName'],
                         'Level':level,
                         'BaseRate':BaseRate,
                         'AirPlus':Music['AirPlus']
