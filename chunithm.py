@@ -139,7 +139,7 @@ def CalcRate(userId):
         if len(Recent) > 10:
             UserData = DataBase.LoadUser()
 
-            OldDate = datetime.strptime(UserData[-1]['FinalPlayDate'], '%Y-%m-%d %H:%M:%S')
+            OldDate = datetime.strptime(UserData[-2]['FinalPlayDate'], '%Y-%m-%d %H:%M:%S')
             for Play in Musics:
                 NowDate = datetime.strptime(Play['PlayDate'], '%Y-%m-%d %H:%M:%S')
                 #最後に実行されたときの曲と現在の曲の新旧
