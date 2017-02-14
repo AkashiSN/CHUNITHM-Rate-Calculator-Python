@@ -183,63 +183,67 @@ def Tools(Hash):
         MaxRate=MaxRate
     )
 
-@app.route('/admin')
-def admin():
-  if 'logged_in' in session and session['logged_in'] is True:
-    admin_connect = Admin.AdminDataBase()
-    users = admin_connect.LoadData()
-    User_count = len(users)
-    users = sorted(users,key=lambda x:x["HighestRating"],reverse=True)
-
-    return render_template(
-      'Admin.html',
-      authenticated=True,
-      count=User_count,
-      User=users[0:10],
-    )
-  else:
-    return redirect('/admin/login')
+#-----------以下管理ページ------------
 
 app.config['USERNAME'] = 'admin'
 app.config['PASSWORD'] = 'd5278e5502686c56f86b6e5c8eacc0820690da1177822df26d286bac257173e1296af399794f7bcb0237feca9c68b9e5d705ae675287f619143049874ca74505'
 
-@app.route('/admin/login', methods=['GET','POST'])
+@app.route('/admin', methods=['POST','GET'])
 def login():
-    error = None
     if request.method == 'POST':
-        if request.form['username'] != app.config['USERNAME']:
-            error = 'Invalid username'
-        elif hashlib.sha3_512(str(request.form['password']).encode('utf8')).hexdigest() != app.config['PASSWORD']:
-            error = 'Invalid password'
-        else:
-            session['logged_in'] = True
-            return redirect('/admin')
-    return render_template(
-        'Admin.html', 
-        Error=error
-    )
+        if request.form['UserName'] == app.config['USERNAME']:
+            if hashlib.sha3_512(str(request.form['Password']).encode('utf8')).hexdigest() == app.config['PASSWORD']:
+                session['logged_in'] = True
+                return redirect('/admin/home/overview')
+        return render_template(
+            'Login.html', 
+            Error='Invalid UserName or Password'
+        )
+    else:
+        return render_template(
+            'Login.html'
+        )
+
+
+
+@app.route('/admin/home/<frame>')
+def admin(frame='overview'):
+    if 'logged_in' in session and session['logged_in'] is True:
+        admin_connect = Admin.AdminDataBase()
+        users = admin_connect.LoadData()
+        Number_of_Users = len(users)
+        users = sorted(users,key=lambda x:x["HighestRating"],reverse=True)
+
+        return render_template(
+            'Admin.html',
+            page='Home',
+            frame=frame,
+            Number_of_Users=Number_of_Users,
+            Users=users[0:10],
+        )
+    else:
+        return redirect('/admin')
 
 @app.route('/admin/user')
 def user():
     if 'logged_in' in session and session['logged_in'] is True:
         admin_connect = Admin.AdminDataBase()
         users = admin_connect.LoadData()
-        User_count = len(users)
+        Number_of_Users = len(users)
         users = sorted(users,key=lambda x:x["HighestRating"],reverse=True)
         return render_template(
             'Admin.html',
-            frame='user',
-            authenticated=True,
-            count=User_count,
-            User=users,
+            page='Users',
+            Number_of_Users=Number_of_Users,
+            Users=users,
         )
     else:
-        return redirect('/admin/login')
+        return redirect('/admin')
 
-@app.route('/admin/music', methods=['GET','POST'])
+@app.route('/admin/music', methods=['POST', 'GET'])
 def music():
-    f = open(os.path.dirname(__file__)+"/pass.json", 'r',encoding='utf8')
-    #f = open("pass.json", 'r',encoding='utf8')
+    #f = open(os.path.dirname(__file__)+"/pass.json", 'r',encoding='utf8')
+    f = open("pass.json", 'r',encoding='utf8')
     data = json.load(f)
     userId = Func.Get_userId(data['user'],data['pass'])
     if 'logged_in' in session and session['logged_in'] is True:
@@ -251,8 +255,7 @@ def music():
             NoneMusicList,ExistMusicList = chunithm.CheckMusic(userId)
             return render_template(
                 'Admin.html',
-                frame='music',
-                authenticated=True,
+                page='Music',
                 NoneMusicList=NoneMusicList,
                 ExistMusicList=ExistMusicList
             )
@@ -260,8 +263,7 @@ def music():
             NoneMusicList,ExistMusicList = chunithm.CheckMusic(userId)
             return render_template(
                 'Admin.html',
-                frame='music',
-                authenticated=True,
+                page='Music',
                 NoneMusicList=NoneMusicList,
                 ExistMusicList=ExistMusicList
             )
@@ -269,9 +271,7 @@ def music():
         NoneMusicList,ExistMusicList = chunithm.CheckMusic(userId)
         return render_template(
             'Admin.html',
-            frame='music',
-            authenticated=False,
-            title='楽曲一覧',
+            page='Music',
             NoneMusicList=NoneMusicList,
             ExistMusicList=ExistMusicList
         )
@@ -279,7 +279,7 @@ def music():
 @app.route('/admin/logout')
 def logout():
     session.pop('logged_in', None)
-    return redirect('/admin/login')
+    return redirect('/admin')
 
 @app.route('/debug', methods=['POST'])
 def debug():
@@ -289,7 +289,11 @@ def debug():
 
 @app.route('/test')
 def test():
-    return render_template('test.html')
+    return render_template(
+        'test.html',
+        page='Home',
+        frame='Overview'
+    )
 
-# if __name__ == '__main__':
-#   app.run('0.0.0.0',5555,debug=True)
+if __name__ == '__main__':
+  app.run('0.0.0.0',5555,debug=True)
