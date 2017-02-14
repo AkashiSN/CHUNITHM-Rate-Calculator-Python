@@ -144,7 +144,7 @@
           {% endif %}
           </ul>
         </nav>
-        
+
         <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
           {% if page == 'Music' %}
             {% if frame == 'unregistered' %}
@@ -175,9 +175,11 @@
                       <td>{{ Music.MusicName }}</td>
                       <td>{{ Music.ArtistName }}</td>
                       {% if session.logged_in %}
-                        <form method="POST">                          
+                        <form method="POST">
+                          <input class="form-control" type="hidden" name="MusicId" value="{{ Music.MusicId}}">
+                          <input class="form-control" type="hidden" name="Level" value="{{ Music.Level}}">
                           <td><input class="form-control" type="text" name="BaseRate" value="{{ Music.BaseRate}}"></td>
-                        </form>  
+                        </form>
                       {% else %}
                         <td>{{ Music.BaseRate}}</td>
                       {% endif %}
@@ -215,9 +217,11 @@
                         <td>{{ Music.MusicName }}</td>
                         {# <td>{{ Music.ArtistName }}</td> #}
                         {% if session.logged_in %}
-                          <form method="POST">                          
+                          <form method="POST">
+                            <input class="form-control" type="hidden" name="MusicId" value="{{ Music.MusicId}}">
+                            <input class="form-control" type="hidden" name="Level" value="{{ Music.Level}}">
                             <td><input class="form-control" type="text" name="BaseRate" value="{{ Music.BaseRate}}"></td>
-                          </form>  
+                          </form>
                         {% else %}
                           <td>{{ Music.BaseRate}}</td>
                         {% endif %}
