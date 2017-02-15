@@ -168,18 +168,18 @@ def Graph(Hash):
 
 @app.route('/chunithm/user/<Hash>/tools', methods=['POST', 'GET'])
 def Tools(Hash):
-    try:
-        User, Rate = chunithm.DispTools(Hash) 
-        BaseRate = ''
-        Score = ''
-        MaxRate = ''
-    except Exception as e:
+    User, Rate = chunithm.DispTools(Hash) 
+    
+    if User is None or Rate is None:
         return render_template( 
             'Main.html',
             frame='Error',
             url='/',
             Message='ユーザーが登録されていません。'
         )
+    BaseRate = ''
+    Score = ''
+    MaxRate = ''    
 
     if request.method == 'POST':
         try:
