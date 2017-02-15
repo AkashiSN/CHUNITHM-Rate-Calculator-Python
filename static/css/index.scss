@@ -60,6 +60,11 @@ body {
         margin-top: 30px;
       }
     }
+    .resizeimage{
+      img{
+        max-width:400px;width:75%;
+      }
+    }
     .detail{
       h2{
         font-size: 1.5rem;

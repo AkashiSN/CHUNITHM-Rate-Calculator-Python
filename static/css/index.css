@@ -33,6 +33,9 @@ body {
 .col-md-8 .usage .run h2 {
   font-size: 1.5rem;
   margin-top: 30px; }
+.col-md-8 .usage .resizeimage img {
+  max-width: 400px;
+  width: 75%; }
 .col-md-8 .usage .detail h2 {
   font-size: 1.5rem;
   margin-top: 30px; }
@@ -58,4 +61,4 @@ body {
 .col-md-4 .twitter {
   margin-top: 30px; }
 
-/*# sourceMappingURL=style.css.map */
+/*# sourceMappingURL=index.css.map */
