@@ -173,39 +173,39 @@ def Tools(Hash):
         BaseRate = ''
         Score = ''
         MaxRate = ''
-    
-        if request.method == 'POST':
-            try:
-                BaseRate = float(request.form['baserate'])
-                Score = int(request.form['score'])
-                PreRecent = Func.Score2Rate(Score,BaseRate)
-                MaxRate = math.floor(((Rate[-1]['BestRate'] * 30 + PreRecent * 10) / 40) * 100) / 100
-            except Exception as e:
-                return render_template(
-                    'Main.html',
-                    Hash=Hash,
-                    frame='Tools',
-                    User=User[-1],
-                    Rate=Rate
-                )
-            
-        return render_template(
-            'Main.html',
-            Hash=Hash,
-            frame='Tools',
-            User=User[-1],
-            Rate=Rate,
-            BaseRate=BaseRate,
-            Score=Score,
-            MaxRate=MaxRate
-        )
-    except ValueError as e:
+    except Exception as e:
         return render_template( 
             'Main.html',
             frame='Error',
             url='/',
             Message='ユーザーが登録されていません。'
         )
+
+    if request.method == 'POST':
+        try:
+            BaseRate = float(request.form['baserate'])
+            Score = int(request.form['score'])
+            PreRecent = Func.Score2Rate(Score,BaseRate)
+            MaxRate = math.floor(((Rate[-1]['BestRate'] * 30 + PreRecent * 10) / 40) * 100) / 100
+        except Exception as e:
+            return render_template(
+                'Main.html',
+                Hash=Hash,
+                frame='Tools',
+                User=User[-1],
+                Rate=Rate
+            )
+        
+    return render_template(
+        'Main.html',
+        Hash=Hash,
+        frame='Tools',
+        User=User[-1],
+        Rate=Rate,
+        BaseRate=BaseRate,
+        Score=Score,
+        MaxRate=MaxRate
+    )
 
 #-----------以下管理ページ------------
 
