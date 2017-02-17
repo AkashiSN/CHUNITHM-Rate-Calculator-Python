@@ -58,6 +58,7 @@ h1 {
 .sidebar .label {
   font-size: 1.5rem;
   margin-left:10px;
+  margin-top:10px;
 }
 
 .sidebar .label .number{

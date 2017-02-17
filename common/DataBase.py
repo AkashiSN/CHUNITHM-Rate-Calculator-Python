@@ -23,9 +23,10 @@ class LoadBaseRate:
       'MusicId':row[0],
       'Level':row[1],
       'MusicName':row[2],
-      'Image':row[3],
-      'BaseRate':row[4],
-      'AirPlus':row[5]
+      'ArtistName':row[3],
+      'Image':row[4],
+      'BaseRate':row[5],
+      'AirPlus':row[6]
     }
     return BaseRate
 

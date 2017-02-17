@@ -2,7 +2,5 @@ __pycache__/
 .idea/
 user/
 admin.db
-CHUNITHM-Rate-Calculator.db
 pass.json
 chunithm.db
-

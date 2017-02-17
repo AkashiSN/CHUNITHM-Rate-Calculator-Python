@@ -267,7 +267,7 @@ def user():
 
 @app.route('/admin/music', methods=['POST', 'GET'])
 @app.route('/admin/music/<frame>', methods=['POST', 'GET'])
-def music(frame='unregistered'):
+def music(frame='all'):
     f = open(os.path.dirname(__file__)+"/pass.json", 'r',encoding='utf8')
     data = json.load(f)
     userId = Func.Get_userId(data['user'],data['pass'])
@@ -276,33 +276,25 @@ def music(frame='unregistered'):
             MusicId = request.form['MusicId']
             Level = request.form['Level']
             BaseRate = request.form['BaseRate']
-            chunithm.SetMusic(userId,MusicId,Level,BaseRate)
-            NoneMusicList,ExistMusicList = chunithm.CheckMusic(userId)
-            return render_template(
-                'Admin.html',
-                page='Music',
-                frame=frame,
-                NoneMusicList=NoneMusicList,
-                ExistMusicList=ExistMusicList
-            )
-        else:
-            NoneMusicList,ExistMusicList = chunithm.CheckMusic(userId)
-            return render_template(
-                'Admin.html',
-                page='Music',
-                frame=frame,
-                NoneMusicList=NoneMusicList,
-                ExistMusicList=ExistMusicList
-            )
-    else:
-        NoneMusicList,ExistMusicList = chunithm.CheckMusic(userId)
-        return render_template(
-            'Admin.html',
-            page='Music',
-            frame=frame,
-            NoneMusicList=NoneMusicList,
-            ExistMusicList=ExistMusicList
-        )
+            chunithm.SetMusic(userId,MusicId,Level,BaseRate)            
+        
+    NoneMusicList,ExistMusicList = chunithm.CheckMusic(userId)
+    if frame == 'all':
+        MusicList = NoneMusicList + ExistMusicList
+        MusicList = sorted(MusicList,key=lambda x:x["MusicId"])                
+    elif frame == 'unregistered':
+        MusicList = sorted(NoneMusicList,key=lambda x:x["MusicId"])
+    elif frame == 'registered':                
+        MusicList = sorted(ExistMusicList,key=lambda x:x["MusicId"])
+
+    name = {'all':'全楽曲一覧','unregistered':'未登録楽曲一覧','registered':'登録楽曲一覧'}
+    return render_template(
+        'Admin.html',
+        page='Music',
+        MusicList=MusicList,
+        Name=name[frame],
+        frame=frame
+    )
 
 @app.route('/admin/logout')
 def logout():

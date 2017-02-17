@@ -255,7 +255,7 @@ def DispTools(Hash):
     return User,Rate
 
 #譜面定数の確認
-def CheckMusic(userId):
+def CheckMusic(userId,chec=False):
     MusicIdList = Func.Get_MusicIdList(userId)
     DataBase = DB.LoadBaseRate()
     BaseRateList = DataBase.Get_BaseRateList()
@@ -268,12 +268,11 @@ def CheckMusic(userId):
                 Music = DataBase.Get_BaseRate(MusicId,level)
                 if Music['BaseRate'] is not None:
                     BaseRate = Music['BaseRate']
-                    #Info = Func.Get_BestScore(userId,MusicId)
                     Dic = {
                         'MusicId':MusicId,
                         'MusicName':Music['MusicName'],
                         'MusicImage':Music['Image'],
-                        #'ArtistName':Info['artistName'],
+                        'ArtistName':Music['ArtistName'],
                         'Level':level,
                         'BaseRate':BaseRate,
                         'AirPlus':Music['AirPlus']
@@ -302,6 +301,7 @@ def SetMusic(UserId,MusicId,Level,BaseRate):
         'Level':Level,
         'MusicName':Music['musicName'],
         'Image':Music['musicFileName'],
+        'ArtistName':Music['artistName'],
         'BaseRate':BaseRate
     }
     DataBase.SetMusic(Dic)
