@@ -1,17 +1,34 @@
-
 <!DOCTYPE html>
 <html lang="ja">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="author" content="@Akashi_SN">
-    <link rel="icon" href="../../favicon.ico">
+
     <meta name="norton-safeweb-site-verification" content="1mlk6tizhmo9jp7on61shldfkiwwrpoq45ljnyoh9sx1knxoft1c0wyc77yq9920yo838hbmtmzn572hvnyyo3iqbuqem5jx4d85cedna7awf99yrrwf6tyv2-7ypwl1" />
+
+    <!--Begin SEO-->
+    <meta name="Keywords" content="CHUNITHM,Rate,CHUNITHM Rate Calculator" />
+    <meta name="description" content="CHUNITHM[©SEGA]の非公式レート解析ツールです。" />
+    <meta name="google" content="notranslate" />
+    <link rel="alternate" hreflang="ja" href="https://chunical.net/">
+    <link rel="icon" href="">
+    <!--End SEO-->
+
+    <!--Begin Twitter Card-->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@Akashi_SN" />
+    <meta name="twitter:title" content="CHUNITHM Rate Calculator" />
+    <meta name="twitter:description" content="CHUNITHM[©SEGA]の非公式レート解析ツールです。" />
+    <meta name="twitter:image" content="" />
+    <!--End Twitter Card-->
+
     <title>CHUNITHM Rate Calculator</title>
 
+    <!--Begin Style-->
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
     <link href="/static/css/prism.css" rel="stylesheet"/>
     <link href="/static/css/index.css?var=5.5.6" rel="stylesheet">
+    <!--End Style-->
   </head>
 
   <body>
@@ -423,6 +440,7 @@
 
         </div>        
 
+        <!--Side Var-->
         <div class="col-md-4">
           <div class="author">
             <hr>
@@ -436,9 +454,8 @@
             <hr>
             <a class="twitter-timeline"  href="https://twitter.com/hashtag/CHUNITHMRateCalculator" data-widget-id="790225362219171840">#CHUNITHMRateCalculator</a>
             <hr>
-          </div>
-
-          <div class="ad">
+          </div>          
+          <div class="ad" id="ad3">
             <p>スポンサーリンク</p>
             <!-- chunical3 -->
             <ins class="adsbygoogle"
@@ -498,12 +515,22 @@
       )(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
       ga('create', 'UA-86861992-1', 'auto');
       ga('send', 'pageview');
+
       //Google-AdSense
       (adsbygoogle = window.adsbygoogle || []).push({
         google_ad_client: "ca-pub-9431951784509175",
         enable_page_level_ads: true
       });
-    </script>
 
+      //Remove Ad
+      $(function(){
+        if(navigator.userAgent.indexOf('iPhone') > 0 ||
+           navigator.userAgent.indexOf('iPad')   > 0 ||
+           navigator.userAgent.indexOf('iPod')   > 0 ||
+           navigator.userAgent.indexOf('Android')> 0) {
+          $("#ad3").hide()
+        }
+      });
+    </script>
   </body>
 </html>
