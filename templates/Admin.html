@@ -14,9 +14,12 @@
 
   <body>
     <nav class="navbar navbar-toggleable-md navbar-inverse fixed-top bg-inverse">
+      <button class="navbar-toggler navbar-toggler-right hidden-lg-up" type="button" data-toggle="collapse" data-target="#memue" aria-controls="memue" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
       <a class="navbar-brand" href="/admin/home/overview">CHUNITHM Rate Calculator</a>
 
-      <div class="collapse navbar-collapse">
+      <div class="collapse navbar-collapse" id="memue">
         <ul class="navbar-nav mr-auto">
         {% if page == 'Home' %}
           <li class="nav-item active">
@@ -50,17 +53,17 @@
           </li>
         {% endif %}
         </ul>
-      </div>
-      <div class="mt-2 mt-md-0">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item">
-          {% if session.logged_in %}
-            <a class="nav-link" href="/admin/logout">Logout</a>
-          {% else %}
-            <a class="nav-link" href="/admin">Login</a>
-          {% endif %}
-          </li>
-        </ul>
+        <div class="mt-2 mt-md-0">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+            {% if session.logged_in %}
+              <a class="nav-link" href="/admin/logout">Logout</a>
+            {% else %}
+              <a class="nav-link" href="/admin">Login</a>
+            {% endif %}
+            </li>
+          </ul>
+        </div>
       </div>
     </nav>
 
@@ -274,7 +277,9 @@
     </div>
 
     <script type="text/javascript" src="/static/js/jquery-3.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
     <script type="text/javascript" src="/static/js/jquery.tablesorter.min.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
     <script type="text/javascript">
       $(function() {
         $('#sorter').tablesorter();
