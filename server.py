@@ -269,7 +269,6 @@ def user():
 @app.route('/admin/music/<frame>', methods=['POST', 'GET'])
 def music(frame='unregistered'):
     f = open(os.path.dirname(__file__)+"/pass.json", 'r',encoding='utf8')
-    #f = open("pass.json", 'r',encoding='utf8')
     data = json.load(f)
     userId = Func.Get_userId(data['user'],data['pass'])
     if 'logged_in' in session and session['logged_in'] is True:
