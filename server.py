@@ -11,7 +11,7 @@ app.config['SECRET_KEY'] = os.urandom(64)
 #エラーハンドラー
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template( 
+    return render_template(
         'Main.html',
         frame='Error',
         url='/',
@@ -20,7 +20,7 @@ def page_not_found(e):
 
 @app.errorhandler(405)
 def page_not_found(e):
-    return render_template( 
+    return render_template(
         'Main.html',
         frame='Error',
         url='/',
@@ -29,7 +29,7 @@ def page_not_found(e):
 
 @app.errorhandler(500)
 def page_not_found(e):
-    return render_template( 
+    return render_template(
         'Main.html',
         frame='Error',
         url='/',
@@ -120,7 +120,7 @@ def Best(Hash,Sort='rate'):
             )
 
     except Exception as e:
-        return render_template( 
+        return render_template(
             'Main.html',
             frame='Error',
             url='/',
@@ -140,7 +140,7 @@ def Recent(Hash):
             Rate=Rate
         )
     except Exception as e:
-        return render_template( 
+        return render_template(
             'Main.html',
             frame='Error',
             url='/',
@@ -159,7 +159,7 @@ def Graph(Hash):
             Rate=Rate
         )
     except Exception as e:
-        return render_template( 
+        return render_template(
             'Main.html',
             frame='Error',
             url='/',
@@ -168,10 +168,10 @@ def Graph(Hash):
 
 @app.route('/chunithm/user/<Hash>/tools', methods=['POST', 'GET'])
 def Tools(Hash):
-    User, Rate = chunithm.DispTools(Hash) 
-    
+    User, Rate = chunithm.DispTools(Hash)
+
     if User is None or Rate is None:
-        return render_template( 
+        return render_template(
             'Main.html',
             frame='Error',
             url='/',
@@ -179,7 +179,7 @@ def Tools(Hash):
         )
     BaseRate = ''
     Score = ''
-    MaxRate = ''    
+    MaxRate = ''
 
     if request.method == 'POST':
         try:
@@ -195,7 +195,7 @@ def Tools(Hash):
                 User=User[-1],
                 Rate=Rate
             )
-        
+
     return render_template(
         'Main.html',
         Hash=Hash,
@@ -220,7 +220,7 @@ def login():
                 session['logged_in'] = True
                 return redirect('/admin/home/overview')
         return render_template(
-            'Login.html', 
+            'Login.html',
             Error='Invalid UserName or Password'
         )
     else:
@@ -249,11 +249,24 @@ def admin(frame='overview'):
     else:
         return redirect('/admin')
 
-@app.route('/admin/user')
+@app.route('/admin/user',methods=['GET','POST'])
 def user():
     if 'logged_in' in session and session['logged_in'] is True:
         admin_connect = Admin.AdminDataBase()
-        users = admin_connect.LoadData()
+        if request.method == 'POST':
+            Dic = {
+                'UserName':request.form['UserName'],
+                'FriendCode':request.form['FriendCode'],
+                'Credits':request.form['Credits'],
+                'DispRate':request.form['DispRate'],
+                'HighestRating':request.form['HighestRating'],
+                'MaxRate':request.form['MaxRate'],
+                'BestRate':request.form['BestRate'],
+                'RecentRate':request.form['RecentRate']
+            }
+            users = admin_connect.SerchUser(Dic)
+        else:
+            users = admin_connect.LoadData()
         Number_of_Users = len(users)
         users = sorted(users,key=lambda x:x["HighestRating"],reverse=True)
         return render_template(
@@ -276,15 +289,15 @@ def music(frame='all'):
             MusicId = request.form['MusicId']
             Level = request.form['Level']
             BaseRate = request.form['BaseRate']
-            chunithm.SetMusic(userId,MusicId,Level,BaseRate)            
-        
+            chunithm.SetMusic(userId,MusicId,Level,BaseRate)
+
     NoneMusicList,ExistMusicList = chunithm.CheckMusic(userId)
     if frame == 'all':
         MusicList = NoneMusicList + ExistMusicList
-        MusicList = sorted(MusicList,key=lambda x:x["MusicId"])                
+        MusicList = sorted(MusicList,key=lambda x:x["MusicId"])
     elif frame == 'unregistered':
         MusicList = sorted(NoneMusicList,key=lambda x:x["MusicId"])
-    elif frame == 'registered':                
+    elif frame == 'registered':
         MusicList = sorted(ExistMusicList,key=lambda x:x["MusicId"])
 
     name = {'all':'全楽曲一覧','unregistered':'未登録楽曲一覧','registered':'登録楽曲一覧'}

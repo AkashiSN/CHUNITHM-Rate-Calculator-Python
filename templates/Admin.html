@@ -112,22 +112,24 @@
             <label class="label number">ユーザー数:{{ Number_of_Users }}</label>
             <label class="label">フィルター</label>
             <li class="nav-item">
-              <form>
+              <form method="POST">
                 <div class="form-group nav-link">
                   <label for="UserName">UserName:</label>
-                  <input type="text" class="form-control" name="UserName" id="UserName">
+                  <input type="text" class="form-control" name="UserName" id="UserName" value="">
                   <label for="FriendCode">FriendCode:</label>
-                  <input type="text" class="form-control" name="FriendCode" id="FriendCode">
+                  <input type="text" class="form-control" name="FriendCode" id="FriendCode" value="">
+                  <label for="Credits">Credits:</label>
+                  <input type="text" class="form-control" name="Credits" id="Credits" value="">
                   <label for="DispRate">DispRate:</label>
-                  <input type="text" class="form-control" name="DispRate" id="DispRate">
+                  <input type="text" class="form-control" name="DispRate" id="DispRate" value="">
                   <label for="HighestRating">HighestRating:</label>
-                  <input type="text" class="form-control" name="HighestRating" id="HighestRating">
+                  <input type="text" class="form-control" name="HighestRating" id="HighestRating" value="">
                   <label for="MaxRate">MaxRate:</label>
-                  <input type="text" class="form-control" name="MaxRate" id="MaxRate">
+                  <input type="text" class="form-control" name="MaxRate" id="MaxRate" value="">
                   <label for="BestRate">BestRate:</label>
-                  <input type="text" class="form-control" name="BestRate" id="BestRate">
+                  <input type="text" class="form-control" name="BestRate" id="BestRate" value="">
                   <label for="RecentRate">RecentRate:</label>
-                  <input type="text" class="form-control" name="RecentRate" id="RecentRate">
+                  <input type="text" class="form-control" name="RecentRate" id="RecentRate" value="">
                   <button type="submit" class="btn btn-default">検索</button>
                 </div>
               </form>
@@ -168,9 +170,9 @@
             <li class="nav-item">
               <form>
                 <div class="form-group nav-link">
-                  <label for="UserName">UserName:</label>
-                  <input type="text" class="form-control" name="UserName" id="UserName">
-                  <label for="FriendCode">FriendCode:</label>
+                  <label for="MusicId">MusicId:</label>
+                  <input type="text" class="form-control" name="MusicId" id="MusicId">
+                  <label for="FriendCode">Lvel:</label>
                   <input type="text" class="form-control" name="FriendCode" id="FriendCode">
                   <label for="DispRate">DispRate:</label>
                   <input type="text" class="form-control" name="DispRate" id="DispRate">
