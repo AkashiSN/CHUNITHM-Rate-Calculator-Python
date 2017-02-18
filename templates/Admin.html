@@ -11,7 +11,7 @@
 
     <!--Begin Style-->
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/static/css/admin.css?date=201702172354" rel="stylesheet">
+    <link href="/static/css/admin.css?date=201702181806" rel="stylesheet">
     <!--End Style-->
 
   </head>
@@ -170,20 +170,44 @@
             <li class="nav-item">
               <form>
                 <div class="form-group nav-link">
-                  <label for="MusicId">MusicId:</label>
-                  <input type="text" class="form-control" name="MusicId" id="MusicId">
-                  <label for="FriendCode">Lvel:</label>
-                  <input type="text" class="form-control" name="FriendCode" id="FriendCode">
-                  <label for="DispRate">DispRate:</label>
-                  <input type="text" class="form-control" name="DispRate" id="DispRate">
-                  <label for="HighestRating">HighestRating:</label>
-                  <input type="text" class="form-control" name="HighestRating" id="HighestRating">
-                  <label for="MaxRate">MaxRate:</label>
-                  <input type="text" class="form-control" name="MaxRate" id="MaxRate">
-                  <label for="BestRate">BestRate:</label>
-                  <input type="text" class="form-control" name="BestRate" id="BestRate">
-                  <label for="RecentRate">RecentRate:</label>
-                  <input type="text" class="form-control" name="RecentRate" id="RecentRate">
+                  <label for="MusicName">楽曲名:</label>
+                  <input type="text" class="form-control" name="MusicName" id="MusicName">
+                  <label for="MusicName">を含む</label>
+                  <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle form-control" type="button" id="DiffLevel" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">難易度</button>
+                    <div class="dropdown-menu DiffLevel form-control" aria-labelledby="DiffLevel">
+                      <button class="dropdown-item" type="button" value="3" style="color: #8200DC">Master</button>
+                      <button class="dropdown-item" type="button" value="2" style="color: #A00A50">Expert</button>
+                    </div>
+                    <input type="hidden" name="DiffLevel" value="">
+                  </div>
+                  <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle form-control" type="button" id="Level" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Level</button>
+                    <div class="dropdown-menu Level form-control" aria-labelledby="Level">
+                      <button class="dropdown-item" type="button" value="13">13</button>
+                      <button class="dropdown-item" type="button" value="13+">13+</button>
+                      <button class="dropdown-item" type="button" value="12">12</button>
+                      <button class="dropdown-item" type="button" value="12+">12+</button>
+                      <button class="dropdown-item" type="button" value="11">11</button>
+                      <button class="dropdown-item" type="button" value="11+">11+</button>
+                    </div>
+                    <input type="hidden" name="Level" value="">
+                  </div>
+                  <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle form-control" type="button" id="Genre" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">ジャンル</button>
+                    <div class="dropdown-menu Genre form-control" aria-labelledby="Genre">
+                      <button class="dropdown-item" type="button" value="99">全ジャンル</button>
+                      <button class="dropdown-item" type="button" value="0">POPS &amp; ANIME</button>
+                      <button class="dropdown-item" type="button" value="2">niconico</button>
+                      <button class="dropdown-item" type="button" value="3">東方Project</button>
+                      <button class="dropdown-item" type="button" value="6">VARIETY</button>
+                      <button class="dropdown-item" type="button" value="1">GAME</button>
+                      <button class="dropdown-item" type="button" value="7">イロドリミドリ</button>
+                      <button class="dropdown-item" type="button" value="8">言ノ葉Project</button>
+                      <button class="dropdown-item" type="button" value="5">ORIGINAL</button>
+                    </div>
+                    <input type="hidden" name="Genre" value="">
+                  </div>
                   <button type="submit" class="btn btn-default">検索</button>
                 </div>
               </form>
@@ -193,7 +217,7 @@
         </nav>
 
         <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
-          {% if page == 'Music' %}            
+          {% if page == 'Music' %}
             <h2>{{ Name }}</h2>
             <div class="table-responsive">
               <table class="table table-striped" id="sorter">
@@ -203,7 +227,7 @@
                     <th>Level</th>
                     <th>MusicImage</th>
                     <th>MusicName</th>
-                    <th style="width: 40%">ArtistName</th>
+                    <th style="width: 30%">ArtistName</th>
                     <th>BaseRate</th>
                     <th>AirPlus</th>
                   </tr>
@@ -302,6 +326,22 @@
       //Sort
       $(function() {
         $('#sorter').tablesorter();
+      });
+
+      //Dropdown
+      $(function(){
+        $(".DiffLevel button").click(function(){
+          $(this).parents('.dropdown').find('.dropdown-toggle').html($(this).text() + ' <span class="caret"></span>');
+          $(this).parents('.dropdown').find('input[name="DiffLevel"]').val($(this).attr("value"));
+        });
+        $(".Level button").click(function(){
+          $(this).parents('.dropdown').find('.dropdown-toggle').html($(this).text() + ' <span class="caret"></span>');
+          $(this).parents('.dropdown').find('input[name="Level"]').val($(this).attr("value"));
+        });
+        $(".Genre button").click(function(){
+          $(this).parents('.dropdown').find('.dropdown-toggle').html($(this).text() + ' <span class="caret"></span>');
+          $(this).parents('.dropdown').find('input[name="Genre"]').val($(this).attr("value"));
+        });
       });
     </script>
   </body>
