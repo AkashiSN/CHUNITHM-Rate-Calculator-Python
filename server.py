@@ -300,6 +300,42 @@ def music(frame='all'):
                 'Level':request.form['Level'],
                 'Genre':request.form['Genre']
             }
+            MusicList = chunithm.SearchMusic(userId,Dic)
+            DiffLevel = {
+                '2':'Expert',
+                '3':'Master',
+                '':'難易度'
+            }
+            Genre = {
+                '99':'全ジャンル',
+                '00':'POPS &amp; ANIME',
+                '01':'GAME',
+                '02':'niconico',
+                '03':'東方Project',
+                '05':'ORIGINAL',
+                '06':'VARIETY',
+                '07':'イロドリミドリ',
+                '08':'言ノ葉Project'
+            }
+            tmp = {
+                'name':DiffLevel[Dic['DiffLevel']],
+                'value':Dic['DiffLevel']
+            }
+            Dic['DiffLevel'] = tmp 
+            tmp = {
+                'name':Genre[Dic['Genre']],
+                'value':Dic['Genre']
+            }
+            Dic['Genre'] = tmp
+            MusicList = sorted(MusicList,key=lambda x:x["MusicId"])
+            return render_template(
+                'Admin.html',
+                page='Music',
+                MusicList=MusicList,
+                Name='検索結果',
+                Dic=Dic,
+                frame=frame
+            )
     NoneMusicList,ExistMusicList = chunithm.CheckMusic(userId)
     if frame == 'all':
         MusicList = NoneMusicList + ExistMusicList
@@ -308,13 +344,14 @@ def music(frame='all'):
         MusicList = sorted(NoneMusicList,key=lambda x:x["MusicId"])
     elif frame == 'registered':
         MusicList = sorted(ExistMusicList,key=lambda x:x["MusicId"])
-
+    Dic = {}
     name = {'all':'全楽曲一覧','unregistered':'未登録楽曲一覧','registered':'登録楽曲一覧'}
     return render_template(
         'Admin.html',
         page='Music',
         MusicList=MusicList,
         Name=name[frame],
+        Dic=Dic,
         frame=frame
     )
 

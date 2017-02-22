@@ -255,7 +255,7 @@ def DispTools(Hash):
     return User,Rate
 
 #譜面定数の確認
-def CheckMusic(userId,chec=False):
+def CheckMusic(userId):
     MusicIdList = Func.Get_MusicIdList(userId)
     DataBase = DB.LoadBaseRate()
     BaseRateList = DataBase.Get_BaseRateList()
@@ -290,6 +290,7 @@ def CheckMusic(userId,chec=False):
                 'AirPlus':False
             }
             NoneMusicList.append(Dic)
+            DataBase.SetMusic(Dic,True)
     return NoneMusicList,ExistMusicList
 
 #譜面定数の更新
@@ -305,3 +306,24 @@ def SetMusic(UserId,MusicId,Level,BaseRate):
         'BaseRate':BaseRate
     }
     DataBase.SetMusic(Dic)
+
+#楽曲の検索
+def SearchMusic(UserId,Dic):
+    DataBase = DB.LoadBaseRate()
+    MusicList = DataBase.SerchMusic_DB(Dic)
+    MusicIdList = {x['MusicId']:idx for idx,x in enumerate(MusicList) if x['Level'] == 2},{x['MusicId']:idx for idx,x in enumerate(MusicList) if x['Level'] == 3}
+    GenreList = Func.Get_Genre(UserId,Dic['Genre'],Dic['DiffLevel'])
+    ResultList = []
+    if Dic['DiffLevel']:
+        for MusicId in GenreList:
+            if MusicId in MusicIdList[int(Dic['DiffLevel'])-2]:
+                idx = MusicIdList[int(Dic['DiffLevel'])-2][MusicId]
+                ResultList.append(MusicList[idx])
+    else:
+        for level in range(2,4):
+            for MusicId in GenreList[level-2]:
+                if MusicId in MusicIdList[level-2]:
+                    idx = MusicIdList[level-2][MusicId]
+                    ResultList.append(MusicList[idx])
+    return ResultList            
+

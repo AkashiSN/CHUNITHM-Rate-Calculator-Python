@@ -168,45 +168,66 @@
             {% endif %}
             <label class="label">フィルター</label>
             <li class="nav-item">
-              <form method="POST">
+              <form method="POST" action="/admin/music/all">
                 <div class="form-group nav-link">
                   <label for="MusicName">楽曲名:</label>
-                  <input type="text" class="form-control" name="MusicName" id="MusicName">
+                  <input type="text" class="form-control" name="MusicName" id="MusicName" value="{{ Dic.MusicName }}">
                   <label for="MusicName">を含む</label>
                   <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle form-control" type="button" id="DiffLevel" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">難易度</button>
+                    <button class="btn btn-secondary dropdown-toggle form-control" type="button" id="DiffLevel" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {% if Dic.DiffLevel %}
+                      {{ Dic.DiffLevel.name }}
+                    {% else %}
+                      難易度
+                    {% endif %}</button>
                     <div class="dropdown-menu DiffLevel form-control" aria-labelledby="DiffLevel">
+                      <button class="dropdown-item" type="button" value="">難易度</button>
                       <button class="dropdown-item" type="button" value="3" style="color: #8200DC">Master</button>
                       <button class="dropdown-item" type="button" value="2" style="color: #A00A50">Expert</button>
                     </div>
-                    <input type="hidden" name="DiffLevel" value="">
+                    <input type="hidden" name="DiffLevel" value="{% if Dic.DiffLevel %}{{ Dic.DiffLevel.value }}{% endif %}">
                   </div>
                   <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle form-control" type="button" id="Level" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Level</button>
+                    <button class="btn btn-secondary dropdown-toggle form-control" type="button" id="Level" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {% if Dic.Level %}
+                      {{ Dic.Level }}
+                    {% else %}
+                      Level
+                    {% endif %}</button>
                     <div class="dropdown-menu Level form-control" aria-labelledby="Level">
-                      <button class="dropdown-item" type="button" value="13">13</button>
+                      <button class="dropdown-item" type="button" value="">レベル</button>
                       <button class="dropdown-item" type="button" value="13+">13+</button>
-                      <button class="dropdown-item" type="button" value="12">12</button>
+                      <button class="dropdown-item" type="button" value="13">13</button>                      
                       <button class="dropdown-item" type="button" value="12+">12+</button>
-                      <button class="dropdown-item" type="button" value="11">11</button>
+                      <button class="dropdown-item" type="button" value="12">12</button>
                       <button class="dropdown-item" type="button" value="11+">11+</button>
+                      <button class="dropdown-item" type="button" value="11">11</button>
                     </div>
-                    <input type="hidden" name="Level" value="">
+                    <input type="hidden" name="Level" value="{{ Dic.Level }}">
                   </div>
                   <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle form-control" type="button" id="Genre" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">ジャンル</button>
+                    <button class="btn btn-secondary dropdown-toggle form-control" type="button" id="Genre" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {% if Dic.Genre %}
+                      {{ Dic.Genre.name }}
+                    {% else %}
+                      ジャンル
+                    {% endif %}</button>
                     <div class="dropdown-menu Genre form-control" aria-labelledby="Genre">
                       <button class="dropdown-item" type="button" value="99">全ジャンル</button>
-                      <button class="dropdown-item" type="button" value="0">POPS &amp; ANIME</button>
-                      <button class="dropdown-item" type="button" value="2">niconico</button>
-                      <button class="dropdown-item" type="button" value="3">東方Project</button>
-                      <button class="dropdown-item" type="button" value="6">VARIETY</button>
-                      <button class="dropdown-item" type="button" value="1">GAME</button>
-                      <button class="dropdown-item" type="button" value="7">イロドリミドリ</button>
-                      <button class="dropdown-item" type="button" value="8">言ノ葉Project</button>
-                      <button class="dropdown-item" type="button" value="5">ORIGINAL</button>
+                      <button class="dropdown-item" type="button" value="00">POPS &amp; ANIME</button>
+                      <button class="dropdown-item" type="button" value="02">niconico</button>
+                      <button class="dropdown-item" type="button" value="03">東方Project</button>
+                      <button class="dropdown-item" type="button" value="06">VARIETY</button>
+                      <button class="dropdown-item" type="button" value="01">GAME</button>
+                      <button class="dropdown-item" type="button" value="07">イロドリミドリ</button>
+                      <button class="dropdown-item" type="button" value="08">言ノ葉Project</button>
+                      <button class="dropdown-item" type="button" value="05">ORIGINAL</button>
                     </div>
-                    <input type="hidden" name="Genre" value="99">
+                    {% if Dic.Genre %}
+                      <input type="hidden" name="Genre" value="{{ Dic.Genre.value }}">
+                    {% else %}
+                      <input type="hidden" name="Genre" value="99">
+                    {% endif %}
                   </div>
                   <input type="hidden" name="BaseRate" value="-1">
                   <button type="submit" class="btn btn-default">検索</button>

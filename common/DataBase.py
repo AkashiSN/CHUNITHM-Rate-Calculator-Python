@@ -62,18 +62,83 @@ class LoadBaseRate:
     else:
       return r[0]
 
-  def SetMusic(self,Music):
+  #譜面定数更新
+  def SetMusic(self,Music,NoneMusic=None):
     sql = 'SELECT * FROM Music WHERE MusicId = ? AND Level = ?'
     self.cur.execute(sql,(Music['MusicId'],Music['Level']))
     row = self.cur.fetchone()
     if row:
       sql = 'DELETE FROM Music WHERE MusicId = ? AND Level = ?'
       self.cur.execute(sql,(Music['MusicId'],Music['Level']))
-    sql = 'INSERT INTO Music (MusicId,Level,MusicName,Image,BaseRate,AirPlus) VALUES (?,?,?,?,?,?)'
-    self.cur.execute(sql,(Music['MusicId'],Music['Level'],Music['MusicName'],Music['Image'],Music['BaseRate'],True))
-    self.con.commit()
-    
-#各ユーザのデーターベース
+    if NoneMusic:       
+      sql = 'INSERT INTO Music (MusicId,Level,MusicName,ArtistName,Image,BaseRate,AirPlus) VALUES (?,?,?,?,?,?,?)'
+      self.cur.execute(sql,(Music['MusicId'],Music['Level'],Music['MusicName'],Music['ArtistName'],Music['MusicImage'],Music['BaseRate'],False))
+      self.con.commit()
+    else:
+      sql = 'INSERT INTO Music (MusicId,Level,MusicName,ArtistName,Image,BaseRate,AirPlus) VALUES (?,?,?,?,?,?,?)'
+      self.cur.execute(sql,(Music['MusicId'],Music['Level'],Music['MusicName'],Music['ArtistName'],Music['Image'],Music['BaseRate'],True))
+      self.con.commit()
+
+  #楽曲検索
+  def SerchMusic_DB(self,Data):
+    if Data['MusicName'] or Data['DiffLevel'] or Data['Level']:
+      if Data['MusicName']:
+        sql = 'SELECT * FROM Music where MusicName like ?'
+        MusicName = '%'+Data['MusicName']+'%'        
+        if Data['Level']:
+          sql += ' AND'
+      else:
+        sql = 'SELECT * FROM Music'
+        if Data['Level'] or Data['DiffLevel']:
+          sql += ' WHERE'
+
+      if Data['Level']:
+        if Data['Level'] == '13+':
+          sql += ' BaseRate between 13.7 and 13.9'
+        elif Data['Level'] == '13':        
+          sql += ' BaseRate between 13 and 13.6'
+        elif Data['Level'] == '12+':        
+          sql += ' BaseRate between 12.7 and 12.9'
+        elif Data['Level'] == '12':        
+          sql += ' BaseRate between 12 and 12.6'    
+        elif Data['Level'] == '11+':        
+          sql += ' BaseRate between 11.7 and 11.9'
+        elif Data['Level'] == '11':        
+          sql += ' BaseRate between 11 and 11.6'
+        if Data['DiffLevel'] == '2' or Data['DiffLevel'] == '3':
+          sql += ' AND'
+      if Data['DiffLevel']:
+        if Data['DiffLevel'] == '2':
+          sql += ' Level = 2'
+        elif Data['DiffLevel'] == '3':
+          sql += ' Level = 3'
+    else:
+      sql = 'SELECT * FROM Music'
+
+    if Data['MusicName']:
+      self.cur.execute(sql,(MusicName,))
+    else:
+      self.cur.execute(sql)
+
+    rows = self.cur.fetchall()
+    if rows is None:
+      return None
+    else:
+      Music = []
+      for row in rows:
+        Dic = {
+          'MusicId':row[0],
+          'Level':row[1],
+          'MusicName':row[2],
+          'ArtistName':row[3],
+          'MusicImage':row[4],
+          'BaseRate':row[5],
+          'AirPlus':row[6]
+        }
+        Music.append(Dic)
+      return Music
+
+  #各ユーザのデーターベース
 class UserDataBase:
   '''各ユーザーのデータベースに計算結果を保存する'''
   #前処理

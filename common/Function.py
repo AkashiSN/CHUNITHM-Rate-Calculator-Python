@@ -93,6 +93,40 @@ def Get_FriendCode(userId):
         return None
     return Json.get('friendCode')
 
+#楽曲のジャンルの取得
+def Get_Genre(userId,Genre,Level=None):
+    if Level:
+        url = 'https://chunithm-net.com/ChuniNet/GetUserMusicApi'
+        parm = {'userId':userId,'level':'1'+str(Genre)+'0'+str(Level)}
+        re = requests.post(url,data=json.dumps(parm))
+        if re is None:
+            return None
+        Json = re.json()
+        if Json is None:
+            return None
+        return Json.get('genreList')
+    else:
+        url = 'https://chunithm-net.com/ChuniNet/GetUserMusicApi'
+        parm = {'userId':userId,'level':'1'+str(Genre)+'02'}
+        re = requests.post(url,data=json.dumps(parm)) 
+        if re is None:
+            return None
+        Json = re.json()
+        if Json is None:
+            return None
+        ExList = Json.get('genreList')
+        url = 'https://chunithm-net.com/ChuniNet/GetUserMusicApi'
+        parm = {'userId':userId,'level':'1'+str(Genre)+'03'}
+        re = requests.post(url,data=json.dumps(parm)) 
+        if re is None:
+            return None
+        Json = re.json()
+        if Json is None:
+            return None
+        MasList = Json.get('genreList')
+        return ExList,MasList
+
+
 #Json読み込み
 def Load_Json():
     f = open("common/chunithm.json", 'r',encoding='utf8')
