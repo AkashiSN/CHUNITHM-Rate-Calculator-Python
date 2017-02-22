@@ -70,7 +70,7 @@ class LoadBaseRate:
     if row:
       sql = 'DELETE FROM Music WHERE MusicId = ? AND Level = ?'
       self.cur.execute(sql,(Music['MusicId'],Music['Level']))
-    if NoneMusic:       
+    if NoneMusic:
       sql = 'INSERT INTO Music (MusicId,Level,MusicName,ArtistName,Image,BaseRate,AirPlus) VALUES (?,?,?,?,?,?,?)'
       self.cur.execute(sql,(Music['MusicId'],Music['Level'],Music['MusicName'],Music['ArtistName'],Music['MusicImage'],Music['BaseRate'],False))
       self.con.commit()
@@ -84,7 +84,7 @@ class LoadBaseRate:
     if Data['MusicName'] or Data['DiffLevel'] or Data['Level']:
       if Data['MusicName']:
         sql = 'SELECT * FROM Music where MusicName like ?'
-        MusicName = '%'+Data['MusicName']+'%'        
+        MusicName = '%'+Data['MusicName']+'%'
         if Data['Level']:
           sql += ' AND'
       else:
@@ -95,15 +95,15 @@ class LoadBaseRate:
       if Data['Level']:
         if Data['Level'] == '13+':
           sql += ' BaseRate between 13.7 and 13.9'
-        elif Data['Level'] == '13':        
+        elif Data['Level'] == '13':
           sql += ' BaseRate between 13 and 13.6'
-        elif Data['Level'] == '12+':        
+        elif Data['Level'] == '12+':
           sql += ' BaseRate between 12.7 and 12.9'
-        elif Data['Level'] == '12':        
-          sql += ' BaseRate between 12 and 12.6'    
-        elif Data['Level'] == '11+':        
+        elif Data['Level'] == '12':
+          sql += ' BaseRate between 12 and 12.6'
+        elif Data['Level'] == '11+':
           sql += ' BaseRate between 11.7 and 11.9'
-        elif Data['Level'] == '11':        
+        elif Data['Level'] == '11':
           sql += ' BaseRate between 11 and 11.6'
         if Data['DiffLevel'] == '2' or Data['DiffLevel'] == '3':
           sql += ' AND'

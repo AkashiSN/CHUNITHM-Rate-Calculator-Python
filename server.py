@@ -321,7 +321,7 @@ def music(frame='all'):
                 'name':DiffLevel[Dic['DiffLevel']],
                 'value':Dic['DiffLevel']
             }
-            Dic['DiffLevel'] = tmp 
+            Dic['DiffLevel'] = tmp
             tmp = {
                 'name':Genre[Dic['Genre']],
                 'value':Dic['Genre']

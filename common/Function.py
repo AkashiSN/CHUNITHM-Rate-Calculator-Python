@@ -8,7 +8,7 @@ def userId_Get(userId):
         if 'userId' in tmp1:
             return tmp1.split('=')[1]
     return None
-    
+
 #ログインしてUserIdを取得
 def Get_userId(SegaId,password):
     url = 'https://chunithm-net.com/Login/SegaIdLoginApi'
@@ -108,7 +108,7 @@ def Get_Genre(userId,Genre,Level=None):
     else:
         url = 'https://chunithm-net.com/ChuniNet/GetUserMusicApi'
         parm = {'userId':userId,'level':'1'+str(Genre)+'02'}
-        re = requests.post(url,data=json.dumps(parm)) 
+        re = requests.post(url,data=json.dumps(parm))
         if re is None:
             return None
         Json = re.json()
@@ -117,7 +117,7 @@ def Get_Genre(userId,Genre,Level=None):
         ExList = Json.get('genreList')
         url = 'https://chunithm-net.com/ChuniNet/GetUserMusicApi'
         parm = {'userId':userId,'level':'1'+str(Genre)+'03'}
-        re = requests.post(url,data=json.dumps(parm)) 
+        re = requests.post(url,data=json.dumps(parm))
         if re is None:
             return None
         Json = re.json()

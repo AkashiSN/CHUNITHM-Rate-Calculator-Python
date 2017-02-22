@@ -221,7 +221,7 @@ def CalcRate(userId):
         'RecentRate':Rating['RecentRate'],
     }
     Admin.SetData(Data)
-    
+
     return Hash
 
 #Best枠の時の表示
@@ -261,7 +261,7 @@ def CheckMusic(userId):
     BaseRateList = DataBase.Get_BaseRateList()
     NoneMusicList = []
     ExistMusicList = []
-    
+
     for level in range(2,4):
         for MusicId in MusicIdList[level-2]:
             if MusicId in BaseRateList[level-2]:
@@ -278,7 +278,7 @@ def CheckMusic(userId):
                         'AirPlus':Music['AirPlus']
                     }
                     ExistMusicList.append(Dic)
-                    continue            
+                    continue
             Music = Func.Get_BestScore(userId,MusicId)
             Dic = {
                 'MusicId':MusicId,
@@ -325,5 +325,5 @@ def SearchMusic(UserId,Dic):
                 if MusicId in MusicIdList[level-2]:
                     idx = MusicIdList[level-2][MusicId]
                     ResultList.append(MusicList[idx])
-    return ResultList            
+    return ResultList
 
