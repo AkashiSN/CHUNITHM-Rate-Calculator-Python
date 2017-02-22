@@ -115,21 +115,21 @@
               <form method="POST">
                 <div class="form-group nav-link">
                   <label for="UserName">UserName:</label>
-                  <input type="text" class="form-control" name="UserName" id="UserName" value="">
+                  <input type="text" class="form-control" name="UserName" id="UserName" value="{{ Dic.UserName }}">
                   <label for="FriendCode">FriendCode:</label>
-                  <input type="text" class="form-control" name="FriendCode" id="FriendCode" value="">
+                  <input type="text" class="form-control" name="FriendCode" id="FriendCode" value="{{ Dic.FriendCode }}">
                   <label for="Credits">Credits:</label>
-                  <input type="text" class="form-control" name="Credits" id="Credits" value="">
+                  <input type="text" class="form-control" name="Credits" id="Credits" value="{{ Dic.Credits }}">
                   <label for="DispRate">DispRate:</label>
-                  <input type="text" class="form-control" name="DispRate" id="DispRate" value="">
+                  <input type="text" class="form-control" name="DispRate" id="DispRate" value="{{ Dic.DispRate }}">
                   <label for="HighestRating">HighestRating:</label>
-                  <input type="text" class="form-control" name="HighestRating" id="HighestRating" value="">
+                  <input type="text" class="form-control" name="HighestRating" id="HighestRating" value="{{ Dic.HighestRating }}">
                   <label for="MaxRate">MaxRate:</label>
-                  <input type="text" class="form-control" name="MaxRate" id="MaxRate" value="">
+                  <input type="text" class="form-control" name="MaxRate" id="MaxRate" value="{{ Dic.MaxRate }}">
                   <label for="BestRate">BestRate:</label>
-                  <input type="text" class="form-control" name="BestRate" id="BestRate" value="">
+                  <input type="text" class="form-control" name="BestRate" id="BestRate" value="{{ Dic.BestRate }}">
                   <label for="RecentRate">RecentRate:</label>
-                  <input type="text" class="form-control" name="RecentRate" id="RecentRate" value="">
+                  <input type="text" class="form-control" name="RecentRate" id="RecentRate" value="{{ Dic.RecentRate }}">
                   <button type="submit" class="btn btn-default">検索</button>
                 </div>
               </form>
@@ -168,7 +168,7 @@
             {% endif %}
             <label class="label">フィルター</label>
             <li class="nav-item">
-              <form>
+              <form method="POST">
                 <div class="form-group nav-link">
                   <label for="MusicName">楽曲名:</label>
                   <input type="text" class="form-control" name="MusicName" id="MusicName">
@@ -206,8 +206,9 @@
                       <button class="dropdown-item" type="button" value="8">言ノ葉Project</button>
                       <button class="dropdown-item" type="button" value="5">ORIGINAL</button>
                     </div>
-                    <input type="hidden" name="Genre" value="">
+                    <input type="hidden" name="Genre" value="99">
                   </div>
+                  <input type="hidden" name="BaseRate" value="-1">
                   <button type="submit" class="btn btn-default">検索</button>
                 </div>
               </form>

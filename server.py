@@ -266,6 +266,7 @@ def user():
             }
             users = admin_connect.SerchUser(Dic)
         else:
+            Dic = {}
             users = admin_connect.LoadData()
         Number_of_Users = len(users)
         users = sorted(users,key=lambda x:x["HighestRating"],reverse=True)
@@ -274,6 +275,7 @@ def user():
             page='Users',
             Number_of_Users=Number_of_Users,
             Users=users,
+            Dic=Dic
         )
     else:
         return redirect('/admin')
@@ -284,13 +286,20 @@ def music(frame='all'):
     f = open(os.path.dirname(__file__)+"/pass.json", 'r',encoding='utf8')
     data = json.load(f)
     userId = Func.Get_userId(data['user'],data['pass'])
-    if 'logged_in' in session and session['logged_in'] is True:
-        if request.method == 'POST':
-            MusicId = request.form['MusicId']
-            Level = request.form['Level']
-            BaseRate = request.form['BaseRate']
-            chunithm.SetMusic(userId,MusicId,Level,BaseRate)
-
+    if request.method == 'POST':
+        if float(request.form['BaseRate']) > 0:
+            if 'logged_in' in session and session['logged_in'] is True:
+                MusicId = request.form['MusicId']
+                Level = request.form['Level']
+                BaseRate = request.form['BaseRate']
+                chunithm.SetMusic(userId,MusicId,Level,BaseRate)
+        else:
+            Dic = {
+                'MusicName':request.form['MusicName'],
+                'DiffLevel':request.form['DiffLevel'],
+                'Level':request.form['Level'],
+                'Genre':request.form['Genre']
+            }
     NoneMusicList,ExistMusicList = chunithm.CheckMusic(userId)
     if frame == 'all':
         MusicList = NoneMusicList + ExistMusicList
@@ -319,14 +328,6 @@ def debug():
     if request.method == 'POST':
         userId = Func.userId_Get(request.form['userid'])
         return userId
-
-@app.route('/test')
-def test():
-    return render_template(
-        'test.html',
-        page='Home',
-        frame='Overview'
-    )
 
 if __name__ == '__main__':
   app.run('0.0.0.0',5555,debug=True)
