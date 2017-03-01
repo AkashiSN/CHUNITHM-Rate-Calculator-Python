@@ -62,7 +62,7 @@ def CalcRate(userId):
                 Music['MaxScore'] = None
             else:
                 MaxScore = Func.Rate2Score(Music['BaseRate'],Rate['MinBestRate'])
-                if MaxScore <= 1007500 and MaxScore > 0:
+                if MaxScore <= 1007500 and MaxScore > 0 and MaxScore - Music['Score'] > 0:
                     Music['MaxScore'] = MaxScore
                 else:
                     Music['MaxScore'] = None
