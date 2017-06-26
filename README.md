@@ -39,7 +39,7 @@ javascript:(function(){
 
 ```bash
 $ apt install python3-dev python3-pip
-$ pip3 install Flask
+$ pip3 install Flask flask-login pysha3
 $ apt install apache2
 $ apt install libapache2-mod-wsgi-py3
 $ apt install letsencrypt python-letsencrypt-apache
@@ -50,7 +50,7 @@ $ chown -R www-data:www-data /var/www/CHUNITHM-Rate-Calculator-Python/
 $ cd CHUNITHM-Rate-Calculator-Python
 $ mv flask.conf /etc/apache2/sites-available/
 $ ln -s /etc/apache2/sites-available/flask.conf /etc/apache2/sites-enabled/flask.conf
-$ rm /etc/apache2/sites-enabled/000-default.conf 
+$ rm /etc/apache2/sites-enabled/000-default.conf /etc/apache2/sites-enabled/000-default-le-ssl.conf
 $ apachectl restart
 ```
 
