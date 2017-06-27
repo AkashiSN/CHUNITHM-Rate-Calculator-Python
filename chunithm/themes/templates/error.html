@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block stylesheets %}
+<style type="text/css">
+.error-template {padding: 40px 15px;text-align: center;}
+.error-actions {margin-top:15px;margin-bottom:15px;}
+.error-actions .btn { margin-right:10px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="error-template">
+                <h2>
+                    Error</h2>
+                <div class="error-details">
+                    {{ Message }}
+                </div>
+                <div class="error-actions">
+                    <a class="btn btn-primary btn-lg" onClick="window.open('https://chunithm-net.com/mobile/','CHUNITHM ■ CHUNITHM-NET')"><span class="glyphicon glyphicon-home"></span>
+                        戻る </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

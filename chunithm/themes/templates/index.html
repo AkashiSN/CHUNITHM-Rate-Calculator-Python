@@ -1,38 +1,11 @@
-<!DOCTYPE html>
-<html lang="ja">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="google-site-verification" content="wqSdcsRuJKvmbrvcPDpSJ4-MdXDNqNG4QfVGV3eXBIo" />
-    <meta name="norton-safeweb-site-verification" content="1mlk6tizhmo9jp7on61shldfkiwwrpoq45ljnyoh9sx1knxoft1c0wyc77yq9920yo838hbmtmzn572hvnyyo3iqbuqem5jx4d85cedna7awf99yrrwf6tyv2-7ypwl1" />
+{% extends "base.html" %}
 
-    <!--Begin SEO-->
-    <meta name="Keywords" content="CHUNITHM,Rate,CHUNITHM Rate Calculator" />
-    <meta name="description" content="CHUNITHM[©SEGA]の非公式レート解析ツールです。" />
-    <meta name="google" content="notranslate" />
-    <link rel="alternate" hreflang="ja" href="https://chunical.net/">
-    <link rel="icon" href="">
-    <!--End SEO-->
-
-    <!--Begin Twitter Card-->
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:site" content="@Akashi_SN" />
-    <meta name="twitter:title" content="CHUNITHM Rate Calculator" />
-    <meta name="twitter:description" content="CHUNITHM[©SEGA]の非公式レート解析ツールです。" />
-    <meta name="twitter:image" content="" />
-    <!--End Twitter Card-->
-
-    <title>CHUNITHM Rate Calculator</title>
-
-    <!--Begin Style-->
-    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+{% block stylesheets %}
     <link href="/static/css/prism.css" rel="stylesheet"/>
-    <link href="/static/css/index.css?date=201702172154" rel="stylesheet">
-    <!--End Style-->
-  </head>
+    <link href="/static/css/index.css" rel="stylesheet">
+{% endblock %}
 
-  <body>
-
+{% block content %}
     <nav class="navbar navbar-toggleable-md navbar-inverse fixed-top bg-inverse">
       <button class="navbar-toggler navbar-toggler-right hidden-lg-up" type="button" data-toggle="collapse" data-target="#memue" aria-controls="memue" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -51,9 +24,9 @@
           <ul class="navbar-nav mr-auto">
             <li class="nav-item">
             {% if session.logged_in %}
-              <a class="nav-link" href="/admin/logout">Logout</a>
+              <a class="nav-link" href="/logout">Logout</a>
             {% else %}
-              <a class="nav-link" href="/admin">Login</a>
+              <a class="nav-link" href="/login">Login</a>
             {% endif %}
             </li>
           </ul>
@@ -483,30 +456,8 @@
         <p>&copy; @Akashi_SN 2016-2017</p>
       </footer>
     </div>
-
-    <script src="/static/js/jquery-3.1.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
-    <script src="/static/js/prism.js"></script>
-    <script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
-    <script type="text/javascript">
-      //Google-Analytics
-      (function (i, s, o, g, r, a, m) {
-        i['GoogleAnalyticsObject'] = r;
-        i[r] = i[r] || function () {
-          (i[r].q = i[r].q || [])
-            .push(arguments)
-        }
-          , i[r].l = 1 * new Date();
-        a = s.createElement(o)
-          , m = s.getElementsByTagName(o)[0];
-        a.async = 1;
-        a.src = g;
-        m.parentNode.insertBefore(a, m)
-      }
-      )(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
-      ga('create', 'UA-86861992-1', 'auto');
-      ga('send', 'pageview');
-    </script>
-  </body>
-</html>
+{% endblock %}
+    
+{% block scripts %}
+<script src="/static/js/prism.js"></script>
+{% endblock %}

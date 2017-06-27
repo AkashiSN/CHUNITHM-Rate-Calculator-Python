@@ -1,22 +1,10 @@
-<!DOCTYPE html>
-<html lang="ja">
-  <head>
-    <meta charset="utf-8">
+{% extends "base.html" %}
 
-    <!--Begin SEO-->
-    <meta name="robots" content="none" />
-    <!--End SEO-->
+{% block stylesheets %}
+    <link href="/static/css/admin.css" rel="stylesheet">
+{% endblock %}
 
-    <title>Dashboard</title>
-
-    <!--Begin Style-->
-    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/static/css/admin.css?date=201702181806" rel="stylesheet">
-    <!--End Style-->
-
-  </head>
-
-  <body>
+{% block content %}
     <nav class="navbar navbar-toggleable-md navbar-inverse fixed-top bg-inverse">
       <button class="navbar-toggler navbar-toggler-right hidden-lg-up" type="button" data-toggle="collapse" data-target="#memue" aria-controls="memue" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -61,9 +49,9 @@
           <ul class="navbar-nav mr-auto">
             <li class="nav-item">
             {% if session.logged_in %}
-              <a class="nav-link" href="/admin/logout">Logout</a>
+              <a class="nav-link" href="/logout">Logout</a>
             {% else %}
-              <a class="nav-link" href="/admin">Login</a>
+              <a class="nav-link" href="/login">Login</a>
             {% endif %}
             </li>
           </ul>
@@ -321,30 +309,11 @@
         </main>
       </div>
     </div>
+{% endblock %}
 
-    <script type="text/javascript" src="/static/js/jquery-3.1.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+{% block scripts %}
     <script type="text/javascript" src="/static/js/jquery.tablesorter.min.js"></script>
-    <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
     <script type="text/javascript">
-      //Google-Analytics
-      (function (i, s, o, g, r, a, m) {
-        i['GoogleAnalyticsObject'] = r;
-        i[r] = i[r] || function () {
-          (i[r].q = i[r].q || [])
-            .push(arguments)
-        }
-          , i[r].l = 1 * new Date();
-        a = s.createElement(o)
-          , m = s.getElementsByTagName(o)[0];
-        a.async = 1;
-        a.src = g;
-        m.parentNode.insertBefore(a, m)
-      }
-      )(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
-      ga('create', 'UA-86861992-1', 'auto');
-      ga('send', 'pageview');
-
       //Sort
       $(function() {
         $('#sorter').tablesorter();
@@ -366,5 +335,4 @@
         });
       });
     </script>
-  </body>
-</html>
+{% endblock %}

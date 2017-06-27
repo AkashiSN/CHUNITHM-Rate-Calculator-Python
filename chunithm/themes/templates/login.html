@@ -1,23 +1,10 @@
-<!DOCTYPE html>
-<html lang="ja">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+{% extends "base.html" %}
 
-    <!--Begin SEO-->
-    <meta name="robots" content="none" />
-    <!--End SEO-->
-
-    <title>Login</title>
-
-    <!--Begin Style-->
-    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+{% block stylesheets %}
     <link href="/static/css/login.css" rel="stylesheet">
-    <!--End Style-->
+{% endblock %}
 
-  </head>
-
-  <body>
+{% block content %}
     <div class="container">
     {% if Error %}
       <div class="alert alert-danger">
@@ -34,5 +21,4 @@
       </form>
       <a href="/">トップページに戻る</a>
     </div>
-  </body>
-</html>
+{% endblock %}

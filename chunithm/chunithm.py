@@ -1,32 +1,32 @@
 #!/usr/bin/env python3
 import hashlib,math,sys
 from datetime import datetime
-from common import Function as Func
-from common import DataBase as DB
+from chunithm import func
+from chunithm import db
 from pprint import pprint
 
 #レートを計算してデータベースに保存する
 def CalcRate(userId):
     '''レートを計算してデータベースに保存する'''
 
-    Base = DB.LoadBaseRate()
-    FriendCode = Func.Get_FriendCode(userId)
+    Base = db.LoadBaseRate()
+    FriendCode = func.Get_FriendCode(userId)
     if FriendCode is None:
         return None
 
     Hash = hashlib.sha256(str(FriendCode).encode('utf8')).hexdigest()
 
     Rating = {}
-    DataBase = DB.UserDataBase(Hash)
+    DataBase = db.UserDataBase(Hash)
 
     #Best枠について
-    MusicIdList = Func.Get_MusicIdList(userId) #MusicIdのリストの取得
+    MusicIdList = func.Get_MusicIdList(userId) #MusicIdのリストの取得
     if MusicIdList is None:
         return None
     Musics = []
     i = 0
     for Level in range(2,4):
-        MusicBestScore = Func.Get_DiffList(userId,"1990"+str(Level)) #エキスパート(19902)とマスター(19903)の曲別最大スコアのリストの取得
+        MusicBestScore = func.Get_DiffList(userId,"1990"+str(Level)) #エキスパート(19902)とマスター(19903)の曲別最大スコアのリストの取得
         if MusicBestScore is None:
             return None
         for MusicId in MusicIdList[Level-2]:
@@ -42,7 +42,7 @@ def CalcRate(userId):
                             'MusicName':MusicDetail['MusicName'],
                             'Image':MusicDetail['Image'],
                             'BaseRate':MusicDetail['BaseRate'],
-                            'Rate':Func.Score2Rate(Music['scoreMax'],MusicDetail['BaseRate']),
+                            'Rate':func.Score2Rate(Music['scoreMax'],MusicDetail['BaseRate']),
                             'Score':Music['scoreMax']
                         }
                         Musics.append(Dic)
@@ -61,7 +61,7 @@ def CalcRate(userId):
             if Music['Score'] >= 1007500:
                 Music['MaxScore'] = None
             else:
-                MaxScore = Func.Rate2Score(Music['BaseRate'],Rate['MinBestRate'])
+                MaxScore = func.Rate2Score(Music['BaseRate'],Rate['MinBestRate'])
                 if MaxScore <= 1007500 and MaxScore > 0 and MaxScore - Music['Score'] > 0:
                     Music['MaxScore'] = MaxScore
                 else:
@@ -72,7 +72,7 @@ def CalcRate(userId):
     DataBase.SetBest(Best)
 
     #Recent
-    Playlog = Func.Get_PlayLog(userId)
+    Playlog = func.Get_PlayLog(userId)
     if Playlog is None:
         return None
     Recent = DataBase.LoadRecent()
@@ -95,7 +95,7 @@ def CalcRate(userId):
                     'MusicName':MusicDetail['MusicName'],
                     'Image':MusicDetail['Image'],
                     'BaseRate':MusicDetail['BaseRate'],
-                    'Rate':Func.Score2Rate(Play['score'],MusicDetail['BaseRate']),
+                    'Rate':func.Score2Rate(Play['score'],MusicDetail['BaseRate']),
                     'Score':Play['score'],
                     'PlayDate':Play['userPlayDate'][0:-2]
                 }
@@ -159,7 +159,7 @@ def CalcRate(userId):
             i += 1
 
     #ユーザーデータ
-    UserInfo = Func.Get_UserData(userId)
+    UserInfo = func.Get_UserData(userId)
     if UserInfo is None:
         return None
     else:
@@ -208,7 +208,7 @@ def CalcRate(userId):
     #データベースに保存
     DataBase.SetUser(User)
 
-    Admin = DB.AdminDataBase()
+    Admin = db.AdminDataBase()
     Data = {
         'UserName':UserInfo['userName'],
         'FriendCode':FriendCode,
@@ -226,7 +226,7 @@ def CalcRate(userId):
 
 #Best枠の時の表示
 def DispBest(Hash):
-    DataBase = DB.UserDataBase(Hash)
+    DataBase = db.UserDataBase(Hash)
     Best = DataBase.LoadBest()
     User = DataBase.LoadUser()
     Rate = DataBase.LoadRate()
@@ -234,7 +234,7 @@ def DispBest(Hash):
 
 #Recent枠の時の表示
 def DispRecent(Hash):
-    DataBase = DB.UserDataBase(Hash)
+    DataBase = db.UserDataBase(Hash)
     Recent = DataBase.LoadRecent()
     User = DataBase.LoadUser()
     Rate = DataBase.LoadRate()
@@ -242,22 +242,22 @@ def DispRecent(Hash):
 
 #Graphの表示
 def DispGraph(Hash):
-    DataBase = DB.UserDataBase(Hash)
+    DataBase = db.UserDataBase(Hash)
     Rate = DataBase.LoadRate()
     User = DataBase.LoadUser()
     return User,Rate
 
 #Toolの表示
 def DispTools(Hash):
-    DataBase = DB.UserDataBase(Hash)
+    DataBase = db.UserDataBase(Hash)
     Rate = DataBase.LoadRate()
     User = DataBase.LoadUser()
     return User,Rate
 
 #譜面定数の確認
 def CheckMusic(userId):
-    MusicIdList = Func.Get_MusicIdList(userId)
-    DataBase = DB.LoadBaseRate()
+    MusicIdList = func.Get_MusicIdList(userId)
+    DataBase = db.LoadBaseRate()
     BaseRateList = DataBase.Get_BaseRateList()
     NoneMusicList = []
     ExistMusicList = []
@@ -279,7 +279,7 @@ def CheckMusic(userId):
                     }
                     ExistMusicList.append(Dic)
                     continue
-            Music = Func.Get_BestScore(userId,MusicId)
+            Music = func.Get_BestScore(userId,MusicId)
             Dic = {
                 'MusicId':MusicId,
                 'MusicName':Music['musicName'],
@@ -295,8 +295,8 @@ def CheckMusic(userId):
 
 #譜面定数の更新
 def SetMusic(UserId,MusicId,Level,BaseRate):
-    Music = Func.Get_BestScore(UserId, MusicId)
-    DataBase = DB.LoadBaseRate()
+    Music = func.Get_BestScore(UserId, MusicId)
+    DataBase = db.LoadBaseRate()
     Dic = {
         'MusicId':MusicId,
         'Level':Level,
@@ -309,10 +309,10 @@ def SetMusic(UserId,MusicId,Level,BaseRate):
 
 #楽曲の検索
 def SearchMusic(UserId,Dic):
-    DataBase = DB.LoadBaseRate()
-    MusicList = DataBase.SerchMusic_DB(Dic)
+    DataBase = db.LoadBaseRate()
+    MusicList = DataBase.SerchMusic_db(Dic)
     MusicIdList = {x['MusicId']:idx for idx,x in enumerate(MusicList) if x['Level'] == 2},{x['MusicId']:idx for idx,x in enumerate(MusicList) if x['Level'] == 3}
-    GenreList = Func.Get_Genre(UserId,Dic['Genre'],Dic['DiffLevel'])
+    GenreList = func.Get_Genre(UserId,Dic['Genre'],Dic['DiffLevel'])
     ResultList = []
     if Dic['DiffLevel']:
         for MusicId in GenreList:

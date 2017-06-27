@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #! python3
 import sqlite3,os
-from common import Function as Func
+from chunithm import func
 from pprint import pprint
 
 #譜面定数取得
@@ -275,9 +275,9 @@ class UserDataBase:
           'Score':row[5],
           'MaxScore':row[6],
           'Rate':row[7],
-          'Rank':Func.Score2Rank(row[5]),
+          'Rank':func.Score2Rank(row[5]),
           'LevelName':dif[row[1]],
-          'Diff':Func.BaseRate2Diff(row[4])
+          'Diff':func.BaseRate2Diff(row[4])
         }
         Best.append(Dic)
       return Best
@@ -301,7 +301,7 @@ class UserDataBase:
           'Score':row[5],
           'Rate':row[6],
           'PlayDate':row[7],
-          'Rank':Func.Score2Rank(row[5]),
+          'Rank':func.Score2Rank(row[5]),
           'LevelName':dif[row[1]]
         }
         Recent.append(Dic)
