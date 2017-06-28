@@ -1,0 +1,42 @@
+変数名など
+
+- 楽曲: music
+# 楽曲の情報
+	- 楽曲id: music_id
+	- 楽曲名: music_name
+	- 楽曲のカバーイラスト: music_cover_image
+	- アーティスト名: music_artist_name
+	- 楽曲の難易度（master etc...): music_difficulty
+	- 楽曲のレベル: music_level
+	- 楽曲の譜面定数: music_base_rate
+# ユーザーごとの値
+	- 楽曲のスコア: music_socore
+	- 楽曲のスコアに応じたレート値: music_rate
+	- 楽曲の最大スコア: music_socore_highest
+	- 楽曲の最大スコアに応じたレート値: music_rate_hightest
+	- プレー日時: music_play_date
+
+- レート: rate
+	- 表示レート: rate_disp
+	- 最大レート: rate_highest
+	- ベスト枠平均レート: rate_best
+	- リセント枠平均レート: rate_recent
+	- 到達可能レート: rate_max
+	- クレジット: credits
+	- 実行日時: execute_date
+
+- ユーザー: user
+	- キャラクターのイラスト: user_characterFileName
+	- キャラクターのレベル: user_characterLevel
+	- フレンドカウント: user_friendCount
+	- 最大レート: user_highestRating
+	- ユーザーのレベル: user_level
+	- クレジット数: user_playCount
+	- ユーザーのレート: user_playerRating
+	- ドルチェの数: user_point
+	- ユーザの転生回数: user_reincarnationNum
+	- 最大ドルチェ数: user_totalPoint
+	- ユーザーの称号: user_trophyName
+	- 称号の色: user_trophyType
+	- ユーザー名: user_userName
+	- 利用券の期限: user_webLimitDate
