@@ -247,30 +247,31 @@ class user_data_base:
                   `rate_best` INTEGER,
                   `rate_recent`  INTEGER,
                   `rate_max`  INTEGER,
-                  `credits` INTEGER,
-                  `execute_date` TEXT
+                  `user_playCount` INTEGER,
+                  `rate_execute_date` TEXT
                 );
               ''')            
             self.cur.execute('''
                 CREATE TABLE `user` (
-                  'Id'  INTEGER,
-                  `userName`  TEXT,
-                  `music_level` INTEGER,
-                  `TotalPoint`  INTEGER,
-                  `TrophyType`  INTEGER,
-                  `WebLimitDate`  TEXT,
-                  `CharacterFileName` TEXT,
-                  `FriendCount` INTEGER,
-                  `Point` INTEGER,
-                  `PlayCount` INTEGER,
-                  `Charactermusic_level`  INTEGER,
-                  `TrophyName`  TEXT,
-                  `ReincarnationNum`  INTEGER,
-                  `FriendCode`  INTEGER,
-                  `Hash`  TEXT,
-                  `FinalPlayDate` TEXT,
-                  `ExecuteDate` TEXT,
-                  PRIMARY KEY(`Id`)
+                    `user_id` INTEGER,
+                    `user_userName` TEXT,
+                    `user_characterFileName` TEXT,
+                    `user_characterLevel` INTEGER,
+                    `user_friendCount` INTEGER,
+                    `user_highestRating` INTEGER,
+                    `user_level` INTEGER,
+                    `user_playCount` INTEGER,
+                    `user_playerRating` INTEGER,
+                    `user_point` INTEGER,
+                    `user_reincarnationNum` INTEGER,
+                    `user_totalPoint` INTEGER,
+                    `user_trophyName` TEXT,
+                    `user_trophyType` INTEGER,
+                    `user_webLimitDate` TEXT,
+                    `user_friendCode` INTEGER,
+                    `user_hash` TEXT,
+                    `user_final_play_date` TEXT
+                    PRIMARY KEY(`user_id`)
                 );
               ''')
 
@@ -338,8 +339,8 @@ class user_data_base:
             )
             self.con.commit()
 
-    # ユーザー情報を保存する
-    def Setuser(self, user):
+    def update_user_info(self, user):
+        '''ユーザー情報を保存する'''
         sql = 'SELECT * FROM user WHERE PlayCount = ?'
         self.cur.execute(sql, (user['PlayCount'],))
         r = self.cur.fetchall()
@@ -348,44 +349,85 @@ class user_data_base:
             self.cur.execute(sql, (user['PlayCount'],))
         sql = '''
         INSERT INTO user (
-            userName,
-            music_level,
-            TotalPoint,
-            TrophyType,
-            WebLimitDate,
-            characterFileName,
-            FriendCount,
-            `Point`,
-            PlayCount,
-            Charactermusic_level,
-            TrophyName,
-            ReincarnationNum,
-            FriendCode,
-            Hash,
-            FinalPlayDate,
-            ExecuteDate
-        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
+            user_userName,
+            user_characterFileName,
+            user_characterLevel,
+            user_friendCount,
+            user_highestRating,
+            user_level,
+            user_playCount,
+            user_playerRating,
+            user_point,
+            user_reincarnationNum,
+            user_totalPoint,
+            user_trophyName,
+            user_trophyType,
+            user_webLimitDate,
+            user_friendCode,
+            user_hash,
+            user_final_play_date
+        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
         
-        self.cur.execute(sql, (user['userName'], user['music_level'], user['TotalPoint'], user['TrophyType'], user['WebLimitDate'], user['CharacterFileName'], user['FriendCount'], user[
-                         'Point'], user['PlayCount'], user['Charactermusic_level'], user['TrophyName'], user['ReincarnationNum'], user['FriendCode'], user['Hash'], user['FinalPlayDate'], user['ExecuteDate']))
+        self.cur.execute(
+            sql,(
+                user['user_userName'],
+                user['user_characterFileName'],
+                user['user_characterLevel'],
+                user['user_friendCount'],
+                user['user_highestRating'],
+                user['user_level'],
+                user['user_playCount'],
+                user['user_playerRating'],
+                user['user_point'],
+                user['user_reincarnationNum'],
+                user['user_totalPoint'],
+                user['user_trophyName'],
+                user['user_trophyType'],
+                user['user_webLimitDate'],
+                user['user_friendCode'],
+                user['user_hash'],
+                user['user_final_play_date']
+            )
+        )
         self.con.commit()
 
-    # レートの推移を保存する
-    def SetRate(self, Rate):
-        sql = 'SELECT * FROM Rate WHERE Credits = ?'
-        self.cur.execute(sql, (Rate['Credits'],))
+    def update_rate(self, rate):
+        '''レートの推移を保存する'''
+        sql = 'SELECT * FROM rate WHERE user_playCount = ?'
+        self.cur.execute(sql, (rate['user_playCount'],))
+
         r = self.cur.fetchall()
         if r:
-            sql = 'DELETE FROM Rate WHERE Credits = ?'
-            self.cur.execute(sql, (Rate['Credits'],))
-        sql = 'INSERT INTO Rate (DispRate,HighestRating,MaxRate,BestRate,recentRate,Credits,ExecuteDate) VALUES (?,?,?,?,?,?,?)'
-        self.cur.execute(sql, (Rate['DispRate'], Rate['HighestRating'], Rate['MaxRate'], Rate[
-                         'BestRate'], Rate['recentRate'], Rate['Credits'], Rate['ExecuteDate']))
+            sql = 'DELETE FROM rate WHERE user_playCount = ?'
+            self.cur.execute(sql, (rate['user_playCount'],))
+
+        sql = '''
+        INSERT INTO rate (
+            rate_disp,
+            rate_highest,
+            rate_best,
+            rate_recent,
+            rate_max,
+            user_playCount,
+            rate_execute_date
+        ) VALUES (?,?,?,?,?,?,?)'''
+
+        self.cur.execute(
+            sql,(
+                rate['rate_disp'],
+                rate['rate_highest'],
+                rate['rate_best'],
+                rate['rate_recent'],
+                rate['rate_max'],
+                rate['user_playCount'],
+                rate['rate_execute_date']
+            )
+        )
         self.con.commit()
 
     # ベスト枠を読み込む
-    def LoadBest(self):
-        self.cur.execute("SELECT * FROM Best")
+    def load_best(self):
+        self.cur.execute("SELECT * FROM best")
         rows = self.cur.fetchall()
         if rows:
             Best = []
@@ -393,15 +435,15 @@ class user_data_base:
             for row in rows:
                 Dic = {
                     'music_id': row[0],
-                    'music_level': row[1],
-                    'music_name': row[2],
-                    'musicImage': row[3],
-                    'music_base_rate': row[4],
-                    'Score': row[5],
-                    'MaxScore': row[6],
-                    'Rate': row[7],
+                    'music_name': row[1],
+                    'music_cover_image': row[2],
+                    'music_artist_name': row[3],
+                    'music_difficulty': row[4],
+                    'music_level': row[5],
+                    'music_base_rate': row[6],
+                    'music_socore_highest': row[7],
+                    'music_rate_hightest': row[8],
                     'Rank': func.Score2Rank(row[5]),
-                    'music_levelName': dif[row[1]],
                     'Diff': func.music_base_rate2Diff(row[4])
                 }
                 Best.append(Dic)

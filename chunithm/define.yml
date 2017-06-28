@@ -22,10 +22,12 @@
 	- ベスト枠平均レート: rate_best
 	- リセント枠平均レート: rate_recent
 	- 到達可能レート: rate_max
-	- クレジット: credits
-	- 実行日時: execute_date
+	- クレジット数: user_playCount
+	- 実行日時: rate_execute_date
 
 - ユーザー: user
+	- ユーザーID: user_id
+	- ユーザー名: user_userName
 	- キャラクターのイラスト: user_characterFileName
 	- キャラクターのレベル: user_characterLevel
 	- フレンドカウント: user_friendCount
@@ -38,5 +40,7 @@
 	- 最大ドルチェ数: user_totalPoint
 	- ユーザーの称号: user_trophyName
 	- 称号の色: user_trophyType
-	- ユーザー名: user_userName
 	- 利用券の期限: user_webLimitDate
+	- フレンドコード: user_friendCode
+	- フレンドコードのハッシュ値: user_hash
+	- 最終プレイ日時: user_final_play_date
