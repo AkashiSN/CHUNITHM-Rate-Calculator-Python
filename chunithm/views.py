@@ -23,6 +23,49 @@ def api():
     else:
         return abort(403)
 
+@views.route('/chunithm/user/<Hash>')
+@views.route('/chunithm/user/<Hash>/best')
+@views.route('/chunithm/user/<Hash>/best/<Sort>')
+def best(Hash,Sort='rate'):
+    try:
+        if Sort == 'rate':
+            Best, User, Rate = chunithm.DispBest(Hash)
+            return render_template('main.html',Hash=Hash,Name='Best枠',Musics_list=Best,User=User[-1],Rate=Rate)
+        elif Sort == 'score':
+            Best, User, Rate = chunithm.DispBest(Hash)
+            Best = sorted(Best, key=lambda x: x['Score'], reverse=True)
+            Best = Func.CountRank(Best)
+            return render_template(
+                'main.html',
+                Hash=Hash,
+                frame='Best',
+                Musics=Best,
+                User=User[-1],
+                Rate=Rate,
+                Sort='score',
+            )
+        elif Sort == 'difficult':
+            Best, User, Rate = chunithm.DispBest(Hash)
+            Best = sorted(Best, key=lambda x: x['BaseRate'], reverse=True)
+            Best = Func.CountDiff(Best)
+            return render_template(
+                'main.html',
+                Hash=Hash,
+                frame='Best',
+                Musics=Best,
+                User=User[-1],
+                Rate=Rate,
+                Sort='difficult'
+            )
+
+    except Exception as e:
+        return render_template(
+            'main.html',
+            frame='Error',
+            url='/',
+            Message='ユーザーが登録されていません。'
+        )
+
 @views.route('/login', methods=['POST','GET'])
 def login():
     if request.method == 'POST':

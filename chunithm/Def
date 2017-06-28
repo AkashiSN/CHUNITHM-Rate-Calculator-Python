@@ -1,0 +1,24 @@
+変数名など
+
+- 楽曲: music
+# 楽曲の情報
+	- 楽曲id: music_id
+	- 楽曲名: music_name
+	- 楽曲のカバーイラスト: music_cover_image
+	- アーティスト名: music_artist_name
+	- 楽曲の難易度（master etc...): music_difficulty
+	- 楽曲のレベル: music_level
+	- 楽曲の譜面定数: music_base_rate
+# ユーザーごとの値
+	- 楽曲のスコア: music_socore
+	- 楽曲のスコアに応じたレート値: music_rate
+	- 楽曲の最大スコア: music_socore_highest
+	- 楽曲の最大スコアに応じたレート値: music_rate_hightest
+
+- レート: rate
+	- 表示レート: rate_disp
+	- ベスト枠平均レート: rate_best
+	- リセント枠平均レート: rate_recent
+	- 最大レート: rate_highest
+	- 到達可能レート: rate_max
+

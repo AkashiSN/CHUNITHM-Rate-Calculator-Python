@@ -5,7 +5,7 @@ import sqlite3,os,collections
 class AdminDataBase:
     '''管理用のデータベース'''
     def __init__(self):
-        Path = os.path.dirname(__file__)+'/admin.db'
+        Path = os.path.dirname(__file__)+'/db/admin.db'
         if os.path.exists(Path):
             self.con = sqlite3.connect(Path)
             self.cur = self.con.cursor()
