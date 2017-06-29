@@ -2,6 +2,7 @@
 #! python3
 import sqlite3
 import os
+import collections
 # from chunithm import func
 
 
@@ -538,6 +539,7 @@ class admin_data_base():
     '''管理用のデータベース'''
 
     def __init__(self):
+        '''事前処理'''
         path = os.path.dirname(__file__)+'/db/admin.db'
         if os.path.exists(path):
             self.con = sqlite3.connect(path)
@@ -547,26 +549,25 @@ class admin_data_base():
             self.cur = self.con.cursor()
             self.cur.execute('''
         CREATE TABLE `user` (
-          `user_userName`  TEXT,
-          `user_friendCode`  TEXT,
-          `user_hash`  TEXT,
-          `user_playCount` INTEGER,
-          `rate_disp`  INTEGER,
-          `rate_highest` INTEGER,
-          `rate_best` INTEGER,
-          `rate_recent`  INTEGER,
-          `rate_max`  INTEGER
-        );
-      ''')
+            `user_userName`  TEXT,
+            `user_friendCode`  TEXT,
+            `user_hash`  TEXT,
+            `user_playCount` INTEGER,
+            `rate_disp`  INTEGER,
+            `rate_highest` INTEGER,
+            `rate_best` INTEGER,
+            `rate_recent`  INTEGER,
+            `rate_max`  INTEGER
+        );''')
 
-    # データを保存する
     def update_user_admin(self, data):
-        sql = 'SELECT * FROM user WHERE Hash = ?'
-        self.cur.execute(sql, (data['Hash'],))
+        '''ユーザ管理データベースを更新する'''
+        sql = 'SELECT * FROM user WHERE user_hash = ?'
+        self.cur.execute(sql, (data['user_hash'],))
         r = self.cur.fetchall()
         if r:
             sql = 'DELETE FROM user WHERE Hash = ?'
-            self.cur.execute(sql, (data['Hash'],))
+            self.cur.execute(sql, (data['user_hash'],))
         sql = '''
         INSERT INTO user (
             user_userName,
@@ -594,3 +595,73 @@ class admin_data_base():
             )
         )
         self.con.commit()
+
+    def load_admin_data_base(self):
+        '''ユーザ管理データベースから読み込む'''
+        self.cur.execute('SELECT * FROM user')
+        rows = self.cur.fetchall()
+        if rows:
+            user = []
+            for row in rows:
+                Dic = {
+                    'user_userName': row[0],
+                    'user_friendCode': row[1],
+                    'user_hash': row[2],
+                    'user_playCount': row[3],
+                    'rate_disp': row[4],
+                    'rate_highest': row[5],
+                    'rate_best': row[6],
+                    'rate_recent': row[7],
+                    'rate_max': row[8]
+                }
+                user.append(Dic)
+            return user
+        else:
+            return None
+
+    def cout_rate(self):
+        self.cur.execute('SELECT * FROM user')
+        rows = self.cur.fetchall()
+        if rows:
+            DispRate = []
+            HighestRating = []
+            MaxRate = []
+            BestRate = []
+            RecentRate = []
+            for row in rows:
+                DispRate.append(row[4])
+                HighestRating.append(row[5])
+                MaxRate.append(row[6])
+                BestRate.append(row[7])
+                RecentRate.append(row[8])
+
+            DispRate_count = collections.Counter(DispRate)
+            HighestRating_count = collections.Counter(HighestRating)
+            MaxRate_count = collections.Counter(MaxRate)
+            BestRate_count = collections.Counter(BestRate)
+            RecentRate_count = collections.Counter(RecentRate)
+
+            return DispRate_count,HighestRating_count,MaxRate_count,MaxRate_count,BestRate_count,RecentRate_count
+
+    def SerchUser(self,User):
+        sql = 'SELECT * FROM User Where UserName = ? or FriendCode = ? or Credits = ? or DispRate = ? or HighestRating = ? or MaxRate = ? or BestRate = ? or RecentRate = ?'
+        self.cur.execute(sql,(User['UserName'],User['FriendCode'],User['Credits'],User['DispRate'],User['HighestRating'],User['MaxRate'],User['BestRate'],User['RecentRate']))
+        rows  = self.cur.fetchall()
+        if rows:
+            user = []
+            for row in rows:
+                Dic = {
+                    'UserName':row[0],
+                    'FriendCode':row[1],
+                    'Hash':row[2],
+                    'Credits':row[3],
+                    'DispRate':row[4],
+                    'HighestRating':row[5],
+                    'MaxRate':row[6],
+                    'BestRate':row[7],
+                    'RecentRate':row[8]
+                }
+                user.append(Dic)
+            return user
+        else:
+            return self.LoadData()
