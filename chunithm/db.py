@@ -220,7 +220,7 @@ class user_data_base:
                   `music_cover_image` TEXT,
                   `music_artist_name` TEXT,
                   `music_difficulty`  INTEGER,
-                  `music_level` INTEGER,
+                  `music_level` TEXT,
                   `music_base_rate`  INTEGER,
                   `music_socore_highest`  INTEGER,
                   `music_rate_hightest`  INTEGER,
@@ -233,7 +233,7 @@ class user_data_base:
                   `music_cover_image` TEXT,
                   `music_artist_name` TEXT,
                   `music_difficulty`  INTEGER,
-                  `music_level` INTEGER,
+                  `music_level` TEXT,
                   `music_base_rate`  INTEGER,
                   `music_socore`  INTEGER,
                   `music_rate`  INTEGER,
@@ -425,8 +425,8 @@ class user_data_base:
         )
         self.con.commit()
 
-    # ベスト枠を読み込む
     def load_best(self):
+        '''ベスト枠をデータベースから読み込む'''
         self.cur.execute("SELECT * FROM best")
         rows = self.cur.fetchall()
         if rows:
@@ -443,16 +443,15 @@ class user_data_base:
                     'music_base_rate': row[6],
                     'music_socore_highest': row[7],
                     'music_rate_hightest': row[8],
-                    'Rank': func.Score2Rank(row[5]),
-                    'Diff': func.music_base_rate2Diff(row[4])
+                    'music_score_rank': func.score_to_rank(row[7])
                 }
                 Best.append(Dic)
             return Best
         else:
             return None
 
-    # リセント候補枠を読み込む
-    def Loadrecent(self):
+    def load_recent(self):
+        '''リセント候補枠をデータベースから読み込む'''
         self.cur.execute("SELECT * FROM recent")
         rows = self.cur.fetchall()
         if rows:
@@ -461,23 +460,24 @@ class user_data_base:
             for row in rows:
                 Dic = {
                     'music_id': row[0],
-                    'music_level': row[1],
-                    'music_name': row[2],
-                    'Image': row[3],
-                    'music_base_rate': row[4],
-                    'Score': row[5],
-                    'Rate': row[6],
-                    'PlayDate': row[7],
-                    'Rank': func.Score2Rank(row[5]),
-                    'music_levelName': dif[row[1]]
+                    'music_name': row[1],
+                    'music_cover_image': row[2],
+                    'music_artist_name': row[3],
+                    'music_difficulty':  row[4],
+                    'music_level': row[5],
+                    'music_base_rate':  row[6],
+                    'music_socore':  row[7],
+                    'music_rate':  row[8],
+                    'music_play_date': row[9],
+                    'music_score_rank': func.score_to_rank(row[7])
                 }
                 recent.append(Dic)
             return recent
         else:
             return None
 
-    # ユーザーデータを読み込む
-    def Loaduser(self):
+    def load_user(self):
+        '''ユーザーデータをデータベースから読み込む'''
         self.cur.execute('SELECT * FROM user')
         rows = self.cur.fetchall()
         if rows:
@@ -487,89 +487,109 @@ class user_data_base:
             trophyType = ["normal", "copper", "silver", "gold", "platina"]
             for row in rows:
                 Dic = {
-                    'Id': row[0],
-                    'userName': row[1],
-                    'music_level': row[2],
-                    'TotalPoint': row[3],
-                    'TrophyType': row[4],
-                    'WebLimitDate': row[5],
-                    'CharacterFileName': row[6],
-                    'FriendCount': row[7],
-                    'Point': row[8],
-                    'PlayCount': row[9],
-                    'Charactermusic_level': row[10],
-                    'TrophyName': row[11],
-                    'ReincarnationNum': row[12],
-                    'FriendCode': row[13],
-                    'Hash': row[14],
-                    'FinalPlayDate': row[15],
-                    'ExecuteDate': row[16],
-                    'CharacterFrameFile': characterFrame[int(row[10]/5)],
-                    'Honor': trophyType[row[4]]
+                    'user_id': row[0],
+                    'user_userName': row[1],
+                    'user_characterFileName': characterFrame[int(row[2]/5)],
+                    'user_characterLevel': row[3],
+                    'user_friendCount': row[4],
+                    'user_highestRating': row[5],
+                    'user_level': row[6],
+                    'user_playCount': row[7],
+                    'user_playerRating': row[8],
+                    'user_point': row[9],
+                    'user_reincarnationNum': row[10],
+                    'user_totalPoint': row[11],
+                    'user_trophyName': row[12],
+                    'user_trophyType': trophyType[row[13]],
+                    'user_webLimitDate': row[14],
+                    'user_friendCode': row[15],
+                    'user_hash': row[16],
+                    'user_final_play_date': row[17]
                 }
                 user.append(Dic)
             return user
         else:
             return None
 
-    # レートの推移を読み込む
-    def LoadRate(self):
-        self.cur.execute('SELECT * FROM Rate')
+    def load_rate(self):
+        '''レートの推移をデータベースから読み込む'''
+        self.cur.execute('SELECT * FROM rate')
         rows = self.cur.fetchall()
         if rows:
             Rate = []
             for row in rows:
                 Dic = {
-                    'DispRate': row[0],
-                    'HighestRating': row[1],
-                    'MaxRate': row[2],
-                    'BestRate': row[3],
-                    'recentRate': row[4],
-                    'Credits': row[5],
-                    'ExecuteDate': row[6]
+                    'rate_disp': row[0],
+                    'rate_highest': row[1],
+                    'rate_best': row[2],
+                    'rate_recent': row[3],
+                    'rate_max': row[4],
+                    'user_playCount': row[5],
+                    'rate_execute_date': row[6]
                 }
                 Rate.append(Dic)
             return Rate
         else:
             return None
 
-# 管理用のデータベース
 
+class admin_data_base():
+    '''管理用のデータベース'''
 
-# class AdminDataBase():
-#     '''管理用のデータベース'''
+    def __init__(self):
+        path = os.path.dirname(__file__)+'/db/admin.db'
+        if os.path.exists(path):
+            self.con = sqlite3.connect(path)
+            self.cur = self.con.cursor()
+        else:
+            self.con = sqlite3.connect(path)
+            self.cur = self.con.cursor()
+            self.cur.execute('''
+        CREATE TABLE `user` (
+          `user_userName`  TEXT,
+          `user_friendCode`  TEXT,
+          `user_hash`  TEXT,
+          `user_playCount` INTEGER,
+          `rate_disp`  INTEGER,
+          `rate_highest` INTEGER,
+          `rate_best` INTEGER,
+          `rate_recent`  INTEGER,
+          `rate_max`  INTEGER
+        );
+      ''')
 
-#     def __init__(self):
-#         path = os.path.dirname(__file__)+'/db/admin.db'
-#         if os.path.exists(path):
-#             self.con = sqlite3.connect(path)
-#             self.cur = self.con.cursor()
-#         else:
-#             self.con = sqlite3.connect(path)
-#             self.cur = self.con.cursor()
-#             self.cur.execute('''
-#         CREATE TABLE `user` (
-#           `userName`  TEXT,
-#           `FriendCode`  TEXT,
-#           `Hash`  TEXT,
-#           `Credits` INTEGER,
-#           `DispRate`  INTEGER,
-#           `HighestRating` INTEGER,
-#           `MaxRate` INTEGER,
-#           `BestRate`  INTEGER,
-#           `recentRate`  INTEGER
-#         );
-#       ''')
+    # データを保存する
+    def update_user_admin(self, data):
+        sql = 'SELECT * FROM user WHERE Hash = ?'
+        self.cur.execute(sql, (data['Hash'],))
+        r = self.cur.fetchall()
+        if r:
+            sql = 'DELETE FROM user WHERE Hash = ?'
+            self.cur.execute(sql, (data['Hash'],))
+        sql = '''
+        INSERT INTO user (
+            user_userName,
+            user_friendCode,
+            user_hash,
+            user_playCount,
+            rate_disp,
+            rate_highest,
+            rate_best,
+            rate_recent,
+            rate_max
+        ) VALUES (?,?,?,?,?,?,?,?,?)'''
 
-#     # データを保存する
-#     def SetData(self, Data):
-#         sql = 'SELECT * FROM user WHERE Hash = ?'
-#         self.cur.execute(sql, (Data['Hash'],))
-#         r = self.cur.fetchall()
-#         if r:
-#             sql = 'DELETE FROM user WHERE Hash = ?'
-#             self.cur.execute(sql, (Data['Hash'],))
-#         sql = 'INSERT INTO user (userName,FriendCode,Hash,Credits,DispRate,HighestRating,MaxRate,BestRate,recentRate) VALUES (?,?,?,?,?,?,?,?,?)'
-#         self.cur.execute(sql, (Data['userName'], Data['FriendCode'], Data['Hash'], Data['Credits'], Data[
-#                          'DispRate'], Data['HighestRating'], Data['MaxRate'], Data['BestRate'], Data['recentRate']))
-#         self.con.commit()
+        self.cur.execute(
+            sql,(
+                data['user_userName'],
+                data['user_friendCode'],
+                data['user_hash'],
+                data['user_playCount'],
+                data['rate_disp'],
+                data['rate_highest'],
+                data['rate_best'],
+                data['rate_recent'],
+                data['rate_max']
+                )
+            )
+        self.con.commit()

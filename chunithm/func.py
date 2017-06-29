@@ -192,8 +192,8 @@ def Rate2Score(BaseRate, Rate):
     else:
         return -1
 
-#スコアからランク
-def Score2Rank(Score):
+def score_to_rank(Score):
+    '''スコアからランクにして返す'''
     if Score >= 1007500:
         return 'sss'
     elif Score >= 1000000:
@@ -218,21 +218,6 @@ def Score2Rank(Score):
         return 'd'
     else:
         return None
-
-#譜面定数から難易度
-def BaseRate2Diff(BaseRate):
-    if BaseRate >= 13.7:
-        return '13+'
-    if BaseRate >= 13:
-        return '13'
-    if BaseRate >= 12.7:
-        return '12+'
-    if BaseRate >= 12:
-        return '12'
-    if BaseRate >= 11.7:
-        return '11+'
-    if BaseRate >= 11:
-        return '11'
 
 #フラグを立てる
 def CountRank(Musics):
