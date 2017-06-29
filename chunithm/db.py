@@ -72,7 +72,7 @@ class music_base_rate:
     def fetch_music_id_from_file_name(self, file_name):
         '''登録されている楽曲の中からカバーイラストのファイル名から楽曲idをフェッチして返す'''
         sql = 'SELECT * FROM music WHERE "music_cover_image" = ?'
-        self.cur.execute(sql,(file_name,))
+        self.cur.execute(sql, (file_name,))
         r = self.cur.fetchone()
         if r is None:
             return None
@@ -86,7 +86,8 @@ class music_base_rate:
         row = self.cur.fetchone()
         if row:
             sql = 'DELETE FROM music WHERE music_id = ? AND music_difficulty = ?'
-            self.cur.execute(sql, (music['music_id'], music['music_difficulty']))
+            self.cur.execute(
+                sql, (music['music_id'], music['music_difficulty']))
         if music_shortage:
             sql = '''
             INSERT INTO music (
@@ -200,7 +201,7 @@ class user_data_base:
     def __init__(self, hash):
         '''事前処理'''
         path = os.path.dirname(__file__)+'/user/'
-        
+
         if os.path.exists(path):
             pass
         else:
@@ -250,7 +251,7 @@ class user_data_base:
                   `user_playCount` INTEGER,
                   `rate_execute_date` TEXT
                 );
-              ''')            
+              ''')
             self.cur.execute('''
                 CREATE TABLE `user` (
                     `user_id` INTEGER,
@@ -292,7 +293,7 @@ class user_data_base:
         ) VALUES (?,?,?,?,?,?,?,?)'''
         for music in best:
             self.cur.execute(
-                sql,(
+                sql, (
                     music['music_id'],
                     music['music_name'],
                     music['music_cover_image'],
@@ -324,7 +325,7 @@ class user_data_base:
         ) VALUES (?,?,?,?,?,?,?,?)'''
         for music in recent:
             self.cur.execute(
-                sql,(
+                sql, (
                     music['music_id'],
                     music['music_name'],
                     music['music_cover_image'],
@@ -367,9 +368,9 @@ class user_data_base:
             user_hash,
             user_final_play_date
         ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
-        
+
         self.cur.execute(
-            sql,(
+            sql, (
                 user['user_userName'],
                 user['user_characterFileName'],
                 user['user_characterLevel'],
@@ -413,7 +414,7 @@ class user_data_base:
         ) VALUES (?,?,?,?,?,?,?)'''
 
         self.cur.execute(
-            sql,(
+            sql, (
                 rate['rate_disp'],
                 rate['rate_highest'],
                 rate['rate_best'],
@@ -580,7 +581,7 @@ class admin_data_base():
         ) VALUES (?,?,?,?,?,?,?,?,?)'''
 
         self.cur.execute(
-            sql,(
+            sql, (
                 data['user_userName'],
                 data['user_friendCode'],
                 data['user_hash'],
@@ -590,6 +591,6 @@ class admin_data_base():
                 data['rate_best'],
                 data['rate_recent'],
                 data['rate_max']
-                )
             )
+        )
         self.con.commit()
