@@ -3,7 +3,7 @@ import os
 from flask import Flask
 from jinja2 import FileSystemLoader
 from chunithm.views import views
-from chunithm.utils import init_errors
+from chunithm.func import init_errors
 
 def start_app():
 	app = Flask(__name__)
