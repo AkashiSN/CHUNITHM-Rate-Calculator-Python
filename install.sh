@@ -1,6 +1,5 @@
 #!/bin/sh
 
-sudo su
 echo "chunical.net" > /etc/hostname
 apt-get update
 apt-get upgrade
