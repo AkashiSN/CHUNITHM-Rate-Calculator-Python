@@ -10,15 +10,15 @@
 	- 楽曲のレベル: music_level
 	- 楽曲の譜面定数: music_base_rate
 # ユーザーごとの値
-	- 楽曲のスコア: music_socore
+	- 楽曲のスコア: music_score
 	- 楽曲のスコアに応じたレート値: music_rate
-	- 楽曲の最大スコア: music_socore_highest
+	- 楽曲の最大スコア: music_score_highest
 	- 楽曲の最大スコアに応じたレート値: music_rate_hightest
 	- プレー日時: music_play_date
 	- スコアのランク(ss,sss): music_score_rank
 
 - レート: rate
-	- 表示レート: rate_disp
+	- 表示レート: rate_display
 	- 最大レート: rate_highest
 	- ベスト枠平均レート: rate_best
 	- リセント枠平均レート: rate_recent

@@ -1,2 +1,3 @@
 flask
 pysha3
+requests

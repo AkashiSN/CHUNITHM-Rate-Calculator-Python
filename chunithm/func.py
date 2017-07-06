@@ -1,84 +1,118 @@
 #!/usr/bin/env python3
-import json,requests,math
+
+import json
+import requests
+import math
 from flask import render_template
+
 
 def init_errors(app):
     @app.errorhandler(404)
-    def page_not_found(error):
+    def page_not_found():
         return render_template('errors/404.html'), 404
 
     @app.errorhandler(403)
-    def forbidden(error):
+    def forbidden():
         return render_template('errors/403.html'), 403
 
     @app.errorhandler(500)
-    def general_error(error):
+    def general_error():
         return render_template('errors/500.html'), 500
 
     @app.errorhandler(405)
-    def gateway_error(error):
+    def gateway_error():
         return render_template('errors/405.html'), 405
 
 
-#ポストデータからUserIdを取得
-def userId_Get(userId):
-    tmp = userId.split(';')
+def extraction_user_id(post_data):
+    """
+    ポストデータからuser_idを抽出
+    :param post_data: ポストデータ
+    :return user_id: ユーザーid
+    """
+    tmp = post_data.split(';')
     for tmp1 in tmp:
         if 'userId' in tmp1:
             return tmp1.split('=')[1]
     return None
 
-#ログインしてUserIdを取得
-def Get_userId(SegaId,password):
+
+def fetch_user_id(sega_id, password):
+    """
+    ログインしてUserIdを取得
+    :param sega_id: セガid
+    :param password: パスワード
+    :return user_id: ユーザーid
+    """
     url = 'https://chunithm-net.com/Login/SegaIdLoginApi'
-    parm = {'segaId':SegaId, 'password':password}
-    re = requests.post(url,data=json.dumps(parm))
+    parm = {'segaId': sega_id, 'password': password}
+    re = requests.post(url, data=json.dumps(parm))
     if re is None:
         return None
     else:
         return str(re.json()['sessionIdList'][0])
 
-#Level11以上のMusicIdのリストを取得
-def Get_MusicIdList(userId):
+
+def fetch_music_id_list(user_id):
+    """
+    music_level11以上のmusic_idのリストを取得
+    :param user_id: ユーザーid
+    :return music_id_list: 難易度master楽曲idのリスト
+    :return expert_music_id_list: 難易度expert楽曲idのリスト
+    """
     url = 'https://chunithm-net.com/ChuniNet/GetUserMusicLevelApi'
-    MusicIdList = []
-    ExList = []
-    for Level in range(11,14):
-        parm = {'userId':userId,'level':Level}
-        re = requests.post(url,data=json.dumps(parm))
+    music_id_list = []
+    expert_music_id_list = []
+    for music_level in range(11, 14):
+        parm = {'userId': user_id, 'level': music_level}
+        re = requests.post(url, data=json.dumps(parm))
         if re is None:
             return None
-        Json = re.json()
-        if Json is None:
+        json_data = re.json()
+        if json_data is None:
             return None
-        MusicIdList += Json['levelList']
-        MusicIdList += Json['levelPlusList']
-        for Id,dif in Json['difLevelMap'].items():
+        music_id_list += json_data['levelList']
+        music_id_list += json_data['levelPlusList']
+        for Id, dif in json_data['difLevelMap'].items():
             if dif == 2:
-                ExList.append(int(Id))
-    MusicIdList = list(set(MusicIdList))
-    ExList = list(set(ExList))
-    return ExList,MusicIdList
+                expert_music_id_list.append(int(Id))
 
-#楽曲の詳細情報を取得
-def Get_BestScore(userId,musicId):
+    music_id_list = list(set(music_id_list))
+    expert_music_id_list = list(set(expert_music_id_list))
+    return expert_music_id_list, music_id_list
+
+
+def fetch_music_score_highest(user_id, music_id):
+    """
+    楽曲の詳細情報を取得
+    :param user_id: ユーザーid
+    :param music_id: 楽曲id
+    :return json_data: 取得したデータ
+    """
     url = 'https://chunithm-net.com/ChuniNet/GetUserMusicDetailApi'
-    parm = {'userId':userId,'musicId':musicId}
-    re = requests.post(url,data=json.dumps(parm))
+    parm = {'userId': user_id, 'musicId': music_id}
+    re = requests.post(url, data=json.dumps(parm))
     if re is None:
         return None
-    Json = json.loads(re.text,'utf-8')
-    return Json
+    json_data = json.loads(re.text, 'utf-8')
+    return json_data
 
-#各難易度の一覧取得(19903:マスター,19902:エキスパート)
-def Get_DiffList(userId,level):
+
+#
+def fetch_difficulty_list(user_id, music_difficulty):
+    """
+    各難易度の一覧取得(19903:マスター,19902:エキスパート)
+    :param user_id: ユーザーid
+    :param music_difficulty: 難易度(masterとか)
+    :return json_data: 各難易度の楽曲の情報
+    """
     url = 'https://chunithm-net.com/ChuniNet/GetUserMusicApi'
-    parm = {"level":level,"userId":userId}
-    re = requests.post(url,data=json.dumps(parm))
+    parm = {"level": music_difficulty, "userId": user_id}
+    re = requests.post(url, data=json.dumps(parm))
     if re is None:
         return None
-    Json = re.json()
-    return Json
+    json_data = re.json()
+    return json_data
 
 #ユーザーデータの詳細取得
 def Get_UserData(userId):

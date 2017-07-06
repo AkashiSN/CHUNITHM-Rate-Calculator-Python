@@ -1,11 +1,19 @@
 #!/usr/bin/env python3
-import hashlib,math,sys
+import hashlib
+import math
+import sys
 from datetime import datetime
 from chunithm import func
 from chunithm import db
 from pprint import pprint
 
-#レートを計算してデータベースに保存する
+
+def calculate_best_rate(user_id):
+    music_base_rate = db.Music()
+    user_friendCode = func.Get_FriendCode(user_id)
+
+
+# レートを計算してデータベースに保存する
 def CalcRate(userId):
     '''レートを計算してデータベースに保存する'''
 
@@ -19,14 +27,14 @@ def CalcRate(userId):
     Rating = {}
     DataBase = db.UserDataBase(Hash)
 
-    #Best枠について
-    MusicIdList = func.Get_MusicIdList(userId) #MusicIdのリストの取得
+    # Best枠について
+    MusicIdList = func.Get_MusicIdList(userId)  # MusicIdのリストの取得
     if MusicIdList is None:
         return None
     Musics = []
     i = 0
     for Level in range(2,4):
-        MusicBestScore = func.Get_DiffList(userId,"1990"+str(Level)) #エキスパート(19902)とマスター(19903)の曲別最大スコアのリストの取得
+        MusicBestScore = func.Get_DiffList(userId,"1990"+str(Level))  # エキスパート(19902)とマスター(19903)の曲別最大スコアのリストの取得
         if MusicBestScore is None:
             return None
         for MusicId in MusicIdList[Level-2]:
