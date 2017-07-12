@@ -2,46 +2,46 @@
 
 - 楽曲: music
 # 楽曲の情報
-	- 楽曲id: music_id
-	- 楽曲名: music_name
-	- 楽曲のカバーイラスト: music_cover_image
-	- アーティスト名: music_artist_name
-	- 楽曲の難易度（master etc...): music_difficulty
-	- 楽曲のレベル: music_level
-	- 楽曲の譜面定数: music_base_rate
+  - 楽曲id: music_id
+  - 楽曲名: music_name
+  - 楽曲のカバーイラスト: music_cover_image
+  - アーティスト名: music_artist_name
+  - 楽曲の難易度（master etc...): music_difficulty
+  - 楽曲のレベル: music_level
+  - 楽曲の譜面定数: music_base_rate
 # ユーザーごとの値
-	- 楽曲のスコア: music_score
-	- 楽曲のスコアに応じたレート値: music_rate
-	- 楽曲の最大スコア: music_score_highest
-	- 楽曲の最大スコアに応じたレート値: music_rate_hightest
-	- プレー日時: music_play_date
-	- スコアのランク(ss,sss): music_score_rank
+  - 楽曲のスコア: music_score
+  - 楽曲のスコアに応じたレート値: music_rate
+  - 楽曲の最大スコア: music_score_highest
+  - 楽曲の最大スコアに応じたレート値: music_rate_hightest
+  - プレー日時: music_play_date
+  - スコアのランク(ss,sss): music_score_rank
 
 - レート: rate
-	- 表示レート: rate_display
-	- 最大レート: rate_highest
-	- ベスト枠平均レート: rate_best
-	- リセント枠平均レート: rate_recent
-	- 到達可能レート: rate_max
-	- クレジット数: user_playCount
-	- 実行日時: rate_execute_date
+  - 表示レート: rate_display
+  - 最大レート: rate_highest
+  - ベスト枠平均レート: rate_best
+  - リセント枠平均レート: rate_recent
+  - 到達可能レート: rate_max
+  - クレジット数: user_playCount
+  - 実行日時: rate_execute_date
 
 - ユーザー: user
-	- ユーザーID: user_id
-	- ユーザー名: user_name
-	- キャラクターのイラスト: user_character_file_name
-	- キャラクターのレベル: user_character_level
-	- フレンドカウント: user_friend_count
-	- 最大レート: user_highest_rating
-	- ユーザーのレベル: user_level
-	- クレジット数: user_play_count
-	- ユーザーのレート: user_player_rating
-	- ドルチェの数: user_point
-	- ユーザの転生回数: user_reincarnation_num
-	- 最大ドルチェ数: user_total_point
-	- ユーザーの称号: user_trophy_name
-	- 称号の色: user_trophy_type
-	- 利用券の期限: user_web_limit_date
-	- フレンドコード: user_friend_code
-	- フレンドコードのハッシュ値: user_hash
-	- 最終プレイ日時: user_final_play_date
+  - ユーザーID: user_id
+  - ユーザー名: user_name
+  - キャラクターのイラスト: user_character_file_name
+  - キャラクターのレベル: user_character_level
+  - フレンドカウント: user_friend_count
+  - 最大レート: user_highest_rating
+  - ユーザーのレベル: user_level
+  - クレジット数: user_play_count
+  - ユーザーのレート: user_player_rating
+  - ドルチェの数: user_point
+  - ユーザの転生回数: user_reincarnation_num
+  - 最大ドルチェ数: user_total_point
+  - ユーザーの称号: user_trophy_name
+  - 称号の色: user_trophy_type
+  - 利用券の期限: user_web_limit_date
+  - フレンドコード: user_friend_code
+  - フレンドコードのハッシュ値: user_hash
+  - 最終プレイ日時: user_final_play_date
