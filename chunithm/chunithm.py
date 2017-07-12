@@ -5,13 +5,56 @@ import sys
 from datetime import datetime
 from chunithm import func
 from chunithm import db
-from pprint import pprint
 
 
-def calculate_best_rate(user_id):
-    music_base_rate = db.Music()
-    user_friendCode = func.Get_FriendCode(user_id)
+class Calculate:
+    def __init__(self, user_id):
+        self.user_id = user_id
+        self.music_base_rate = db.Music()
+        self.user_friend_code = func.fetch_user_friend_code(self.user_id)
+        self.user_hash = hashlib.sha256(str(self.user_friend_code).encode('utf8')).hexdigest()
+        self.user_data_base = db.User(self.user_hash)
 
+    def calculate_best_rate(self):
+        """
+        ベスト枠を計算する
+        :return:
+        """
+
+        music_id_list = func.fetch_music_id_list(self.user_id)
+        music_best_list = []
+
+        for music_difficulty in range(2, 4):
+            music_score_highest_list = func.fetch_difficulty_list(self.user_id, "1990"+str(music_difficulty))
+            for music_id in music_id_list[music_difficulty-2]:
+                for music in music_score_highest_list["userMusicList"]:
+                    if music["musicId"] == music_id:
+                        music_info = self.music_base_rate.fetch_music_info(music_id, music_difficulty)
+                        if music_info is None or music_info['music_base_rate'] is None:
+                            continue
+                        else:
+                            music_info["music_score_highest"] = music["scoreMax"]
+                            music_info["music_rate_highest"] = func.score_to_rate(music["scoreMax"], music_info["music_base_rate"])
+                            music_best_list.append(music_info)
+        music_best_list = sorted(music_best_list, key=lambda x: x["music_rate_highest"], reverse=True)
+        rate = {"best_rate_sum": 0, "max_best_rate": 0, "min_best_rate": 0}
+        for i, music in enumerate(music_best_list):
+            if i < 30:
+                music["music_score_max"] = None
+                rate["best_rate_sum"] += music["music_rate_highest"]
+                if i == 0:
+                    rate["max_best_rate"] = music["music_rate_highest"]
+                elif i == 29:
+                    rate["min_best_rate"] = music["music_rate_highest"]
+            else:
+                if music["music_score_highest"] >= 1007500:
+                    music["music_score_max"] = None
+                else:
+                    music_score_max = func.rate_to_score(music["music_base_rate"], rate["min_best_rate"])
+                    if music_score_max <= 1007500 and music_score_max > 0 and music_score_max - music["music_score_highest"] > 0:
+                        music["music_score_max"] = music_score_max
+                    else:
+                        music["music_score_max"] = None
 
 # レートを計算してデータベースに保存する
 def CalcRate(userId):

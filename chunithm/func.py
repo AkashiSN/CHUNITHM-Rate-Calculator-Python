@@ -3,25 +3,34 @@
 import json
 import requests
 import math
-from flask import render_template
+from flask import render_template, abort
 
 
 def init_errors(app):
+    """
+    エラーバンドルの設定
+    :param app: アプリケーション
+    :return: エラー画面
+    """
     @app.errorhandler(404)
     def page_not_found():
-        return render_template('errors/404.html'), 404
+        return render_template("errors/404.html"), 404
 
     @app.errorhandler(403)
     def forbidden():
-        return render_template('errors/403.html'), 403
-
-    @app.errorhandler(500)
-    def general_error():
-        return render_template('errors/500.html'), 500
+        return render_template("errors/403.html"), 403
 
     @app.errorhandler(405)
     def gateway_error():
-        return render_template('errors/405.html'), 405
+        return render_template("errors/405.html"), 405
+
+    @app.errorhandler(440)
+    def gateway_error():
+        return render_template("errors/440.html"), 440
+
+    @app.errorhandler(500)
+    def general_error():
+        return render_template("errors/500.html"), 500
 
 
 def extraction_user_id(post_data):
@@ -30,11 +39,11 @@ def extraction_user_id(post_data):
     :param post_data: ポストデータ
     :return: ユーザーid
     """
-    tmp = post_data.split(';')
+    tmp = post_data.split(";")
     for tmp1 in tmp:
-        if 'userId' in tmp1:
-            return tmp1.split('=')[1]
-    return None
+        if "userId" in tmp1:
+            return tmp1.split("=")[1]
+    return abort(440)
 
 
 def fetch_user_id(sega_id, password):
@@ -44,13 +53,13 @@ def fetch_user_id(sega_id, password):
     :param password: パスワード
     :return: ユーザーid
     """
-    url = 'https://chunithm-net.com/Login/SegaIdLoginApi'
-    parm = {'segaId': sega_id, 'password': password}
+    url = "https://chunithm-net.com/Login/SegaIdLoginApi"
+    parm = {"segaId": sega_id, "password": password}
     re = requests.post(url, data=json.dumps(parm))
     if re is None:
-        return None
+        return abort(440)
     else:
-        return str(re.json()['sessionIdList'][0])
+        return str(re.json()["sessionIdList"][0])
 
 
 def fetch_music_id_list(user_id):
@@ -60,20 +69,20 @@ def fetch_music_id_list(user_id):
     :return music_id_list: 難易度master楽曲idのリスト
     :return expert_music_id_list: 難易度expert楽曲idのリスト
     """
-    url = 'https://chunithm-net.com/ChuniNet/GetUserMusicLevelApi'
+    url = "https://chunithm-net.com/ChuniNet/GetUserMusicLevelApi"
     music_id_list = []
     expert_music_id_list = []
     for music_level in range(11, 14):
-        parm = {'userId': user_id, 'level': music_level}
+        parm = {"userId": user_id, "level": music_level}
         re = requests.post(url, data=json.dumps(parm))
         if re is None:
-            return None
+            return abort(440)
         json_data = re.json()
         if json_data is None:
-            return None
-        music_id_list += json_data['levelList']
-        music_id_list += json_data['levelPlusList']
-        for Id, dif in json_data['difLevelMap'].items():
+            return abort(440)
+        music_id_list += json_data["levelList"]
+        music_id_list += json_data["levelPlusList"]
+        for Id, dif in json_data["difLevelMap"].items():
             if dif == 2:
                 expert_music_id_list.append(int(Id))
 
@@ -89,12 +98,12 @@ def fetch_music_score_highest(user_id, music_id):
     :param music_id: 楽曲id
     :return: 取得したデータ
     """
-    url = 'https://chunithm-net.com/ChuniNet/GetUserMusicDetailApi'
-    parm = {'userId': user_id, 'musicId': music_id}
+    url = "https://chunithm-net.com/ChuniNet/GetUserMusicDetailApi"
+    parm = {"userId": user_id, "musicId": music_id}
     re = requests.post(url, data=json.dumps(parm))
     if re is None:
-        return None
-    json_data = json.loads(re.text, 'utf-8')
+        return abort(440)
+    json_data = json.loads(re.text, "utf-8")
     return json_data
 
 
@@ -106,11 +115,11 @@ def fetch_difficulty_list(user_id, music_difficulty):
     :param music_difficulty: 難易度(masterとか)
     :return: 各難易度の楽曲の情報
     """
-    url = 'https://chunithm-net.com/ChuniNet/GetUserMusicApi'
+    url = "https://chunithm-net.com/ChuniNet/GetUserMusicApi"
     parm = {"level": music_difficulty, "userId": user_id}
     re = requests.post(url, data=json.dumps(parm))
     if re is None:
-        return None
+        return abort(440)
     json_data = re.json()
     return json_data
 
@@ -121,11 +130,11 @@ def fetch_user_data(user_id):
     :param user_id: ユーザーid
     :return: ユーザーの詳細情報
     """
-    url = 'https://chunithm-net.com/ChuniNet/GetUserInfoApi'
-    parm = {'userId': user_id, 'friendCode': 0, 'fileLevel': 1}
+    url = "https://chunithm-net.com/ChuniNet/GetUserInfoApi"
+    parm = {"userId": user_id, "friendCode": 0, "fileLevel": 1}
     re = requests.post(url, data=json.dumps(parm))
     if re is None:
-        return None
+        return abort(440)
     json_data = re.json()
     return json_data
 
@@ -136,11 +145,11 @@ def fetch_play_log(user_id):
     :param user_id: ユーザーid
     :return: 直近50曲のリスト
     """
-    url = 'https://chunithm-net.com/ChuniNet/GetUserPlaylogApi'
+    url = "https://chunithm-net.com/ChuniNet/GetUserPlaylogApi"
     parm = {"userId": user_id}
     re = requests.post(url, data=json.dumps(parm))
     if re is None:
-        return None
+        return abort(440)
     json_data = re.json()
     return json_data
 
@@ -151,15 +160,15 @@ def fetch_user_friend_code(user_id):
     :param user_id:
     :return:
     """
-    url = 'https://chunithm-net.com/ChuniNet/GetUserFriendlistApi'
-    parm = {'userId': user_id, "state": 4}
+    url = "https://chunithm-net.com/ChuniNet/GetUserFriendlistApi"
+    parm = {"userId": user_id, "state": 4}
     re = requests.post(url, data=json.dumps(parm))
     if re is None:
-        return None
+        return abort(440)
     json_data = re.json()
     if json_data is None:
-        return None
-    return json_data.get('friendCode')
+        return abort(440)
+    return json_data.get("friendCode")
 
 
 def fetch_genre(user_id, genre, level=None):
@@ -171,34 +180,34 @@ def fetch_genre(user_id, genre, level=None):
     :return:
     """
     if level:
-        url = 'https://chunithm-net.com/ChuniNet/GetUserMusicApi'
-        parm = {'userId': user_id, 'level': '1'+str(genre)+'0'+str(level)}
+        url = "https://chunithm-net.com/ChuniNet/GetUserMusicApi"
+        parm = {"userId": user_id, "level": "1"+str(genre)+"0"+str(level)}
         re = requests.post(url, data=json.dumps(parm))
         if re is None:
-            return None
+            return abort(440)
         json_data = re.json()
         if json_data is None:
-            return None
-        return json_data.get('genreList')
+            return abort(440)
+        return json_data.get("genreList")
     else:
-        url = 'https://chunithm-net.com/ChuniNet/GetUserMusicApi'
-        parm = {'userId': user_id, 'level': '1'+str(genre)+'02'}
+        url = "https://chunithm-net.com/ChuniNet/GetUserMusicApi"
+        parm = {"userId": user_id, "level": "1"+str(genre)+"02"}
         re = requests.post(url, data=json.dumps(parm))
         if re is None:
-            return None
+            return abort(440)
         json_data = re.json()
         if json_data is None:
-            return None
-        expert_music_id_list = json_data.get('genreList')
-        url = 'https://chunithm-net.com/ChuniNet/GetUserMusicApi'
-        parm = {'userId': user_id, 'level': '1'+str(genre)+'03'}
+            return abort(440)
+        expert_music_id_list = json_data.get("genreList")
+        url = "https://chunithm-net.com/ChuniNet/GetUserMusicApi"
+        parm = {"userId": user_id, "level": "1"+str(genre)+"03"}
         re = requests.post(url, data=json.dumps(parm))
         if re is None:
-            return None
+            return abort(440)
         json_data = re.json()
         if json_data is None:
-            return None
-        music_id_list = json_data.get('genreList')
+            return abort(440)
+        music_id_list = json_data.get("genreList")
         return expert_music_id_list, music_id_list
 
 
@@ -207,118 +216,137 @@ def load_json():
     楽曲情報の読み込み
     :return: 楽曲情報
     """
-    f = open("common/chunithm.json", 'r', encoding='utf8')
+    f = open("common/chunithm.json", "r", encoding="utf8")
     data = json.load(f)
     return data
 
-#スコアからレート
-def score_to_rate(Score, BaseRate):
-    """
 
-    :param Score:
-    :param BaseRate:
-    :return:
+def score_to_rate(music_score, music_base_rate):
     """
-    Rate = 0
-    if Score >= 1007500:
-        Rate = BaseRate+2
-    elif Score >= 1005000:
-        Rate = BaseRate +  1.5 + (Score - 1005000) * 10.00 / 50000
-    elif Score >= 1000000:
-        Rate = BaseRate +  1.0 + (Score - 1000000) *  5.00 / 50000
-    elif Score >= 975000:
-        Rate = BaseRate +  0.0 + (Score -  975000) *  2.00 / 50000
-    elif Score >= 950000:
-        Rate = BaseRate -  1.5 + (Score -  950000) *  3.00 / 50000
-    elif Score >= 925000:
-        Rate = BaseRate -  3.0 + (Score -  925000) *  3.00 / 50000
-    elif Score >= 900000:
-        Rate = BaseRate -  5.0 + (Score -  900000) *  4.00 / 50000
-    elif Score >= 800000:
-        Rate = BaseRate -  7.5 + (Score -  800000) *  1.25 / 50000
-    elif Score >= 700000:
-        Rate = BaseRate -  8.5 + (Score -  700000) *  0.50 / 50000
-    elif Score >= 600000:
-        Rate = BaseRate -  9.0 + (Score -  600000) *  0.25 / 50000
-    elif Score >= 500000:
-        Rate = BaseRate - 13.7 + (Score -  500000) *  2.35 / 50000
+    スコアからレート
+    :param music_score: 楽曲のスコア
+    :param music_base_rate: 楽曲の譜面定数
+    :return: 楽曲のレート
+    """
+    if music_score >= 1007500:
+        music_rate = music_base_rate+2
+    elif music_score >= 1005000:
+        music_rate = music_base_rate + 1.5 + (music_score - 1005000) * 10.00 / 50000
+    elif music_score >= 1000000:
+        music_rate = music_base_rate + 1.0 + (music_score - 1000000) * 5.00 / 50000
+    elif music_score >= 975000:
+        music_rate = music_base_rate + 0.0 + (music_score - 975000) * 2.00 / 50000
+    elif music_score >= 950000:
+        music_rate = music_base_rate - 1.5 + (music_score - 950000) * 3.00 / 50000
+    elif music_score >= 925000:
+        music_rate = music_base_rate - 3.0 + (music_score - 925000) * 3.00 / 50000
+    elif music_score >= 900000:
+        music_rate = music_base_rate - 5.0 + (music_score - 900000) * 4.00 / 50000
+    elif music_score >= 800000:
+        music_rate = music_base_rate - 7.5 + (music_score - 800000) * 1.25 / 50000
+    elif music_score >= 700000:
+        music_rate = music_base_rate - 8.5 + (music_score - 700000) * 0.50 / 50000
+    elif music_score >= 600000:
+        music_rate = music_base_rate - 9.0 + (music_score - 600000) * 0.25 / 50000
+    elif music_score >= 500000:
+        music_rate = music_base_rate - 13.7 + (music_score - 500000) * 2.35 / 50000
     else:
-        None
-    return math.floor(Rate * 100) / 100
+        music_rate = 0
+    return math.floor(music_rate * 100) / 100
 
-#レートからスコア
-def Rate2Score(BaseRate, Rate):
-    diff = Rate - BaseRate
-    if diff  >  2.0:
+
+def rate_to_score(music_base_rate, music_rate):
+    """    レートからスコア
+    :param music_base_rate: 楽曲の譜面定数
+    :param music_rate: 楽曲のレート
+    :return: 楽曲のスコア
+    """
+    diff = music_rate - music_base_rate
+    if diff > 2.0:
         return -1
-    elif diff ==   2.0:
+    elif diff == 2.0:
         return 1007500
-    elif diff >=   1.5:
-        return math.floor((diff -   1.5) * 50000 / 10.00) + 1005000
-    elif diff >=   1.0:
-        return math.floor((diff -   1.0) * 50000 /  5.00) + 1000000
-    elif diff >=   0.0:
-        return math.floor((diff -   0.0) * 50000 /  2.00) +  975000
-    elif diff >=  -1.5:
-        return math.floor((diff -  -1.5) * 50000 /  3.00) +  950000
-    elif diff >=  -3.0:
-        return math.floor((diff -  -3.0) * 50000 /  3.00) +  925000
-    elif diff >=  -5.0:
-        return math.floor((diff -  -5.0) * 50000 /  4.00) +  900000
-    elif diff >=  -7.5:
-        return math.floor((diff -  -7.5) * 50000 /  1.25) +  800000
-    elif diff >=  -8.5:
-        return math.floor((diff -  -8.5) * 50000 /  0.50) +  700000
-    elif diff >=  -9.0:
-        return math.floor((diff -  -9.0) * 50000 /  0.25) +  600000
+    elif diff >= 1.5:
+        return math.floor((diff - 1.5) * 50000 / 10.00) + 1005000
+    elif diff >= 1.0:
+        return math.floor((diff - 1.0) * 50000 / 5.00) + 1000000
+    elif diff >= 0.0:
+        return math.floor((diff - 0.0) * 50000 / 2.00) + 975000
+    elif diff >= -1.5:
+        return math.floor((diff - -1.5) * 50000 / 3.00) + 950000
+    elif diff >= -3.0:
+        return math.floor((diff - -3.0) * 50000 / 3.00) + 925000
+    elif diff >= -5.0:
+        return math.floor((diff - -5.0) * 50000 / 4.00) + 900000
+    elif diff >= -7.5:
+        return math.floor((diff - -7.5) * 50000 / 1.25) + 800000
+    elif diff >= -8.5:
+        return math.floor((diff - -8.5) * 50000 / 0.50) + 700000
+    elif diff >= -9.0:
+        return math.floor((diff - -9.0) * 50000 / 0.25) + 600000
     elif diff >= -13.7:
-        return math.floor((diff - -13.7) * 50000 /  2.35) +  500000
+        return math.floor((diff - -13.7) * 50000 / 2.35) + 500000
     else:
         return -1
 
-def score_to_rank(Score):
-    '''スコアからランクにして返す'''
-    if Score >= 1007500:
-        return 'sss'
-    elif Score >= 1000000:
-        return 'ss'
-    elif Score >= 975000:
-        return 's'
-    elif Score >= 950000:
-        return 'aaa'
-    elif Score >= 925000:
-        return 'aa'
-    elif Score >= 900000:
-        return 'a'
-    elif Score >= 800000:
-        return 'bbb'
-    elif Score >= 700000:
-        return 'bb'
-    elif Score >= 600000:
-        return 'b'
-    elif Score >= 500000:
-        return 'c'
-    elif Score >= 0:
-        return 'd'
+
+def score_to_rank(music_score):
+    """
+    スコアからランクにして返す
+    :param music_score: 楽曲のスコア
+    :return: 楽曲のランク
+    """
+    if music_score >= 1007500:
+        return "sss"
+    elif music_score >= 1000000:
+        return "ss"
+    elif music_score >= 975000:
+        return "s"
+    elif music_score >= 950000:
+        return "aaa"
+    elif music_score >= 925000:
+        return "aa"
+    elif music_score >= 900000:
+        return "a"
+    elif music_score >= 800000:
+        return "bbb"
+    elif music_score >= 700000:
+        return "bb"
+    elif music_score >= 600000:
+        return "b"
+    elif music_score >= 500000:
+        return "c"
+    elif music_score >= 0:
+        return "d"
     else:
         return None
 
-#フラグを立てる
-def CountRank(Musics):
-    rank = Musics[0]['Rank']
-    Musics[0]['Flag'] = rank
-    for Music in Musics:
-        if rank != Music['Rank']:
-            rank = Music['Rank']
-    Music['flag'] = rank
-    return Musics
 
-#難易度を数え上げる
-def CountDiff(Musics):
-    diff = Musics[0]['Diff']
-    Musics[0]['Flag'] = diff
-    for Music in Musics:
-        if diff != Music['Diff']:
-            diff = Music['Diff']
-            Music['flag'] = diff
-    return Musics
+def count_rank(musics):
+    """
+    フラグを立てる
+    :param musics: 楽曲のリスト
+    :return: フラグを立てた楽曲のリスト
+    """
+    rank = musics[0]["Rank"]
+    musics[0]["Flag"] = rank
+    for music in musics:
+        if rank != music["Rank"]:
+            rank = music["Rank"]
+    music["flag"] = rank
+    return musics
+
+
+def count_diff(musics):
+    """
+    難易度を数え上げる
+    :param musics: 楽曲のリスト
+    :return: 難易度を加えた楽曲のリスト
+    """
+    diff = musics[0]["Diff"]
+    musics[0]["Flag"] = diff
+    for music in musics:
+        if diff != music["Diff"]:
+            diff = music["Diff"]
+            music["flag"] = diff
+    return musics

@@ -1,4 +1,4 @@
-変数名など
+#変数名など
 
 - 楽曲: music
 # 楽曲の情報
@@ -6,9 +6,10 @@
   - 楽曲名: music_name
   - 楽曲のカバーイラスト: music_cover_image
   - アーティスト名: music_artist_name
-  - 楽曲の難易度（master etc...): music_difficulty
+  - 楽曲の難易度（master=3,expert=2 etc...): music_difficulty
   - 楽曲のレベル: music_level
   - 楽曲の譜面定数: music_base_rate
+  - 最小のレートに到達するための最大スコア: music_score_max
 # ユーザーごとの値
   - 楽曲のスコア: music_score
   - 楽曲のスコアに応じたレート値: music_rate
@@ -16,6 +17,7 @@
   - 楽曲の最大スコアに応じたレート値: music_rate_hightest
   - プレー日時: music_play_date
   - スコアのランク(ss,sss): music_score_rank
+  - 楽曲の情報: music_info
 
 - レート: rate
   - 表示レート: rate_display
@@ -25,6 +27,9 @@
   - 到達可能レート: rate_max
   - クレジット数: user_playCount
   - 実行日時: rate_execute_date
+  - ベスト枠の最大レート: max_best_rate
+  - ベスト枠の最小レート: min_best_rate
+  - ベスト枠の上位30曲の合計レート: best_rate_sum
 
 - ユーザー: user
   - ユーザーID: user_id
