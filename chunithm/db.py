@@ -278,28 +278,28 @@ class User:
                   `rate_best` INTEGER,
                   `rate_recent`  INTEGER,
                   `rate_max`  INTEGER,
-                  `user_playCount` INTEGER,
+                  `user_play_count` INTEGER,
                   `rate_execute_date` TEXT
                 );
               """)
             self.cur.execute("""
                 CREATE TABLE `user` (
                     `user_id` INTEGER,
-                    `user_userName` TEXT,
-                    `user_characterFileName` TEXT,
-                    `user_characterLevel` INTEGER,
-                    `user_friendCount` INTEGER,
-                    `user_highestRating` INTEGER,
+                    `user_name` TEXT,
+                    `user_character_file_name` TEXT,
+                    `user_character_level` INTEGER,
+                    `user_friend_count` INTEGER,
+                    `user_highest_rating` INTEGER,
                     `user_level` INTEGER,
-                    `user_playCount` INTEGER,
-                    `user_playerRating` INTEGER,
+                    `user_play_count` INTEGER,
+                    `user_player_rating` INTEGER,
                     `user_point` INTEGER,
-                    `user_reincarnationNum` INTEGER,
-                    `user_totalPoint` INTEGER,
-                    `user_trophyName` TEXT,
-                    `user_trophyType` INTEGER,
-                    `user_webLimitDate` TEXT,
-                    `user_friendCode` INTEGER,
+                    `user_reincarnation_num` INTEGER,
+                    `user_total_point` INTEGER,
+                    `user_trophy_name` TEXT,
+                    `user_trophy_type` INTEGER,
+                    `user_web_limit_date` TEXT,
+                    `user_friend_code` INTEGER,
                     `user_hash` TEXT,
                     `user_final_play_date` TEXT
                     PRIMARY KEY(`user_id`)
@@ -389,42 +389,42 @@ class User:
             self.cur.execute(sql, (user['PlayCount'],))
         sql = """
         INSERT INTO user (
-            user_userName,
-            user_characterFileName,
-            user_characterLevel,
-            user_friendCount,
-            user_highestRating,
+            user_name,
+            user_character_file_name,
+            user_character_level,
+            user_friend_count,
+            user_highest_rating,
             user_level,
-            user_playCount,
-            user_playerRating,
+            user_play_count,
+            user_player_rating,
             user_point,
-            user_reincarnationNum,
-            user_totalPoint,
-            user_trophyName,
-            user_trophyType,
-            user_webLimitDate,
-            user_friendCode,
+            user_reincarnation_num,
+            user_total_point,
+            user_trophy_name,
+            user_trophy_type,
+            user_web_limit_date,
+            user_friend_code,
             user_hash,
             user_final_play_date
         ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"""
 
         self.cur.execute(
             sql, (
-                user['user_userName'],
-                user['user_characterFileName'],
-                user['user_characterLevel'],
-                user['user_friendCount'],
-                user['user_highestRating'],
+                user['user_name'],
+                user['user_character_file_name'],
+                user['user_character_level'],
+                user['user_friend_count'],
+                user['user_highest_rating'],
                 user['user_level'],
-                user['user_playCount'],
-                user['user_playerRating'],
+                user['user_play_count'],
+                user['user_player_rating'],
                 user['user_point'],
-                user['user_reincarnationNum'],
-                user['user_totalPoint'],
-                user['user_trophyName'],
-                user['user_trophyType'],
-                user['user_webLimitDate'],
-                user['user_friendCode'],
+                user['user_reincarnation_num'],
+                user['user_total_point'],
+                user['user_trophy_name'],
+                user['user_trophy_type'],
+                user['user_web_limit_date'],
+                user['user_friend_code'],
                 user['user_hash'],
                 user['user_final_play_date']
             )
@@ -436,13 +436,13 @@ class User:
         レートの推移を保存する
         :param rate: レート値
         """
-        sql = 'SELECT * FROM rate WHERE user_playCount = ?'
-        self.cur.execute(sql, (rate['user_playCount'],))
+        sql = 'SELECT * FROM rate WHERE user_play_count = ?'
+        self.cur.execute(sql, (rate['user_play_count'],))
 
         r = self.cur.fetchall()
         if r:
-            sql = 'DELETE FROM rate WHERE user_playCount = ?'
-            self.cur.execute(sql, (rate['user_playCount'],))
+            sql = 'DELETE FROM rate WHERE user_play_count = ?'
+            self.cur.execute(sql, (rate['user_play_count'],))
 
         sql = """
         INSERT INTO rate (
@@ -451,7 +451,7 @@ class User:
             rate_best,
             rate_recent,
             rate_max,
-            user_playCount,
+            user_play_count,
             rate_execute_date
         ) VALUES (?,?,?,?,?,?,?)"""
 
@@ -462,7 +462,7 @@ class User:
                 rate['rate_best'],
                 rate['rate_recent'],
                 rate['rate_max'],
-                rate['user_playCount'],
+                rate['user_play_count'],
                 rate['rate_execute_date']
             )
         )
@@ -539,21 +539,21 @@ class User:
             for row in rows:
                 dic = {
                     'user_id': row[0],
-                    'user_userName': row[1],
-                    'user_characterFileName': character_frame[int(row[2]/5)],
-                    'user_characterLevel': row[3],
-                    'user_friendCount': row[4],
-                    'user_highestRating': row[5],
+                    'user_name': row[1],
+                    'user_character_file_name': character_frame[int(row[2]/5)],
+                    'user_character_level': row[3],
+                    'user_friend_count': row[4],
+                    'user_highest_rating': row[5],
                     'user_level': row[6],
-                    'user_playCount': row[7],
-                    'user_playerRating': row[8],
+                    'user_play_count': row[7],
+                    'user_player_rating': row[8],
                     'user_point': row[9],
-                    'user_reincarnationNum': row[10],
-                    'user_totalPoint': row[11],
-                    'user_trophyName': row[12],
-                    'user_trophyType': trophy_type[row[13]],
-                    'user_webLimitDate': row[14],
-                    'user_friendCode': row[15],
+                    'user_reincarnation_num': row[10],
+                    'user_total_point': row[11],
+                    'user_trophy_name': row[12],
+                    'user_trophy_type': trophy_type[row[13]],
+                    'user_web_limit_date': row[14],
+                    'user_friend_code': row[15],
                     'user_hash': row[16],
                     'user_final_play_date': row[17]
                 }
@@ -578,7 +578,7 @@ class User:
                     'rate_best': row[2],
                     'rate_recent': row[3],
                     'rate_max': row[4],
-                    'user_playCount': row[5],
+                    'user_play_count': row[5],
                     'rate_execute_date': row[6]
                 }
                 rate.append(dic)
@@ -605,10 +605,10 @@ class Admin:
             self.cur = self.con.cursor()
             self.cur.execute("""
         CREATE TABLE `user` (
-            `user_userName`  TEXT,
-            `user_friendCode`  TEXT,
+            `user_name`  TEXT,
+            `user_friend_code`  TEXT,
             `user_hash`  TEXT,
-            `user_playCount` INTEGER,
+            `user_play_count` INTEGER,
             `rate_display`  INTEGER,
             `rate_highest` INTEGER,
             `rate_best` INTEGER,
@@ -629,10 +629,10 @@ class Admin:
             self.cur.execute(sql, (data['user_hash'],))
         sql = """
         INSERT INTO user (
-            user_userName,
-            user_friendCode,
+            user_name,
+            user_friend_code,
             user_hash,
-            user_playCount,
+            user_play_count,
             rate_display,
             rate_highest,
             rate_best,
@@ -642,10 +642,10 @@ class Admin:
 
         self.cur.execute(
             sql, (
-                data['user_userName'],
-                data['user_friendCode'],
+                data['user_name'],
+                data['user_friend_code'],
                 data['user_hash'],
-                data['user_playCount'],
+                data['user_play_count'],
                 data['rate_display'],
                 data['rate_highest'],
                 data['rate_best'],
@@ -666,10 +666,10 @@ class Admin:
             user = []
             for row in rows:
                 dic = {
-                    'user_userName': row[0],
-                    'user_friendCode': row[1],
+                    'user_name': row[0],
+                    'user_friend_code': row[1],
                     'user_hash': row[2],
-                    'user_playCount': row[3],
+                    'user_play_count': row[3],
                     'rate_display': row[4],
                     'rate_highest': row[5],
                     'rate_best': row[6],
@@ -690,10 +690,10 @@ class Admin:
         sql = """
         SELECT * FROM user 
             Where 
-                user_userName = ? or 
-                user_friendCode = ? or 
+                user_name = ? or 
+                user_friend_code = ? or 
                 user_hash = ? or 
-                user_playCount = ? or 
+                user_play_count = ? or 
                 rate_display = ? or 
                 rate_highest = ? or 
                 rate_best = ? or 
@@ -702,10 +702,10 @@ class Admin:
 
         self.cur.execute(
             sql, (
-                user['user_userName'],
-                user['user_friendCode'],
+                user['user_name'],
+                user['user_friend_code'],
                 user['user_hash'],
-                user['user_playCount'],
+                user['user_play_count'],
                 user['rate_display'],
                 user['rate_highest'],
                 user['rate_best'],
@@ -719,10 +719,10 @@ class Admin:
             user = []
             for row in rows:
                 dic = {
-                    'user_userName': row[0],
-                    'user_friendCode': row[1],
+                    'user_name': row[0],
+                    'user_friend_code': row[1],
                     'user_hash': row[2],
-                    'user_playCount': row[3],
+                    'user_play_count': row[3],
                     'rate_display': row[4],
                     'rate_highest': row[5],
                     'rate_best': row[6],

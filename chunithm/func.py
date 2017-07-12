@@ -28,7 +28,7 @@ def extraction_user_id(post_data):
     """
     ポストデータからuser_idを抽出
     :param post_data: ポストデータ
-    :return user_id: ユーザーid
+    :return: ユーザーid
     """
     tmp = post_data.split(';')
     for tmp1 in tmp:
@@ -42,7 +42,7 @@ def fetch_user_id(sega_id, password):
     ログインしてUserIdを取得
     :param sega_id: セガid
     :param password: パスワード
-    :return user_id: ユーザーid
+    :return: ユーザーid
     """
     url = 'https://chunithm-net.com/Login/SegaIdLoginApi'
     parm = {'segaId': sega_id, 'password': password}
@@ -87,7 +87,7 @@ def fetch_music_score_highest(user_id, music_id):
     楽曲の詳細情報を取得
     :param user_id: ユーザーid
     :param music_id: 楽曲id
-    :return json_data: 取得したデータ
+    :return: 取得したデータ
     """
     url = 'https://chunithm-net.com/ChuniNet/GetUserMusicDetailApi'
     parm = {'userId': user_id, 'musicId': music_id}
@@ -104,7 +104,7 @@ def fetch_difficulty_list(user_id, music_difficulty):
     各難易度の一覧取得(19903:マスター,19902:エキスパート)
     :param user_id: ユーザーid
     :param music_difficulty: 難易度(masterとか)
-    :return json_data: 各難易度の楽曲の情報
+    :return: 各難易度の楽曲の情報
     """
     url = 'https://chunithm-net.com/ChuniNet/GetUserMusicApi'
     parm = {"level": music_difficulty, "userId": user_id}
@@ -114,80 +114,111 @@ def fetch_difficulty_list(user_id, music_difficulty):
     json_data = re.json()
     return json_data
 
-#ユーザーデータの詳細取得
-def Get_UserData(userId):
+
+def fetch_user_data(user_id):
+    """
+    ユーザーデータの詳細取得
+    :param user_id: ユーザーid
+    :return: ユーザーの詳細情報
+    """
     url = 'https://chunithm-net.com/ChuniNet/GetUserInfoApi'
-    parm = {'userId':userId,'friendCode':0,'fileLevel':1}
-    re = requests.post(url,data=json.dumps(parm))
+    parm = {'userId': user_id, 'friendCode': 0, 'fileLevel': 1}
+    re = requests.post(url, data=json.dumps(parm))
     if re is None:
         return None
-    Json = re.json()
-    return Json
+    json_data = re.json()
+    return json_data
 
-#直近50曲の取得
-def Get_PlayLog(userId):
+
+def fetch_play_log(user_id):
+    """
+    直近50曲の取得
+    :param user_id: ユーザーid
+    :return: 直近50曲のリスト
+    """
     url = 'https://chunithm-net.com/ChuniNet/GetUserPlaylogApi'
-    parm = {"userId":userId}
-    re = requests.post(url,data=json.dumps(parm))
+    parm = {"userId": user_id}
+    re = requests.post(url, data=json.dumps(parm))
     if re is None:
         return None
-    Json = re.json()
-    return Json
+    json_data = re.json()
+    return json_data
 
-#自分のフレンドコード取得
-def Get_FriendCode(userId):
+
+def fetch_user_friend_code(user_id):
+    """
+    自分のフレンドコード取得
+    :param user_id:
+    :return:
+    """
     url = 'https://chunithm-net.com/ChuniNet/GetUserFriendlistApi'
-    parm = {'userId':userId,"state":4}
-    re = requests.post(url,data=json.dumps(parm))
+    parm = {'userId': user_id, "state": 4}
+    re = requests.post(url, data=json.dumps(parm))
     if re is None:
         return None
-    Json = re.json()
-    if Json is None:
+    json_data = re.json()
+    if json_data is None:
         return None
-    return Json.get('friendCode')
+    return json_data.get('friendCode')
 
-#楽曲のジャンルの取得
-def Get_Genre(userId,Genre,Level=None):
-    if Level:
+
+def fetch_genre(user_id, genre, level=None):
+    """
+    楽曲のジャンルの取得
+    :param user_id:
+    :param genre:
+    :param level:
+    :return:
+    """
+    if level:
         url = 'https://chunithm-net.com/ChuniNet/GetUserMusicApi'
-        parm = {'userId':userId,'level':'1'+str(Genre)+'0'+str(Level)}
-        re = requests.post(url,data=json.dumps(parm))
+        parm = {'userId': user_id, 'level': '1'+str(genre)+'0'+str(level)}
+        re = requests.post(url, data=json.dumps(parm))
         if re is None:
             return None
-        Json = re.json()
-        if Json is None:
+        json_data = re.json()
+        if json_data is None:
             return None
-        return Json.get('genreList')
+        return json_data.get('genreList')
     else:
         url = 'https://chunithm-net.com/ChuniNet/GetUserMusicApi'
-        parm = {'userId':userId,'level':'1'+str(Genre)+'02'}
-        re = requests.post(url,data=json.dumps(parm))
+        parm = {'userId': user_id, 'level': '1'+str(genre)+'02'}
+        re = requests.post(url, data=json.dumps(parm))
         if re is None:
             return None
-        Json = re.json()
-        if Json is None:
+        json_data = re.json()
+        if json_data is None:
             return None
-        ExList = Json.get('genreList')
+        expert_music_id_list = json_data.get('genreList')
         url = 'https://chunithm-net.com/ChuniNet/GetUserMusicApi'
-        parm = {'userId':userId,'level':'1'+str(Genre)+'03'}
-        re = requests.post(url,data=json.dumps(parm))
+        parm = {'userId': user_id, 'level': '1'+str(genre)+'03'}
+        re = requests.post(url, data=json.dumps(parm))
         if re is None:
             return None
-        Json = re.json()
-        if Json is None:
+        json_data = re.json()
+        if json_data is None:
             return None
-        MasList = Json.get('genreList')
-        return ExList,MasList
+        music_id_list = json_data.get('genreList')
+        return expert_music_id_list, music_id_list
 
 
-#Json読み込み
-def Load_Json():
-    f = open("common/chunithm.json", 'r',encoding='utf8')
+def load_json():
+    """
+    楽曲情報の読み込み
+    :return: 楽曲情報
+    """
+    f = open("common/chunithm.json", 'r', encoding='utf8')
     data = json.load(f)
     return data
 
 #スコアからレート
-def Score2Rate(Score,BaseRate):
+def score_to_rate(Score, BaseRate):
+    """
+
+    :param Score:
+    :param BaseRate:
+    :return:
+    """
     Rate = 0
     if Score >= 1007500:
         Rate = BaseRate+2
