@@ -16,7 +16,9 @@ class Calculate:
         self.user_data_base = db.User(self.user_hash)
 
     def calculate_best_rate(self):
-
+        """
+        ベスト枠を計算してデーターベースに保存する
+        """
         music_id_list = func.fetch_music_id_list(self.user_id)
         music_best_list = []
 
@@ -55,11 +57,13 @@ class Calculate:
         self.user_data_base.update_best(music_best_list)
 
     def calculate_recent_rate(self):
+        """
+        リセント候補枠を計算してデーターベースに保存する
+        """
         play_log = func.fetch_play_log(self.user_id)
         music_recent_list = self.user_data_base.load_recent()
         difficulty_map = {"master": 3, "expert": 2}
-        user_final_play_date = play_log["userPlaylogList"][0]["userPlayDate"][0:-2]
-        music_recent = []
+        play_log_list = []
 
         for play in play_log["userPlaylogList"][0:30]:
             if play["levelName"] == "expert" or play["levelName"] == "master":
@@ -71,36 +75,51 @@ class Calculate:
                     music_info["music_score"] = play["score"]
                     music_info["music_rate"] = func.score_to_rate(play["score"], music_info["music_base_rate"])
                     music_info["music_play_date"] = play["userPlayDate"][0:-2]
-                music_recent.append(music_info)
+                    play_log_list.append(music_info)
 
+        # 初回実行の場合
         if music_recent_list is None:
-            music_recent_list = sorted(music_recent, key=lambda x: x["music_rate"], reverse=True)
+            music_recent_list = sorted(play_log_list, key=lambda x: x["music_rate"], reverse=True)
         else:
-            music_recent_list = sorted(music_recent_list, key=lambda x: x["music_rate"], reverse=True)
-            if len(music_recent_list) > 10:
+            # リセント枠は最小でも10曲以上でないと計算できない
+            if 10 <= len(music_recent_list) <= 30:
                 user_data = self.user_data_base.load_user()
-                if len(user_data):
-                    old_date = datetime.strptime(user_data[-1]["user_final_play_date"], '%Y-%m-%d %H:%M:%S')
-                    for play in music_recent:
-                        now_date = datetime.strptime(play["music_play_date"], '%Y-%m-%d %H:%M:%S')
-                        if now_date > old_date:
-                            if play["music_rate"] > music_recent_list[9]["music_rate"]:
-                                music_recent_list[-1]["music_id"] = play["music_id"]
-                                music_recent_list[-1]["music_name"] = play["music_name"]
-                                music_recent_list[-1]["music_cover_image"] = play["music_cover_image"]
-                                music_recent_list[-1]["music_artist_name"] = play["music_artist_name"]
-                                music_recent_list[-1]["music_difficulty"] = play["music_difficulty"]
-                                music_recent_list[-1]["music_level"] = play["music_level"]
-                                music_recent_list[-1]["music_base_rate"] = play["music_base_rate"]
-                                music_recent_list[-1]["music_score"] = play["music_score"]
-                                music_recent_list[-1]["music_rate"] = play["music_rate"]
-                                music_recent_list[-1]["music_play_date"] = play["music_play_date"]
-                            elif play["music_score"] >= 1007500:
-                                pass
-                            elif play["music_score"] >= music_recent_list[-1]["music_score"]:
-                                pass
-                            else:
-                                music_recent_list = sorted(music_recent_list, key=lambda x: datetime.strptime(x["music_play_date"], '%Y-%m-%d %H:%M:%S'), reverse=True))
+                old_date = datetime.strptime(user_data[-1]["user_final_play_date"], '%Y-%m-%d %H:%M:%S')
+                for play in play_log_list:
+                    now_date = datetime.strptime(play["music_play_date"], '%Y-%m-%d %H:%M:%S')
+                    # 現在の楽曲がリセント枠に保存されている最終プレイ日時よりも新しい場合
+                    if now_date > old_date:
+                        # リセント候補枠の最小レート値よりも現在の楽曲のレート値のほうが大きい場合
+                        if play["music_rate"] > music_recent_list[-1]["music_rate"]:
+                            # リセント候補枠の最小レートを削除する
+                            music_recent_list.pop()
+                            music_recent_list.append(play)
+                            music_recent_list = sorted(music_recent_list, key=lambda x: x["music_rate"], reverse=True)
+                            continue
+                        # 現在の楽曲がSSSの場合
+                        if play["music_score"] != 1007500:
+                            continue
+                        # スコア順にソート
+                        music_recent_score_list = sorted(music_recent_list, key=lambda x: x["music_score"], reverse=True)
+                        # 現在の楽曲のスコアがリセント候補枠の最小スコア以上の場合
+                        if play["music_score"] >= music_recent_score_list[-1]["music_score"]:
+                            continue
+                        # どれも当てはまらなかったらリセント候補枠の一番古いレート値を削除
+                        music_recent_date_list = sorted(music_recent_list, key=lambda x: datetime.strptime(x["music_play_date"], '%Y-%m-%d %H:%M:%S'), reverse=True)
+                        music_recent_date_list.pop()
+                        music_recent_list = sorted(music_recent_date_list, key=lambda x: x["music_rate"], reverse=True)
+
+        recent_rate_sum = 0
+        for i, music in enumerate(music_recent_list):
+            if i < 10:
+                recent_rate_sum += music["music_rate"]
+
+        self.user_data_base.update_recent(music_recent_list)
+
+    def update_user(self):
+        user_data = func.fetch_user_data(self.user_id)
+        user_data = user_data["userInfo"]
+
 
 
 # レートを計算してデータベースに保存する
