@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
+
 import hashlib
 import math
-import sys
 from datetime import datetime
 from chunithm import func
 from chunithm import db
@@ -16,10 +16,6 @@ class Calculate:
         self.user_data_base = db.User(self.user_hash)
 
     def calculate_best_rate(self):
-        """
-        ベスト枠を計算する
-        :return:
-        """
 
         music_id_list = func.fetch_music_id_list(self.user_id)
         music_best_list = []
@@ -51,10 +47,61 @@ class Calculate:
                     music["music_score_max"] = None
                 else:
                     music_score_max = func.rate_to_score(music["music_base_rate"], rate["min_best_rate"])
-                    if music_score_max <= 1007500 and music_score_max > 0 and music_score_max - music["music_score_highest"] > 0:
+                    if 0 < music_score_max < 1007500 and music_score_max - music["music_score_highest"] > 0:
                         music["music_score_max"] = music_score_max
                     else:
                         music["music_score_max"] = None
+
+        self.user_data_base.update_best(music_best_list)
+
+    def calculate_recent_rate(self):
+        play_log = func.fetch_play_log(self.user_id)
+        music_recent_list = self.user_data_base.load_recent()
+        difficulty_map = {"master": 3, "expert": 2}
+        user_final_play_date = play_log["userPlaylogList"][0]["userPlayDate"][0:-2]
+        music_recent = []
+
+        for play in play_log["userPlaylogList"][0:30]:
+            if play["levelName"] == "expert" or play["levelName"] == "master":
+                music_id = self.music_base_rate.fetch_music_id(play["musicFileName"])
+                music_info = self.music_base_rate.fetch_music_info(music_id, difficulty_map[play["levelName"]])
+                if music_info is None or music_info["music_base_rate"] is None:
+                    continue
+                else:
+                    music_info["music_score"] = play["score"]
+                    music_info["music_rate"] = func.score_to_rate(play["score"], music_info["music_base_rate"])
+                    music_info["music_play_date"] = play["userPlayDate"][0:-2]
+                music_recent.append(music_info)
+
+        if music_recent_list is None:
+            music_recent_list = sorted(music_recent, key=lambda x: x["music_rate"], reverse=True)
+        else:
+            music_recent_list = sorted(music_recent_list, key=lambda x: x["music_rate"], reverse=True)
+            if len(music_recent_list) > 10:
+                user_data = self.user_data_base.load_user()
+                if len(user_data):
+                    old_date = datetime.strptime(user_data[-1]["user_final_play_date"], '%Y-%m-%d %H:%M:%S')
+                    for play in music_recent:
+                        now_date = datetime.strptime(play["music_play_date"], '%Y-%m-%d %H:%M:%S')
+                        if now_date > old_date:
+                            if play["music_rate"] > music_recent_list[9]["music_rate"]:
+                                music_recent_list[-1]["music_id"] = play["music_id"]
+                                music_recent_list[-1]["music_name"] = play["music_name"]
+                                music_recent_list[-1]["music_cover_image"] = play["music_cover_image"]
+                                music_recent_list[-1]["music_artist_name"] = play["music_artist_name"]
+                                music_recent_list[-1]["music_difficulty"] = play["music_difficulty"]
+                                music_recent_list[-1]["music_level"] = play["music_level"]
+                                music_recent_list[-1]["music_base_rate"] = play["music_base_rate"]
+                                music_recent_list[-1]["music_score"] = play["music_score"]
+                                music_recent_list[-1]["music_rate"] = play["music_rate"]
+                                music_recent_list[-1]["music_play_date"] = play["music_play_date"]
+                            elif play["music_score"] >= 1007500:
+                                pass
+                            elif play["music_score"] >= music_recent_list[-1]["music_score"]:
+                                pass
+                            else:
+                                music_recent_list = sorted(music_recent_list, key=lambda x: datetime.strptime(x["music_play_date"], '%Y-%m-%d %H:%M:%S'), reverse=True))
+
 
 # レートを計算してデータベースに保存する
 def CalcRate(userId):
