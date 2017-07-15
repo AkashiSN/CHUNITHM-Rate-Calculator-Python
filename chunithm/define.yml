@@ -25,8 +25,8 @@
   - ベスト枠平均レート: rate_best
   - リセント枠平均レート: rate_recent
   - 到達可能レート: rate_max
-  - クレジット数: user_playCount
-  - 実行日時: rate_execute_date
+  - クレジット数: user_play_count
+  - 実行日時: execute_date
   - ベスト枠の最大レート: max_best_rate
   - ベスト枠の最小レート: min_best_rate
   - ベスト枠の上位30曲の合計レート: best_rate_sum
