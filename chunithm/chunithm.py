@@ -125,8 +125,32 @@ class Calculate:
         """
         user_data = func.fetch_user_data(self.user_id)
         user_data = user_data["userInfo"]
+        play_log = func.fetch_play_log(self.user_id)
+        final_play_date = play_log['userPlaylogList'][0]['userPlayDate'][0:-2]
 
+        now_date = datetime.now().strptime("%Y-%m-%d %H:%M:%S")
+        user = {
+            'user_name': user_data["userName"],
+            'user_character_file_name': user_data["characterFileName"],
+            'user_character_level': user_data["characterLevel"],
+            'user_friend_count': user_data["friendCount"],
+            'user_highest_rating': user_data["highestRating"],
+            'user_level': user_data["level"],
+            'user_play_count': user_data["playCount"],
+            'user_player_rating': user_data["playerRating"],
+            'user_point': user_data["point"],
+            'user_reincarnation_num': user_data["reincarnationNum"],
+            'user_total_point': user_data["totalPoint"],
+            'user_trophy_name': user_data["trophyName"],
+            'user_trophy_type': user_data["trophyType"],
+            'user_web_limit_date': user_data["webLimitDate"][0:-2],
+            'user_friend_code': self.user_friend_code,
+            'user_hash': self.user_hash,
+            'user_final_play_date': final_play_date,
+            'execute_date': now_date
+        }
 
+        self.user_data_base.update_user_info(user)
 
 # レートを計算してデータベースに保存する
 def CalcRate(userId):

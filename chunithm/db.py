@@ -301,7 +301,8 @@ class User:
                     `user_web_limit_date` TEXT,
                     `user_friend_code` INTEGER,
                     `user_hash` TEXT,
-                    `user_final_play_date` TEXT
+                    `user_final_play_date` TEXT,
+                    `execute_date` TEXT
                     PRIMARY KEY(`user_id`)
                 );
               """)
@@ -426,7 +427,8 @@ class User:
                 user['user_web_limit_date'],
                 user['user_friend_code'],
                 user['user_hash'],
-                user['user_final_play_date']
+                user['user_final_play_date'],
+                user['execute_date']
             )
         )
         self.con.commit()
@@ -555,7 +557,8 @@ class User:
                     'user_web_limit_date': row[14],
                     'user_friend_code': row[15],
                     'user_hash': row[16],
-                    'user_final_play_date': row[17]
+                    'user_final_play_date': row[17],
+                    'execute_date': row[18]
                 }
                 user.append(dic)
             return user

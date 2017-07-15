@@ -50,3 +50,4 @@
   - フレンドコード: user_friend_code
   - フレンドコードのハッシュ値: user_hash
   - 最終プレイ日時: user_final_play_date
+  - 実行日時: execute_date
