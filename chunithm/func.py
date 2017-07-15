@@ -3,7 +3,8 @@
 import json
 import requests
 import math
-from flask import render_template, abort
+from flask import render_template
+from flask import abort
 
 
 def init_errors(app):

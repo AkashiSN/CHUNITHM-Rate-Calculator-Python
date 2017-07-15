@@ -192,6 +192,14 @@ class Calculate:
         }
         admin_data.update_user_admin(data)
 
+    def run(self):
+        self.calculate_best_rate()
+        self.calculate_recent_rate()
+        self.update_user()
+        self.calculate_rate()
+        self.update_admin()
+        return self.user_hash
+
 #Best枠の時の表示
 def DispBest(Hash):
     DataBase = db.UserDataBase(Hash)

@@ -1,70 +1,42 @@
-from flask import current_app as app,render_template,Blueprint,request,session,redirect
+from flask import current_app as app
+from flask import render_template
+from flask import Blueprint
+from flask import request
+from flask import session
+from flask import redirect
+from flask import abort
 from jinja2 import FileSystemLoader
 from chunithm import func
+from chunithm import db
 from chunithm import chunithm
 import hashlib
 
 views = Blueprint('views', __name__)
 
+
 @views.route('/')
 def index():
     return render_template('index.html')
 
+
 @views.route('/chunithm.api',methods=['POST', 'GET'])
 def api():
     if request.method == 'POST':
-        userId = func.userId_Get(request.form['userid'])
-        if userId is None:
-            return render_template("error.html",Message='送信されたデータにはUserIDが含まれていません。CHUNITHM-NETにログインして実行してください。')
-        Hash = chunithm.CalcRate(userId)
-        if Hash is None:
-            return render_template("error.html",Message='このUserIdは無効です。もう一度CHUNITHM-NETにログインして実行してください。')
-        return redirect('/chunithm/user/' + Hash)
+        user_id = func.extraction_user_id(request.form['userid'])
+        if user_id is None:
+            abort(440)
+        user = chunithm.Calculate(user_id)
+        user_hash = user.run()
+        return redirect('/chunithm/user/' + user_hash)
     else:
         return abort(403)
 
-@views.route('/chunithm/user/<Hash>')
-@views.route('/chunithm/user/<Hash>/best')
-@views.route('/chunithm/user/<Hash>/best/<Sort>')
-def best(Hash,Sort='rate'):
-    try:
-        if Sort == 'rate':
-            Best, User, Rate = chunithm.DispBest(Hash)
-            return render_template('main.html',Hash=Hash,Name='Best枠',Musics_list=Best,User=User[-1],Rate=Rate)
-        elif Sort == 'score':
-            Best, User, Rate = chunithm.DispBest(Hash)
-            Best = sorted(Best, key=lambda x: x['Score'], reverse=True)
-            Best = Func.CountRank(Best)
-            return render_template(
-                'main.html',
-                Hash=Hash,
-                frame='Best',
-                Musics=Best,
-                User=User[-1],
-                Rate=Rate,
-                Sort='score',
-            )
-        elif Sort == 'difficult':
-            Best, User, Rate = chunithm.DispBest(Hash)
-            Best = sorted(Best, key=lambda x: x['BaseRate'], reverse=True)
-            Best = Func.CountDiff(Best)
-            return render_template(
-                'main.html',
-                Hash=Hash,
-                frame='Best',
-                Musics=Best,
-                User=User[-1],
-                Rate=Rate,
-                Sort='difficult'
-            )
 
-    except Exception as e:
-        return render_template(
-            'main.html',
-            frame='Error',
-            url='/',
-            Message='ユーザーが登録されていません。'
-        )
+@views.route('/chunithm/user/<user_hash>')
+@views.route('/chunithm/user/<user_hash>/best')
+@views.route('/chunithm/user/<user_hash>/best/<sort>')
+def best(user_hash, sort='rate'):
+    user = db.User(user_hash)
 
 @views.route('/login', methods=['POST','GET'])
 def login():
