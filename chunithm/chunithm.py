@@ -14,6 +14,7 @@ class Calculate:
         self.user_friend_code = func.fetch_user_friend_code(self.user_id)
         self.user_hash = hashlib.sha256(str(self.user_friend_code).encode('utf8')).hexdigest()
         self.user_data_base = db.User(self.user_hash)
+        self.rate = []
 
     def calculate_best_rate(self):
         """
@@ -54,6 +55,7 @@ class Calculate:
                     else:
                         music["music_score_max"] = None
 
+        self.rate["best"] = rate
         self.user_data_base.update_best(music_best_list)
 
     def calculate_recent_rate(self):
@@ -109,14 +111,18 @@ class Calculate:
                         music_recent_date_list.pop()
                         music_recent_list = sorted(music_recent_date_list, key=lambda x: x["music_rate"], reverse=True)
 
-        recent_rate_sum = 0
+        rate = []
         for i, music in enumerate(music_recent_list):
             if i < 10:
-                recent_rate_sum += music["music_rate"]
+                rate["recent_rate_sum"] += music["music_rate"]
 
+        self.rate["recent"] = rate
         self.user_data_base.update_recent(music_recent_list)
 
     def update_user(self):
+        """
+        ユーザーデータをデータベースに保存する
+        """
         user_data = func.fetch_user_data(self.user_id)
         user_data = user_data["userInfo"]
 
