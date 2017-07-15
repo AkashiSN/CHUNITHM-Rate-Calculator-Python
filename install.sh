@@ -18,3 +18,4 @@ sudo mv /srv/flask.conf /etc/apache2/sites-available/
 sudo ln -s /etc/apache2/sites-available/flask.conf /etc/apache2/sites-enabled/flask.conf
 sudo rm /etc/apache2/sites-enabled/000-default.conf /etc/apache2/sites-enabled/000-default-le-ssl.conf
 sudo apachectl restart
+
