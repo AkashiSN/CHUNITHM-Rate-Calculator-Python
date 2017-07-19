@@ -35,10 +35,12 @@ javascript:(function(){
 
 ### 環境
 
-- Ubuntu 16.04
+- Ubuntu-server 16.04
+
+対象のサーバーで
 
 ```bash
-$ ./install.sh
+$ curl -s "https://raw.githubusercontent.com/AkashiSN/CHUNITHM-Rate-Calculator-Python/dev/install.sh" | bash
 ```
 
 ## ライセンス
