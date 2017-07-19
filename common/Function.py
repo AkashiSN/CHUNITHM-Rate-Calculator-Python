@@ -24,7 +24,7 @@ def Get_MusicIdList(userId):
     url = 'https://chunithm-net.com/ChuniNet/GetUserMusicLevelApi'
     MusicIdList = []
     ExList = []
-    for Level in range(11,14):
+    for Level in range(11,15):
         parm = {'userId':userId,'level':Level}
         re = requests.post(url,data=json.dumps(parm))
         if re is None:
@@ -221,6 +221,8 @@ def Score2Rank(Score):
 
 #譜面定数から難易度
 def BaseRate2Diff(BaseRate):
+    if BaseRate >= 14:
+        return '14'
     if BaseRate >= 13.7:
         return '13+'
     if BaseRate >= 13:

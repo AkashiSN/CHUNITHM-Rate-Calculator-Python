@@ -93,6 +93,8 @@ class LoadBaseRate:
           sql += ' WHERE'
 
       if Data['Level']:
+        if Data['Level'] == '14':
+          sql += ' BaseRate between 14 and 14.6'
         if Data['Level'] == '13+':
           sql += ' BaseRate between 13.7 and 13.9'
         elif Data['Level'] == '13':
