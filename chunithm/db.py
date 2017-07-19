@@ -302,7 +302,7 @@ class User:
                     `user_friend_code` INTEGER,
                     `user_hash` TEXT,
                     `user_final_play_date` TEXT,
-                    `execute_date` TEXT
+                    `execute_date` TEXT,
                     PRIMARY KEY(`user_id`)
                 );
               """)
@@ -382,12 +382,12 @@ class User:
         ユーザー情報を保存する
         :param user: ユーザー情報
         """
-        sql = 'SELECT * FROM user WHERE PlayCount = ?'
-        self.cur.execute(sql, (user['PlayCount'],))
+        sql = 'SELECT * FROM user WHERE user_play_count = ?'
+        self.cur.execute(sql, (user['user_play_count'],))
         r = self.cur.fetchall()
         if r:
-            sql = 'DELETE FROM user WHERE PlayCount = ?'
-            self.cur.execute(sql, (user['PlayCount'],))
+            sql = 'DELETE FROM user WHERE user_play_count = ?'
+            self.cur.execute(sql, (user['user_play_count'],))
         sql = """
         INSERT INTO user (
             user_name,

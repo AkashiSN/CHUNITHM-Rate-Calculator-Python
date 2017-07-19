@@ -24,7 +24,7 @@ def api():
     if request.method == 'POST':
         user_id = func.extraction_user_id(request.form['userid'])
         if user_id is None:
-            abort(440)
+            abort(400)
         user = chunithm.Calculate(user_id)
         user_hash = user.run()
         return redirect('/chunithm/user/' + user_hash)
@@ -37,6 +37,11 @@ def api():
 @views.route('/chunithm/user/<user_hash>/best/<sort>')
 def best(user_hash, sort='rate'):
     user = db.User(user_hash)
+    user_best = user.load_best()
+    user_info = user.load_user()
+    if user_best and user_info:
+        return render_template('main.html')
+
 
 @views.route('/login', methods=['POST','GET'])
 def login():

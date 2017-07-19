@@ -193,6 +193,10 @@ class Calculate:
         admin_data.update_user_admin(data)
 
     def run(self):
+        """
+        まとめて実行する
+        :return: user_hash
+        """
         self.calculate_best_rate()
         self.calculate_recent_rate()
         self.update_user()

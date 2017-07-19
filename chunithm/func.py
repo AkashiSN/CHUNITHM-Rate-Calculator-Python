@@ -14,24 +14,32 @@ def init_errors(app):
     :return: エラー画面
     """
     @app.errorhandler(404)
-    def page_not_found():
+    def page_not_found(error):
         return render_template("errors/404.html"), 404
 
     @app.errorhandler(403)
-    def forbidden():
+    def forbidden(error):
         return render_template("errors/403.html"), 403
 
     @app.errorhandler(405)
-    def gateway_error():
+    def gateway_error(error):
         return render_template("errors/405.html"), 405
 
-    @app.errorhandler(440)
-    def gateway_error():
-        return render_template("errors/440.html"), 440
+    @app.errorhandler(400)
+    def bad_request(error):
+        return render_template("errors/400.html"), 400
 
     @app.errorhandler(500)
-    def general_error():
+    def general_error(error):
         return render_template("errors/500.html"), 500
+
+
+def login_time_out():
+    """
+    ログインセッションが切れたときのエラー画面
+    :return:
+    """
+    return render_template("errors/440.html")
 
 
 def extraction_user_id(post_data):
@@ -44,7 +52,7 @@ def extraction_user_id(post_data):
     for tmp1 in tmp:
         if "userId" in tmp1:
             return tmp1.split("=")[1]
-    return abort(440)
+    return abort(400)
 
 
 def fetch_user_id(sega_id, password):
@@ -58,9 +66,26 @@ def fetch_user_id(sega_id, password):
     parm = {"segaId": sega_id, "password": password}
     re = requests.post(url, data=json.dumps(parm))
     if re is None:
-        return abort(440)
+        return abort(400)
     else:
         return str(re.json()["sessionIdList"][0])
+
+
+def fetch_user_friend_code(user_id):
+    """
+    自分のフレンドコード取得
+    :param user_id:
+    :return:
+    """
+    url = "https://chunithm-net.com/ChuniNet/GetUserFriendlistApi"
+    parm = {"userId": user_id, "state": 4}
+    re = requests.post(url, data=json.dumps(parm))
+    if re is None:
+        return abort(400)
+    json_data = re.json()
+    if json_data is None:
+        render_template("errors/440.html")
+    return json_data.get("friendCode")
 
 
 def fetch_music_id_list(user_id):
@@ -77,10 +102,10 @@ def fetch_music_id_list(user_id):
         parm = {"userId": user_id, "level": music_level}
         re = requests.post(url, data=json.dumps(parm))
         if re is None:
-            return abort(440)
+            return abort(400)
         json_data = re.json()
         if json_data is None:
-            return abort(440)
+            return abort(400)
         music_id_list += json_data["levelList"]
         music_id_list += json_data["levelPlusList"]
         for Id, dif in json_data["difLevelMap"].items():
@@ -103,7 +128,7 @@ def fetch_music_score_highest(user_id, music_id):
     parm = {"userId": user_id, "musicId": music_id}
     re = requests.post(url, data=json.dumps(parm))
     if re is None:
-        return abort(440)
+        return abort(400)
     json_data = json.loads(re.text, "utf-8")
     return json_data
 
@@ -120,7 +145,7 @@ def fetch_difficulty_list(user_id, music_difficulty):
     parm = {"level": music_difficulty, "userId": user_id}
     re = requests.post(url, data=json.dumps(parm))
     if re is None:
-        return abort(440)
+        return abort(400)
     json_data = re.json()
     return json_data
 
@@ -135,7 +160,7 @@ def fetch_user_data(user_id):
     parm = {"userId": user_id, "friendCode": 0, "fileLevel": 1}
     re = requests.post(url, data=json.dumps(parm))
     if re is None:
-        return abort(440)
+        return abort(400)
     json_data = re.json()
     return json_data
 
@@ -150,27 +175,9 @@ def fetch_play_log(user_id):
     parm = {"userId": user_id}
     re = requests.post(url, data=json.dumps(parm))
     if re is None:
-        return abort(440)
+        return abort(400)
     json_data = re.json()
     return json_data
-
-
-def fetch_user_friend_code(user_id):
-    """
-    自分のフレンドコード取得
-    :param user_id:
-    :return:
-    """
-    url = "https://chunithm-net.com/ChuniNet/GetUserFriendlistApi"
-    parm = {"userId": user_id, "state": 4}
-    re = requests.post(url, data=json.dumps(parm))
-    if re is None:
-        return abort(440)
-    json_data = re.json()
-    if json_data is None:
-        return abort(440)
-    return json_data.get("friendCode")
-
 
 def fetch_genre(user_id, genre, level=None):
     """
@@ -185,29 +192,29 @@ def fetch_genre(user_id, genre, level=None):
         parm = {"userId": user_id, "level": "1"+str(genre)+"0"+str(level)}
         re = requests.post(url, data=json.dumps(parm))
         if re is None:
-            return abort(440)
+            return abort(400)
         json_data = re.json()
         if json_data is None:
-            return abort(440)
+            return abort(400)
         return json_data.get("genreList")
     else:
         url = "https://chunithm-net.com/ChuniNet/GetUserMusicApi"
         parm = {"userId": user_id, "level": "1"+str(genre)+"02"}
         re = requests.post(url, data=json.dumps(parm))
         if re is None:
-            return abort(440)
+            return abort(400)
         json_data = re.json()
         if json_data is None:
-            return abort(440)
+            return abort(400)
         expert_music_id_list = json_data.get("genreList")
         url = "https://chunithm-net.com/ChuniNet/GetUserMusicApi"
         parm = {"userId": user_id, "level": "1"+str(genre)+"03"}
         re = requests.post(url, data=json.dumps(parm))
         if re is None:
-            return abort(440)
+            return abort(400)
         json_data = re.json()
         if json_data is None:
-            return abort(440)
+            return abort(400)
         music_id_list = json_data.get("genreList")
         return expert_music_id_list, music_id_list
 
