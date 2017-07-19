@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # HostNameを変更する
 sudo echo "chunical.net" > /etc/hostname
