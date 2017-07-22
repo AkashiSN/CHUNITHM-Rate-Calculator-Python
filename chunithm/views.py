@@ -5,7 +5,6 @@ from flask import request
 from flask import session
 from flask import redirect
 from flask import abort
-from jinja2 import FileSystemLoader
 from chunithm import func
 from chunithm import db
 from chunithm import chunithm
