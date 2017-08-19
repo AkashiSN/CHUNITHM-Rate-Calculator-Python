@@ -18,7 +18,7 @@ def index():
     return render_template('index.html')
 
 
-@views.route('/chunithm.api',methods=['POST', 'GET'])
+@views.route('/chunithm.api', methods=['POST', 'GET'])
 def api():
     if request.method == 'POST':
         user_id = func.extraction_user_id(request.form['userid'])

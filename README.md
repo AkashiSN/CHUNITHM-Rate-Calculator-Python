@@ -43,5 +43,11 @@ javascript:(function(){
 $ curl -s "https://raw.githubusercontent.com/AkashiSN/CHUNITHM-Rate-Calculator-Python/dev/install.sh" | bash
 ```
 
+Powershellでの実行
+
+```
+$env:FLASK_APP = "server.py"
+```
+
 ## ライセンス
 This software is released under the MIT License, see LICENSE.txt.

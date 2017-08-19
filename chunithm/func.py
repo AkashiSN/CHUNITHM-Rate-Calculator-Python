@@ -179,6 +179,7 @@ def fetch_play_log(user_id):
     json_data = re.json()
     return json_data
 
+
 def fetch_genre(user_id, genre, level=None):
     """
     楽曲のジャンルの取得
@@ -341,7 +342,7 @@ def count_rank(musics):
     for music in musics:
         if rank != music["Rank"]:
             rank = music["Rank"]
-    music["flag"] = rank
+    musics["flag"] = rank
     return musics
 
 
