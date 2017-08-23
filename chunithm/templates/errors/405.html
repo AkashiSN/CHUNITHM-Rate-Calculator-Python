@@ -1,29 +1,29 @@
 {% extends "base.html" %}
 
+{% block title %}Method Not Allowed{% endblock %}
+
 {% block stylesheets %}
 <style type="text/css">
-.error-template {padding: 40px 15px;text-align: center;}
-.error-actions {margin-top:15px;margin-bottom:15px;}
-.error-actions .btn { margin-right:10px; }
+  body{
+    padding-top: 40px;
+  }
+  h1, p{
+    text-align:center;
+  }
+  h1{
+    font-size:64px;
+    margin:75px 0 50px;
+  }
+  p{
+    font-size:24px;
+    margin:15px 0;
+  }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="error-template">
-                <h2>
-                    405 Method Not Allowed</h2>
-                <div class="error-details">
-                    The method is not allowed for the requested URL.
-                </div>
-                <div class="error-actions">
-                    <a href="/" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-home"></span>
-                        Return to top </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+<h1>405</h1>
+<p>Method Not Allowed</p>
+<p>許可されていないメソッドです</p>
+<p><a href="{{ url_for('home') }}">ホームに戻る</a></p>
 {% endblock %}

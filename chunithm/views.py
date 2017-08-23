@@ -30,6 +30,31 @@ def home():
     return render_template('home.html')
 
 
+@app.route('/chunithm.api', methods=['POST', 'GET'])
+def api():
+    """POSTを受け付けるところ"""
+    if request.method == 'POST':
+        user_id = func.extraction_user_id(request.form['userid'])
+        if user_id is None:
+            abort(400)
+        user = chunithm.Calculate(user_id)
+        user_hash = user.run()
+        return redirect('/chunithm/user/' + user_hash)
+    else:
+        return abort(403)
+
+
+@app.route('/chunithm/user/<user_hash>')
+@app.route('/chunithm/user/<user_hash>/best')
+@app.route('/chunithm/user/<user_hash>/best/<sort>')
+def best(user_hash, sort='rate'):
+    user = database.User(user_hash)
+    user_best = user.load_best()
+    user_info = user.load_user()
+    if user_best and user_info:
+        pass
+
+
 @app.route('/admin')
 @login_required
 def admin():
@@ -110,7 +135,6 @@ def general_error(error):
 def flash_errors(form):
     for field, errors in form.errors.items():
         for error in errors:
-
             flash("Error in the {} field - {}".format (getattr(form, field).label.text, error), 'danger')
 
 def is_safe_url(target):
@@ -118,26 +142,3 @@ def is_safe_url(target):
     test_url = urlparse(urljoin(request.host_url, target))
     return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
 
-
-@app.route('/chunithm.api', methods=['POST', 'GET'])
-def api():
-    if request.method == 'POST':
-        user_id = func.extraction_user_id(request.form['userid'])
-        if user_id is None:
-            abort(400)
-        user = chunithm.Calculate(user_id)
-        user_hash = user.run()
-        return redirect('/chunithm/user/' + user_hash)
-    else:
-        return abort(403)
-
-
-@app.route('/chunithm/user/<user_hash>')
-@app.route('/chunithm/user/<user_hash>/best')
-@app.route('/chunithm/user/<user_hash>/best/<sort>')
-def best(user_hash, sort='rate'):
-    user = database.User(user_hash)
-    user_best = user.load_best()
-    user_info = user.load_user()
-    if user_best and user_info:
-        pass

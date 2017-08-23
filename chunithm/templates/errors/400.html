@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Page Not Found{% endblock %}
+{% block title %}Bad Request{% endblock %}
 
 {% block stylesheets %}
 <style type="text/css">
@@ -23,6 +23,7 @@
 
 {% block content %}
 <h1>400</h1>
-<p>That page doesn't even exist.</p>
-<p>Why don't you just <a href="{{ url_for('home') }}">go back home</a>?</p>
+<p>Bad Request</p>
+<p>リクエストが不正です</p>
+<p><a href="{{ url_for('home') }}">ホームに戻る</a></p>
 {% endblock %}
