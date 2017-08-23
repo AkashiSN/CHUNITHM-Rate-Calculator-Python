@@ -1,0 +1,61 @@
+{% block Graph %}
+<div id="Graph" style="margin-bottom:10px;width:600px"></div>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('#Graph')
+    .highcharts({
+      title: {
+        text: 'レート推移'
+        , x: -20 //center
+      }
+      , xAxis: {
+        title: {
+          text: 'クレジット'
+        },
+          tickInterval: 10
+      }
+      , yAxis: {
+        title: {
+          text: 'レート'
+        }
+        , plotLines: [{
+          value: 0
+          , width: 1
+          , color: '#808080'
+            }]
+            ,
+            tickInterval: 0.1
+      }
+      , legend: {
+        layout: 'vertical'
+        , align: 'right'
+        , verticalAlign: 'middle'
+        , borderWidth: 0
+      }
+      , series: [{
+          name: '最大レート',
+          data: [{% for rate in Rate %}
+                    [{{ rate.Credits }},{{ rate.MaxRate }}],
+                {% endfor %}]
+        }, {
+        name: '表示レート'
+        , data: [{% for rate in Rate %}
+                    [{{ rate.Credits }},{{ rate.DispRate }}],
+                {% endfor %}]
+        }, {
+        name: 'BEST枠'
+        , data: [{% for rate in Rate %}
+                    [{{ rate.Credits }},{{ rate.BestRate }}],
+                {% endfor %}]
+        }, {
+        name: 'RECENT枠'
+        , data: [{% for rate in Rate %}
+                    [{{ rate.Credits }},{{ rate.RecentRate }}],
+                {% endfor %}]
+        }]
+    });
+  });
+</script>
+{% endblock %}
