@@ -1,19 +1,23 @@
 import os
-
 from flask import Flask
-from jinja2 import FileSystemLoader
-from chunithm.views import views
-from chunithm.func import init_errors
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
 
 
-def start_app():
-    app = Flask(__name__)
-    app.jinja_loader = FileSystemLoader(os.path.join(app.root_path, 'themes/templates'))
-    app.static_folder = os.path.join(app.root_path, 'themes/static')
-    app.register_blueprint(views)
-    app.config['SECRET_KEY'] = os.urandom(64)
-    app.config['USERNAME'] = 'admin'
-    app.config['PASSWORD'] = 'd5278e5502686c56f86b6e5c8eacc0820690da1177822df26d286bac257173e1296af399794f7bcb0237feca9c68b9e5d705ae675287f619143049874ca74505'
-    init_errors(app)
+# appの設定
+app = Flask(__name__)
+app.config['SECRET_KEY'] = os.urandom(64)
 
-    return app
+# データベースの設定
+sql_uri = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))+"\\app.db"
+app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///"+sql_uri
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True # これがないとwarningが出る
+db = SQLAlchemy(app)
+
+# ログインマネージャーの設定
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+app.config.from_object(__name__)
+from chunithm import views

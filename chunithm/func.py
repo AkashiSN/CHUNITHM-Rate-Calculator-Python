@@ -7,41 +7,6 @@ from flask import render_template
 from flask import abort
 
 
-def init_errors(app):
-    """
-    エラーバンドルの設定
-    :param app: アプリケーション
-    :return: エラー画面
-    """
-    @app.errorhandler(404)
-    def page_not_found(error):
-        return render_template("errors/404.html"), 404
-
-    @app.errorhandler(403)
-    def forbidden(error):
-        return render_template("errors/403.html"), 403
-
-    @app.errorhandler(405)
-    def gateway_error(error):
-        return render_template("errors/405.html"), 405
-
-    @app.errorhandler(400)
-    def bad_request(error):
-        return render_template("errors/400.html"), 400
-
-    @app.errorhandler(500)
-    def general_error(error):
-        return render_template("errors/500.html"), 500
-
-
-def login_time_out():
-    """
-    ログインセッションが切れたときのエラー画面
-    :return:
-    """
-    return render_template("errors/440.html")
-
-
 def extraction_user_id(post_data):
     """
     ポストデータからuser_idを抽出
@@ -84,8 +49,26 @@ def fetch_user_friend_code(user_id):
         return abort(400)
     json_data = re.json()
     if json_data is None:
-        render_template("errors/440.html")
+        return abort(400)
     return json_data.get("friendCode")
+
+
+def fetch_music_level_list(user_id, music_level):
+    """
+    music_levelごとのmusic_idのリストの取得
+    :param user_id: ユーザーid
+    :param music_level: 楽曲のレベル
+    :return: 楽曲idのリスト
+    """
+    url = "https://chunithm-net.com/ChuniNet/GetUserMusicLevelApi"
+    parm = {"userId": user_id, "level": music_level}
+    re = requests.post(url, data=json.dumps(parm))
+    if re is None:
+        return abort(400)
+    json_data = re.json()
+    if json_data is None:
+        return abort(400)
+    return json_data
 
 
 def fetch_music_id_list(user_id):
@@ -129,7 +112,7 @@ def fetch_music_score_highest(user_id, music_id):
     re = requests.post(url, data=json.dumps(parm))
     if re is None:
         return abort(400)
-    json_data = json.loads(re.text, "utf-8")
+    json_data = json.loads(re.text)
     return json_data
 
 
@@ -178,6 +161,7 @@ def fetch_play_log(user_id):
         return abort(400)
     json_data = re.json()
     return json_data
+
 
 def fetch_genre(user_id, genre, level=None):
     """
@@ -341,7 +325,7 @@ def count_rank(musics):
     for music in musics:
         if rank != music["Rank"]:
             rank = music["Rank"]
-    music["flag"] = rank
+    musics["flag"] = rank
     return musics
 
 

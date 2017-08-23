@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Bad Request{% endblock %}
+
+{% block stylesheets %}
+<style type="text/css">
+  body{
+    padding-top: 40px;
+  }
+  h1, p{
+    text-align:center;
+  }
+  h1{
+    font-size:64px;
+    margin:75px 0 50px;
+  }
+  p{
+    font-size:24px;
+    margin:15px 0;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>400</h1>
+<p>Bad Request</p>
+<p>リクエストが不正です</p>
+<p><a href="{{ url_for('home') }}">ホームに戻る</a></p>
+{% endblock %}
