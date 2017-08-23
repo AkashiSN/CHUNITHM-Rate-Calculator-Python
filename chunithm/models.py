@@ -3,8 +3,9 @@ from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
 
 
-class User(db.Model):
-    __tablename__ = 'user'
+class Admin(db.Model):
+    """管理ユーザーのデータベース"""
+    __tablename__ = 'admin'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String)
     password_hash = db.Column(db.String)
@@ -57,3 +58,30 @@ class Music(db.Model):
         self.music_difficulty = music['music_difficulty']
         self.music_level = music['music_level']
         self.music_base_rate = music['music_base_rate']
+
+    def fetch_music_info(self):
+        """
+        曲の情報をフェッチし返す
+        :param music_id: 楽曲id
+        :param music_difficulty: 楽曲の難易度(masterとか)
+        :return music: 楽曲の情報
+        """
+        music = {
+            'id': self.id,
+            'music_id': self.music_id,
+            'music_name': self.music_name,
+            'music_cover_image': self.music_cover_image,
+            'music_artist_name': self.music_artist_name,
+            'music_difficulty': self.music_difficulty,
+            'music_level': self.music_level,
+            'music_base_rate': self.music_base_rate
+        }
+        return music
+
+    def update_music_info(self):
+        """
+        楽曲情報を更新する
+        :param music: 楽曲情報
+        :param music_shortage: 不足分の楽曲情報
+        """
+

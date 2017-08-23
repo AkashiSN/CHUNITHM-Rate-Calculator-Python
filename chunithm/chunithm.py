@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
-
 import hashlib
 import math
 from datetime import datetime
+from chunithm import models
 from chunithm import func
+from chunithm import database
 from chunithm import db
 
 
 class Calculate:
     def __init__(self, user_id):
         self.user_id = user_id
-        self.music_base_rate = db.Music()
         self.user_friend_code = func.fetch_user_friend_code(self.user_id)
         self.user_hash = hashlib.sha256(str(self.user_friend_code).encode('utf8')).hexdigest()
-        self.user_data_base = db.User(self.user_hash)
+        self.user_data_base = database.User(self.user_hash)
         self.rate = {}
         self.user = {}
 
@@ -29,7 +29,8 @@ class Calculate:
             for music_id in music_id_list[music_difficulty-2]:
                 for music in music_score_highest_list["userMusicList"]:
                     if music["musicId"] == music_id:
-                        music_info = self.music_base_rate.fetch_music_info(music_id, music_difficulty)
+                        music_info_class = models.Music.query.filter_by(music_id=music_id,music_difficulty=music_difficulty).first()
+                        music_info = music_info_class.fetch_music_info()
                         if music_info is None or music_info['music_base_rate'] is None:
                             continue
                         else:
@@ -70,8 +71,9 @@ class Calculate:
 
         for play in play_log["userPlaylogList"][0:30]:
             if play["levelName"] == "expert" or play["levelName"] == "master":
-                music_id = self.music_base_rate.fetch_music_id(play["musicFileName"])
-                music_info = self.music_base_rate.fetch_music_info(music_id, difficulty_map[play["levelName"]])
+                music_info_class = models.Music.query.filter_by(music_cover_image=play["musicFileName"],
+                                                              music_difficulty=difficulty_map[play["levelName"]]).first()
+                music_info = music_info_class.fetch_music_info()
                 if music_info is None or music_info["music_base_rate"] is None:
                     continue
                 else:
@@ -112,7 +114,7 @@ class Calculate:
                         music_recent_date_list.pop()
                         music_recent_list = sorted(music_recent_date_list, key=lambda x: x["music_rate"], reverse=True)
 
-        rate = {}
+        rate = {"recent_rate_sum":0}
         for i, music in enumerate(music_recent_list):
             if i < 10:
                 rate["recent_rate_sum"] += music["music_rate"]
@@ -178,7 +180,7 @@ class Calculate:
         """
         管理用データベースにユーザー情報を保存する
         """
-        admin_data = db.Admin()
+        admin_data = database.Admin()
         data = {
             'user_name': self.user["user_name"],
             'user_friend_code': self.user_friend_code,
@@ -204,106 +206,40 @@ class Calculate:
         self.update_admin()
         return self.user_hash
 
-#Best枠の時の表示
-def DispBest(Hash):
-    DataBase = db.UserDataBase(Hash)
-    Best = DataBase.LoadBest()
-    User = DataBase.LoadUser()
-    Rate = DataBase.LoadRate()
-    return Best,User,Rate
 
-#Recent枠の時の表示
-def DispRecent(Hash):
-    DataBase = db.UserDataBase(Hash)
-    Recent = DataBase.LoadRecent()
-    User = DataBase.LoadUser()
-    Rate = DataBase.LoadRate()
-    return Recent,User,Rate
+class Manage:
+    def __init__(self):
+        pass
 
-#Graphの表示
-def DispGraph(Hash):
-    DataBase = db.UserDataBase(Hash)
-    Rate = DataBase.LoadRate()
-    User = DataBase.LoadUser()
-    return User,Rate
+    def check_music_list(self, user_id):
+        for music_level in range(11,15):
+            music_id_list = func.fetch_music_level_list(user_id, music_level)
+            for plus in ("levelList", "levelPlusList"):
+                for music_id in music_id_list[plus]:
+                    music_difficulty = music_id_list['difLevelMap'][str(music_id)]
+                    music = models.Music.query.filter_by(music_id=music_id, music_difficulty=music_difficulty).one_or_none()
+                    if music is None:
+                        fetch_data = func.fetch_music_score_highest(user_id, music_id)
+                        plus_list = {"levelList": '', "levelPlusList": '+'}
+                        music = {
+                            'music_id': music_id,
+                            'music_name': fetch_data['musicName'],
+                            'music_cover_image': fetch_data['musicFileName'],
+                            'music_artist_name': fetch_data['artistName'],
+                            'music_difficulty': music_id_list['difLevelMap'][str(music_id)],
+                            'music_level': str(music_level) + plus_list[plus],
+                            'music_base_rate': 0
+                        }
+                        new_music = models.Music(music)
+                        db.session.add(new_music)
+                        db.session.commit()
 
-#Toolの表示
-def DispTools(Hash):
-    DataBase = db.UserDataBase(Hash)
-    Rate = DataBase.LoadRate()
-    User = DataBase.LoadUser()
-    return User,Rate
+    def update_music_info(self, music_id, music_difficulty, music_base_rate):
+        music = models.Music.query.filter_by(music_id=music_id, music_difficulty=music_difficulty).first()
+        music.music_base_rate = music_base_rate
+        db.session.commit()
 
-#譜面定数の確認
-def CheckMusic(userId):
-    MusicIdList = func.Get_MusicIdList(userId)
-    DataBase = db.LoadBaseRate()
-    BaseRateList = DataBase.Get_BaseRateList()
-    NoneMusicList = []
-    ExistMusicList = []
-
-    for level in range(2,4):
-        for MusicId in MusicIdList[level-2]:
-            if MusicId in BaseRateList[level-2]:
-                Music = DataBase.Get_BaseRate(MusicId,level)
-                if Music['BaseRate'] is not None:
-                    BaseRate = Music['BaseRate']
-                    Dic = {
-                        'MusicId':MusicId,
-                        'MusicName':Music['MusicName'],
-                        'MusicImage':Music['Image'],
-                        'ArtistName':Music['ArtistName'],
-                        'Level':level,
-                        'BaseRate':BaseRate,
-                        'AirPlus':Music['AirPlus']
-                    }
-                    ExistMusicList.append(Dic)
-                    continue
-            Music = func.Get_BestScore(userId,MusicId)
-            Dic = {
-                'MusicId':MusicId,
-                'MusicName':Music['musicName'],
-                'MusicImage':Music['musicFileName'],
-                'ArtistName':Music['artistName'],
-                'Level':level,
-                'BaseRate':None,
-                'AirPlus':False
-            }
-            NoneMusicList.append(Dic)
-            DataBase.SetMusic(Dic,True)
-    return NoneMusicList,ExistMusicList
-
-#譜面定数の更新
-def SetMusic(UserId,MusicId,Level,BaseRate):
-    Music = func.Get_BestScore(UserId, MusicId)
-    DataBase = db.LoadBaseRate()
-    Dic = {
-        'MusicId':MusicId,
-        'Level':Level,
-        'MusicName':Music['musicName'],
-        'Image':Music['musicFileName'],
-        'ArtistName':Music['artistName'],
-        'BaseRate':BaseRate
-    }
-    DataBase.SetMusic(Dic)
-
-#楽曲の検索
-def SearchMusic(UserId,Dic):
-    DataBase = db.LoadBaseRate()
-    MusicList = DataBase.SerchMusic_db(Dic)
-    MusicIdList = {x['MusicId']:idx for idx,x in enumerate(MusicList) if x['Level'] == 2},{x['MusicId']:idx for idx,x in enumerate(MusicList) if x['Level'] == 3}
-    GenreList = func.Get_Genre(UserId,Dic['Genre'],Dic['DiffLevel'])
-    ResultList = []
-    if Dic['DiffLevel']:
-        for MusicId in GenreList:
-            if MusicId in MusicIdList[int(Dic['DiffLevel'])-2]:
-                idx = MusicIdList[int(Dic['DiffLevel'])-2][MusicId]
-                ResultList.append(MusicList[idx])
-    else:
-        for level in range(2,4):
-            for MusicId in GenreList[level-2]:
-                if MusicId in MusicIdList[level-2]:
-                    idx = MusicIdList[level-2][MusicId]
-                    ResultList.append(MusicList[idx])
-    return ResultList
-
+    def search_music(self, music_difficulty,music_level,music_name):
+        music_list = models.Music.query.filter_by(music_difficulty=music_difficulty,
+                                                     music_level=music_level,music_name="%"+music_name+"%").all()
+        return music_list

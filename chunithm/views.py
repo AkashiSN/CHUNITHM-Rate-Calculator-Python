@@ -1,5 +1,3 @@
-from chunithm import app
-from chunithm import login_manager
 from flask import render_template
 from flask import request
 from flask import redirect
@@ -12,11 +10,17 @@ from flask_login import current_user
 from flask_login import login_required
 from urllib.parse import urlparse
 from urllib.parse import urljoin
+from flask_wtf import FlaskForm
+from wtforms import StringField
+from wtforms import PasswordField
+from wtforms import validators
+from wtforms.validators import InputRequired
 
-from chunithm.forms import LoginForm
-from chunithm.models import User
+from chunithm.models import Admin
+from chunithm import app
+from chunithm import login_manager
 from chunithm import func
-from chunithm import db
+from chunithm import database
 from chunithm import chunithm
 
 
@@ -33,6 +37,11 @@ def admin():
     return render_template('admin.html')
 
 
+class LoginForm(FlaskForm):
+    username = StringField('Username', validators=[InputRequired(), validators.Length(min=4, max=25)])
+    password = PasswordField('Password', validators=[InputRequired(), validators.Length(min=6, max=200)])
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     """ログイン"""
@@ -46,7 +55,7 @@ def login():
         if request.method == 'POST':
             username = form.username.data
             password = form.password.data
-            user = User.query.filter_by(username=username).first()
+            user = Admin.query.filter_by(username=username).first()
             if user.check_password(password):
                 login_user(user)
                 app.logger.debug('Logged in user %s', user.username)
@@ -69,7 +78,7 @@ def logout():
 
 @login_manager.user_loader
 def load_user(id):
-    return User.query.get(int(id))
+    return Admin.query.get(int(id))
 
 @app.after_request
 def add_header(response):
@@ -127,8 +136,8 @@ def api():
 @app.route('/chunithm/user/<user_hash>/best')
 @app.route('/chunithm/user/<user_hash>/best/<sort>')
 def best(user_hash, sort='rate'):
-    user = db.User(user_hash)
+    user = database.User(user_hash)
     user_best = user.load_best()
     user_info = user.load_user()
     if user_best and user_info:
-        return render_template('main.html')
+        pass

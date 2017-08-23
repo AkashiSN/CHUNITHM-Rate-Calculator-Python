@@ -49,7 +49,7 @@ def fetch_user_friend_code(user_id):
         return abort(400)
     json_data = re.json()
     if json_data is None:
-        render_template("errors/440.html")
+        return abort(400)
     return json_data.get("friendCode")
 
 
