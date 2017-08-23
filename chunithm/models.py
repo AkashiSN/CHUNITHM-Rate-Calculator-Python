@@ -6,8 +6,8 @@ from werkzeug.security import check_password_hash
 class User(db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.Text)
-    password_hash = db.Column(db.Text)
+    username = db.Column(db.String)
+    password_hash = db.Column(db.String)
 
     def __init__(self, username, password):
         self.username = username
@@ -22,14 +22,38 @@ class User(db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    @property
     def is_authenticated(self):
         return True
 
+    @property
     def is_active(self):
         return True
 
+    @property
     def is_anonymous(self):
         return False
 
     def get_id(self):
-        return str(self.username)
+        return str(self.id)
+
+
+class Music(db.Model):
+    __tablename__ = 'music'
+    id = db.Column(db.Integer, primary_key=True)
+    music_id = db.Column(db.Integer)
+    music_name = db.Column(db.String)
+    music_cover_image = db.Column(db.String)
+    music_artist_name = db.Column(db.String)
+    music_difficulty = db.Column(db.Integer)
+    music_level = db.Column(db.String)
+    music_base_rate = db.Column(db.Integer)
+
+    def __init__(self, music):
+        self.music_id = music['music_id']
+        self.music_name = music['music_name']
+        self.music_cover_image = music['music_cover_image']
+        self.music_artist_name = music['music_artist_name']
+        self.music_difficulty = music['music_difficulty']
+        self.music_level = music['music_level']
+        self.music_base_rate = music['music_base_rate']

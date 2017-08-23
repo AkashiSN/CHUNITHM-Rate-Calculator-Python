@@ -22,11 +22,15 @@
         <meta name="twitter:image" content="" />
         <!--End Twitter Card-->
 
-        <title>CHUNITHM Rate Calculator</title>
+        <title>
+            {% block title %}
+            {% endblock %}
+        </title>
 
         <!--Begin Style-->
         <link href="/static/css/bootstrap.min.css" rel="stylesheet">
-        {% block stylesheets %}{% endblock %}
+        {% block stylesheets %}
+        {% endblock %}
         <!--End Style-->
     </head>
 

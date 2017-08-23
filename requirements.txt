@@ -6,4 +6,5 @@ Flask-Migrate
 Flask-SQLAlchemy
 wtforms
 requests
+urlparse
 pysha3

@@ -1,8 +1,5 @@
 __pycache__/
 .idea/
 .vscode/
-user/
-admin.db
-pass.json
-chunithm.db
-chunithm/database/
+*.db
+migrations/

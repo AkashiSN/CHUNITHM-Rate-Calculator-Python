@@ -1,24 +1,64 @@
 {% extends "base.html" %}
 
+{% block title %}Please Log in{% endblock %}
+
 {% block stylesheets %}
-    <link href="/static/css/login.css" rel="stylesheet">
+  <style>
+    body {
+      padding-top: 40px;
+      padding-bottom: 40px;
+      background-color: #eee;
+    }
+
+    .form-signin {
+      max-width: 330px;
+      padding: 15px;
+      margin: 0 auto;
+    }
+    .form-signin{
+      margin-bottom: 10px;
+    }
+    .form-signin{
+      font-weight: normal;
+    }
+    .form-signin{
+      position: relative;
+      height: auto;
+      -webkit-box-sizing: border-box;
+              box-sizing: border-box;
+      padding: 10px;
+      font-size: 16px;
+    }
+    .form-signin:focus {
+      z-index: 2;
+    }
+    .form-signin input[type="UserName"] {
+      margin-bottom: -1px;
+      border-bottom-right-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+    .form-signin input[type="password"] {
+      margin-bottom: 10px;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+    }
+  </style>
 {% endblock %}
 
 {% block content %}
     <div class="container">
-    {% if Error %}
-      <div class="alert alert-danger">
-        <strong>Warning!</strong> {{ Error }}
-      </div>
-    {% endif %}
-      <form target="" method="POST" class="form-signin">
-        <h2 class="form-signin-heading">Please log in</h2>
-        <label for="inputUserName" class="sr-only">UserName</label>
-        <input type="UserName" name="UserName" class="form-control" placeholder="UserName" required autofocus>
-        <label for="inputPassword" class="sr-only">Password</label>
-        <input type="password" name="Password" class="form-control" placeholder="Password" required>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-      </form>
-      <a href="/">トップページに戻る</a>
+        <div class="login-form center-block form-signin">
+            <h2>Please Log in</h2>
+            {% include 'flash_messages.html' %}
+            <form action="{{ url_for('login') }}?next={{next}}" method="post">
+                {{ form.csrf_token }}
+                <div class="form-group">
+                    {{ form.username(class='form-control', placeholder="Enter your username") }}
+                    {{ form.password(class='form-control') }}
+                </div>
+                <button name="submit" class="btn btn-primary btn-block">Log in</button>
+            </form>
+        </div>
+        <a href="{{ url_for('home') }}">トップページに戻る</a>
     </div>
 {% endblock %}
