@@ -40,6 +40,7 @@ class Admin(db.Model):
 
 
 class Music(db.Model):
+    """楽曲管理のデータベース"""
     __tablename__ = 'music'
     id = db.Column(db.Integer, primary_key=True)
     music_id = db.Column(db.Integer)
@@ -78,10 +79,28 @@ class Music(db.Model):
         }
         return music
 
-    def update_music_info(self):
-        """
-        楽曲情報を更新する
-        :param music: 楽曲情報
-        :param music_shortage: 不足分の楽曲情報
-        """
 
+class User(db.Model):
+    """ユーザー管理のデータベース"""
+    __tablename__ = 'user'
+    id = db.Column(db.Integer, primary_key=True)
+    user_name = db.Column(db.String)
+    user_friend_code = db.Column(db.String)
+    user_hash = db.Column(db.String)
+    user_play_count = db.Column(db.Integer)
+    rate_display = db.Column(db.Integer)
+    rate_highest = db.Column(db.Integer)
+    rate_best = db.Column(db.Integer)
+    rate_recent = db.Column(db.Integer)
+    rate_max = db.Column(db.Integer)
+
+    def __init__(self, user_data):
+        self.user_name = user_data['user_name']
+        self.user_friend_code = user_data['user_friend_code']
+        self.user_hash = user_data['user_hash']
+        self.user_play_count = user_data['user_play_count']
+        self.rate_display = user_data['rate_display']
+        self.rate_highest = user_data['rate_highest']
+        self.rate_best = user_data['rate_best']
+        self.rate_recent = user_data['rate_recent']
+        self.rate_max = user_data['rate_max']

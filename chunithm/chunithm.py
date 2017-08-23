@@ -110,7 +110,9 @@ class Calculate:
                         if play["music_score"] >= music_recent_score_list[-1]["music_score"]:
                             continue
                         # どれも当てはまらなかったらリセント候補枠の一番古いレート値を削除
-                        music_recent_date_list = sorted(music_recent_list, key=lambda x: datetime.strptime(x["music_play_date"], '%Y-%m-%d %H:%M:%S'), reverse=True)
+                        music_recent_date_list = sorted(music_recent_list,
+                                                        key=lambda x: datetime.strptime(x["music_play_date"], '%Y-%m-%d %H:%M:%S'),
+                                                        reverse=True)
                         music_recent_date_list.pop()
                         music_recent_list = sorted(music_recent_date_list, key=lambda x: x["music_rate"], reverse=True)
 
@@ -180,8 +182,8 @@ class Calculate:
         """
         管理用データベースにユーザー情報を保存する
         """
-        admin_data = database.Admin()
-        data = {
+        manage = Manage()
+        user_data = {
             'user_name': self.user["user_name"],
             'user_friend_code': self.user_friend_code,
             'user_hash': self.user_hash,
@@ -192,7 +194,7 @@ class Calculate:
             'rate_recent': self.rate["admin"]["rate_recent"],
             'rate_max': self.rate["admin"]["rate_max"]
         }
-        admin_data.update_user_admin(data)
+        manage.update_user_data(user_data)
 
     def run(self):
         """
@@ -208,10 +210,15 @@ class Calculate:
 
 
 class Manage:
+    """色々管理するやつ"""
     def __init__(self):
         pass
 
     def check_music_list(self, user_id):
+        """
+        データベースに未登録の楽曲のみを追加する
+        :param user_id: ユーザーid
+        """
         for music_level in range(11,15):
             music_id_list = func.fetch_music_level_list(user_id, music_level)
             for plus in ("levelList", "levelPlusList"):
@@ -235,11 +242,43 @@ class Manage:
                         db.session.commit()
 
     def update_music_info(self, music_id, music_difficulty, music_base_rate):
+        """
+        楽曲情報を更新する
+        :param music_id: 楽曲id
+        :param music_difficulty: 楽曲の難易度
+        :param music_base_rate: 楽曲の譜面定数
+        """
         music = models.Music.query.filter_by(music_id=music_id, music_difficulty=music_difficulty).first()
         music.music_base_rate = music_base_rate
         db.session.commit()
 
     def search_music(self, music_difficulty,music_level,music_name):
+        """
+        楽曲情報を検索する
+        :param music_difficulty: 楽曲の難易度
+        :param music_level: 楽曲のレベル
+        :param music_name: 楽曲の名前
+        :return: 結果
+        """
         music_list = models.Music.query.filter_by(music_difficulty=music_difficulty,
                                                      music_level=music_level,music_name="%"+music_name+"%").all()
         return music_list
+
+    def update_user_data(self, user_data):
+        """
+        ユーザの情報を更新する
+        :param user_data: ユーザーデータ
+        """
+        user = models.User.query.filter_by(user_hash=user_data['user_hash']).first()
+        if user is None:
+            new_user = models.User(user_data)
+            db.session.add(new_user)
+            db.session.commit()
+        else:
+            user.user_play_count = user_data['user_play_count']
+            user.rate_display = user_data['rate_display']
+            user.rate_highest = user_data['rate_highest']
+            user.rate_best = user_data['rate_best']
+            user.rate_recent = user_data['rate_recent']
+            user.rate_max = user_data['rate_max']
+            db.session.commit()
